@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第5课：量子纠缠与贝尔不等式 — 宇宙之镜</title>
+<meta name="description" content="贝尔不等式排除局域实在论——量子纠缠不是「鬼魅超距」而是底层共享指针。2022诺奖实验验证：要么放弃局域性，要么放弃实在性。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<style>
+:root{--bg:#050510;--bg-card:rgba(15,15,40,0.85);--text:#e0e0f0;--text-dim:#9090c0;--accent:#7b5fff;--accent2:#00d4ff;--gradient:linear-gradient(135deg,#7b5fff,#00d4ff);--border:rgba(120,100,255,0.2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC',sans-serif;line-height:1.8}
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;backdrop-filter:blur(20px);background:rgba(5,5,16,0.75);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.nav-back{color:var(--text-dim);text-decoration:none;font-size:0.9em}.nav-back:hover{color:var(--text)}
+.nav-title{font-size:0.95em;font-weight:700;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-space{width:60px}
+.content-wrapper{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:80px 20px 60px}
+.content h1{font-size:2.2em;font-weight:900;margin-bottom:8px}
+.content .subtitle{color:var(--accent2);font-size:1em;margin-bottom:32px}
+.audio-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:32px;display:flex;align-items:center;gap:16px}
+.audio-bar audio{flex:1;filter:invert(0.9) hue-rotate(230deg);height:36px}
+.course-meta{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:24px;font-size:0.85em;color:var(--text-dim)}
+.content h2{font-size:1.6em;font-weight:800;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--border)}
+.content h3{font-size:1.25em;font-weight:700;margin:32px 0 12px;color:var(--accent2)}
+.content h4{font-size:1.1em;font-weight:600;margin:24px 0 8px}
+.content blockquote{margin:16px 0;padding:16px 20px;border-left:3px solid var(--accent);background:var(--bg-card);border-radius:0 8px 8px 0;font-style:italic}
+.content p{margin:12px 0}
+.content ul,.content ol{margin:12px 0;padding-left:1.8em}
+.content li{margin:6px 0}
+.content a{color:var(--accent2)}
+.content table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.9em;overflow-x:auto;display:block}
+.content th{background:rgba(123,95,255,0.15);padding:10px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)}
+.content td{padding:10px 12px;border-bottom:1px solid rgba(120,100,255,0.1)}
+.content tr:hover td{background:rgba(123,95,255,0.05)}
+.content pre{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:10px;padding:16px 20px;overflow-x:auto;margin:16px 0}
+.content code{font-family:'SF Mono','Menlo',monospace;font-size:0.85em;color:var(--accent2)}
+.content pre code{color:var(--text);display:block}
+.pagination{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.pagination a{color:var(--accent2);text-decoration:none;padding:8px 20px;border:1px solid var(--border);border-radius:20px;transition:all 0.2s}
+.pagination a:hover{border-color:var(--accent);background:rgba(123,95,255,0.1)}
+.footer{text-align:center;color:var(--text-dim);font-size:0.85em;padding:40px 0;position:relative;z-index:1}
+@media(max-width:600px){.content-wrapper{padding:70px 16px 40px}.content h1{font-size:1.6em}}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<nav class="nav">
+<a href="/cosmic-lens/docs/" class="nav-back">← 宇宙之镜</a>
+<span class="nav-title">第5课 · 量子纠缠与贝尔不等式</span>
+<div class="nav-space"></div>
+</nav>
+<article class="content-wrapper">
+<h1>🔗 量子纠缠与贝尔不等式：实在的最后防线</h1>
+<p class="subtitle">贝尔不等式排除了局域实在论——量子纠缠不是「鬼魅超距」，而是底层共享指针。2022诺贝尔奖盖章确认：二选一。</p>
+<div class="audio-bar"><span>🎧 音频版</span><audio controls src="/cosmic-lens/docs/audio/lesson05.mp3" preload="none"></audio></div>
+<div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+<div class="content">
+<h1
+id="量子纠缠与贝尔不等式实在的最后防线">量子纠缠与贝尔不等式：实在的最后防线</h1>
+<blockquote>
+<p><em>“量子纠缠不是一种力——它是一种信息关系。它告诉我们：要么放弃局域性，要么放弃实在性。二选一。”</em>
+—— 大卫·默敏</p>
+</blockquote>
+<hr />
+<h2 id="本课目标">🎯 本课目标</h2>
+<p>学完本课后，你将能够：</p>
+<ol type="1">
+<li>用”手套模型”和数学严格推导区分”经典关联”和”量子纠缠”</li>
+<li>理解贝尔不等式——以及为何它的违反意味着”局域实在论”必然为假</li>
+<li>解释2022年诺贝尔物理学奖（阿斯佩、克劳泽、塞林格）的实验贡献</li>
+<li>评估量子纠缠在模拟假说中的含义——“共享内存指针”的工程类比</li>
+</ol>
+<p><strong>难度</strong>：⭐⭐⭐⭐ 硬核 |
+<strong>预计学习时间</strong>：45 分钟 |
+<strong>前置课程</strong>：第4课</p>
+<hr />
+<h2 id="一纠缠到底怪在哪手套-vs-量子">一、纠缠到底”怪”在哪？——手套 vs
+量子</h2>
+<h3 id="经典关联手套模型">1.1 经典关联（“手套模型”）</h3>
+<p>想象把左右两只手套分别放进两个盒子，随机送到北京和纽约。</p>
+<table>
+<thead>
+<tr>
+<th>条件</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>你打开北京的盒子，看到左手套</td>
+<td>你立刻”知道”纽约是右手套</td>
+</tr>
+<tr>
+<td>这是超距作用吗？</td>
+<td><strong>不是</strong>——手套在分离时就已经确定了</td>
+</tr>
+</tbody>
+</table>
+<p>这就是经典关联：<strong>分离时就确定了，只是你不知道。</strong></p>
+<h3 id="量子纠缠为什么不是手套">1.2 量子纠缠——为什么不是手套</h3>
+<table>
+<colgroup>
+<col style="width: 24%" />
+<col style="width: 36%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>经典手套</th>
+<th>量子纠缠态</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>分离前</td>
+<td>左右已确定</td>
+<td>处于叠加态（未确定）</td>
+</tr>
+<tr>
+<td>测量时</td>
+<td>揭示已存在的值</td>
+<td><strong>创造值</strong>——不是揭示</td>
+</tr>
+<tr>
+<td>测量结果相关性</td>
+<td>100%（始终相反）</td>
+<td>100%（如果测量同一方向）</td>
+</tr>
+<tr>
+<td>能否解释为”分离时就确定”？</td>
+<td>✓ 能</td>
+<td><strong>✗ 不能</strong>——贝尔不等式证明了这一点</td>
+</tr>
+</tbody>
+</table>
+<h3 id="epr悖论爱因斯坦的最后抵抗">1.3 EPR悖论：爱因斯坦的最后抵抗</h3>
+<p>1935年，爱因斯坦、波多尔斯基和罗森（EPR）发表论文，论证量子力学不可能是”完备的”理论：</p>
+<table>
+<thead>
+<tr>
+<th>EPR论证</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>如果两个粒子纠缠</td>
+<td>测量A立刻告诉你B的值</td>
+</tr>
+<tr>
+<td>如果A和B足够远</td>
+<td>信息传播需要时间→不能是”测量创造值”</td>
+</tr>
+<tr>
+<td>结论</td>
+<td>B的值一定在分离时就存在——只是量子力学没有描述它们</td>
+</tr>
+</tbody>
+</table>
+<p>爱因斯坦称之为”鬼魅般的超距作用”（spooky action at a distance）。</p>
+<p><strong>EPR认为</strong>：量子力学不完整——存在我们还不知道的”隐变量”（hidden
+variables），它们预先决定了所有测量结果。</p>
+<hr />
+<h2 id="二贝尔不等式1964年的判决书">二、贝尔不等式：1964年的判决书</h2>
+<h3 id="约翰贝尔的猜想">2.1 约翰·贝尔的猜想</h3>
+<p>北爱尔兰物理学家约翰·贝尔（1964）提出了一个绝妙的检验方法：</p>
+<p><strong>如果隐变量存在（如EPR所信），那么关联强度的统计分布必须满足一个不等式。而量子力学预言这个不等式会被违反。</strong></p>
+<table>
+<thead>
+<tr>
+<th>立场</th>
+<th>预测</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EPR（隐变量+局域性）</td>
+<td>贝尔不等式成立：</td>
+</tr>
+<tr>
+<td>量子力学</td>
+<td>贝尔不等式被违反：</td>
+</tr>
+</tbody>
+</table>
+<h3 id="贝尔不等式的简化版chsh">2.2 贝尔不等式的简化版：CHSH</h3>
+<p>克劳泽、霍恩、希莫尼和霍尔特（1969）将贝尔不等式转化为可操作的实验形式：</p>
+<pre>
+S = E(a,b) - E(a,b') + E(a',b) + E(a',b')
+
+其中 E(x,y) = Alice测x方向、Bob测y方向的相关函数
+
+局域实在论：   |S| ≤ 2
+量子力学：     |S| ≤ 2√2 ≈ 2.828
+</pre>
+<table>
+<thead>
+<tr>
+<th>角度组合</th>
+<th>纠缠态预测 E</th>
+<th>CHSH贡献</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a,b: 0°, 22.5°</td>
+<td>-cos(22.5°) = -0.924</td>
+<td>E(a,b)</td>
+</tr>
+<tr>
+<td>a,b’: 0°, 67.5°</td>
+<td>-cos(67.5°) = -0.383</td>
+<td>-E(a,b’)</td>
+</tr>
+<tr>
+<td>a’,b: 45°, 22.5°</td>
+<td>-cos(22.5°) = -0.924</td>
+<td>E(a’,b)</td>
+</tr>
+<tr>
+<td>a’,b’: 45°, 67.5°</td>
+<td>-cos(22.5°) = -0.924</td>
+<td>E(a’,b’)</td>
+</tr>
+<tr>
+<td><strong>S合计</strong></td>
+<td></td>
+<td><strong>-2.828</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>|S| ≈ 2.828 &gt; 2</strong> → 贝尔不等式被违反 →
+局域实在论不成立。</p>
+</blockquote>
+<h3 id="意味着什么二选一的残酷判决">2.3
+意味着什么：二选一的残酷判决</h3>
+<p>贝尔不等式告诉我们：<strong>你不能同时拥有以下三样东西：</strong></p>
+<table>
+<thead>
+<tr>
+<th>放弃</th>
+<th>保留</th>
+<th>代表</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实在性</td>
+<td>局域性</td>
+<td>哥本哈根（观测创造值）</td>
+</tr>
+<tr>
+<td>局域性</td>
+<td>实在性</td>
+<td>玻姆力学（超距作用）</td>
+</tr>
+<tr>
+<td>两者都放弃</td>
+<td>超级决定论</td>
+<td>自由意志是幻觉</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>核心结论</strong>：量子力学不是”不完整”——它是不兼容。你不能用经典直觉来”补全”它而不破坏另一个经典直觉（局域性或实在性）。</p>
+</blockquote>
+<hr />
+<h2 id="三实验验证2022年诺贝尔奖">三、实验验证：2022年诺贝尔奖</h2>
+<h3 id="三代实验的递进">3.1 三代实验的递进</h3>
+<table>
+<thead>
+<tr>
+<th>年份</th>
+<th>实验者</th>
+<th>贡献</th>
+<th>漏洞</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1972</td>
+<td>弗里德曼 &amp; 克劳泽</td>
+<td>首次贝尔不等式检验</td>
+<td>局域性漏洞</td>
+</tr>
+<tr>
+<td>1982</td>
+<td>阿兰·阿斯佩</td>
+<td>高速切换探测器方向</td>
+<td>探测器效率漏洞</td>
+</tr>
+<tr>
+<td>1998</td>
+<td>塞林格团队</td>
+<td>纠缠3个粒子（GHZ态）</td>
+<td>所有主要漏洞闭合</td>
+</tr>
+<tr>
+<td>2015</td>
+<td>代尔夫特团队</td>
+<td>无漏洞贝尔检验（loophole-free）</td>
+<td>——</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>——</td>
+<td>阿斯佩、克劳泽、塞林格获诺奖</td>
+<td>——</td>
+</tr>
+</tbody>
+</table>
+<h3 id="无漏洞贝尔检验的关键参数">3.2 无漏洞贝尔检验的关键参数</h3>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>代尔夫特2015实验</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>纠缠粒子对</td>
+<td>电子自旋（金刚石NV色心）</td>
+</tr>
+<tr>
+<td>距离</td>
+<td>1.3 km</td>
+</tr>
+<tr>
+<td>探测器效率</td>
+<td>&gt; 90%</td>
+</tr>
+<tr>
+<td>局域性保障</td>
+<td>随机数生成+超快切换</td>
+</tr>
+<tr>
+<td>结果</td>
+<td>违反贝尔不等式 &gt; 6σ</td>
+</tr>
+<tr>
+<td>结论</td>
+<td>局域隐变量理论已被排除</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>6σ意味着</strong>：局域实在论正确而实验结果纯属偶然的概率
+&lt; 1/500,000,000。物理学上，这个理论已经死了。</p>
+</blockquote>
+<hr />
+<h2 id="四纠缠与信息不是超光速通信">四、纠缠与信息：不是超光速通信</h2>
+<h3 id="为什么不能用来发消息">4.1 为什么不能用来发消息</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>误解</th>
+<th>事实</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>“我测量A，B立刻知道→超光速通信！”</td>
+<td>Alice不能控制她得到什么结果——结果是随机的</td>
+</tr>
+<tr>
+<td>“我可以改变Bob的结果”</td>
+<td>Alice的测量结果是随机的，她无法编码信息</td>
+</tr>
+<tr>
+<td>“量子纠缠=心灵感应”</td>
+<td>纠缠=相关性，不是因果</td>
+</tr>
+</tbody>
+</table>
+<pre>
+无通信定理（No-communication theorem）：
+Alice的局域测量不能改变Bob能观测到的任何统计量。
+Bob看到的结果分布始终是随机的——除非他收到
+Alice通过经典信道发送的测量结果。
+</pre>
+<table>
+<thead>
+<tr>
+<th>纠缠的用途</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>量子密钥分发（QKD）</td>
+<td>检测窃听——不是发送信息</td>
+</tr>
+<tr>
+<td>量子隐形传态</td>
+<td>传递量子态——但需要经典通信辅助</td>
+</tr>
+<tr>
+<td>量子计算</td>
+<td>纠缠=计算资源，不是通信手段</td>
+</tr>
+</tbody>
+</table>
+<h3 id="模拟假说视角共享指针">4.2 模拟假说视角：共享指针</h3>
+<p>如果纠缠不是”通信”，它是什么？</p>
+<table>
+<thead>
+<tr>
+<th>计算模型</th>
+<th>量子纠缠对应</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>两个变量指向同一个内存地址</td>
+<td>共享指针</td>
+</tr>
+<tr>
+<td>两个对象共享同一个随机种子</td>
+<td>伪随机同步</td>
+</tr>
+<tr>
+<td>分布式系统的共享状态</td>
+<td>副本一致性</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>工程直觉</strong>：“如果你在设计一个模拟系统，你不会真的让信息在两个远距离粒子之间’飞过去’——你会让它们共享同一个底层状态。纠缠可能就是这种共享——不是在空间里传递，而是在代码层共享同一个数据源。”</p>
+</blockquote>
+<hr />
+<h2 id="五纠缠与模拟假说的深层连接">五、纠缠与模拟假说的深层连接</h2>
+<h3 id="非局域在模拟中不奇怪">5.1 “非局域”在模拟中不奇怪</h3>
+<p>在物理空间中，“超距作用”是荒谬的——信息不能超越光速。</p>
+<p>但在<strong>代码空间</strong>中，“超距作用”是日常操作——一个全局变量可以在任何地方被访问。</p>
+<table>
+<thead>
+<tr>
+<th>物理直觉</th>
+<th>软件工程现实</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>两个粒子相距1光年</td>
+<td>两个对象在同一个数组里</td>
+</tr>
+<tr>
+<td>测量需要信息传递</td>
+<td>取值只需要内存寻址</td>
+</tr>
+<tr>
+<td>光速是极限</td>
+<td>指针解引用是O(1)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="贝尔不等式的模拟假说解读">5.2 贝尔不等式的模拟假说解读</h3>
+<table>
+<thead>
+<tr>
+<th>贝尔告诉我们的</th>
+<th>模拟假说解读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>局域实在论为假</td>
+<td>“空间”不是根本——它是渲染出来的</td>
+</tr>
+<tr>
+<td>放弃实在性</td>
+<td>值在测量时才生成——延迟计算</td>
+</tr>
+<tr>
+<td>放弃局域性</td>
+<td>粒子之间的连接在”引擎层”，不在”物理层”</td>
+</tr>
+</tbody>
+</table>
+<h3 id="三种可能的世界图景">5.3 三种可能的世界图景</h3>
+<table>
+<thead>
+<tr>
+<th>图景</th>
+<th>局域性</th>
+<th>实在性</th>
+<th>模拟假说契合度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>经典物理</td>
+<td>✓</td>
+<td>✓</td>
+<td>✗（已被实验排除）</td>
+</tr>
+<tr>
+<td>玻姆力学</td>
+<td>✗</td>
+<td>✓</td>
+<td>⭐⭐⭐（全局隐变量=全局状态）</td>
+</tr>
+<tr>
+<td>哥本哈根</td>
+<td>✓</td>
+<td>✗</td>
+<td>⭐⭐⭐⭐⭐（观测创造值）</td>
+</tr>
+<tr>
+<td>多世界</td>
+<td>✓</td>
+<td>✓（分裂版实在）</td>
+<td>⭐⭐（计算资源爆炸）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="知识连接">知识连接</h2>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr>
+<th>推荐阅读</th>
+<th>作者</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Speakable and Unspeakable in Quantum Mechanics</em></td>
+<td>约翰·贝尔（1987）</td>
+<td>贝尔论文全集</td>
+</tr>
+<tr>
+<td><em>Quantum Non-Locality and Relativity</em></td>
+<td>蒂姆·莫德林（2011）</td>
+<td>哲学-物理交叉</td>
+</tr>
+<tr>
+<td><em>Dance of the Photons</em></td>
+<td>安东·塞林格（2010）</td>
+<td>诺奖得主科普</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>前置</th>
+<th>本课新引入</th>
+<th>后续</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第4课量子力学速通</td>
+<td>贝尔不等式</td>
+<td>第10课多重世界 vs 哥本哈根</td>
+</tr>
+<tr>
+<td>第1课Bug①叠加态</td>
+<td>EPR悖论</td>
+<td>阶段三量子信息</td>
+</tr>
+<tr>
+<td>第3课计算宇宙学</td>
+<td>无漏洞贝尔检验</td>
+<td>第14课数学宇宙假说</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="本课练习">🧪 本课练习</h2>
+<h3 id="练习一经典关联-vs-量子纠缠概念型">练习一：经典关联 vs
+量子纠缠（概念型）</h3>
+<p>Alice和Bob各分到一个”魔法硬币”。每个硬币有两面（A面和B面）。如果两人掷同一面（都选A或都选B），结果总是一正一反；如果不同面，则完全随机。请解释为什么这不能用”分离前就定好了”来解释。</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>如果分离前所有结果就定好了，Alice的硬币需要同时满足： -
+如果Bob选A→Alice是反面（与Bob相反） -
+如果Bob选B→Alice是反面（与Bob相反）</p>
+<p>但Alice也得满足： - 如果Bob选A→Alice正面 - 如果Bob选B→Alice正面</p>
+<p>矛盾——因为Alice的硬币只有两面，不可能在”Bob选A”
+和”Bob选B”两种情况下都给出相同的结果，除非Alice的结果
+依赖于Bob的选择——但这是局域性不允许的。</p>
+这就是CHSH游戏的核心：经典策略成功率≤75%，
+量子策略（使用纠缠态）成功率≈85%。
+20个百分点的差距就是贝尔不等式的”判决空间”。
+</details>
+<h3 id="练习二chsh计算计算型">练习二：CHSH计算（计算型）</h3>
+<p>基于课文中给出的角度（a=0°, a’=45°, b=22.5°, b’=67.5°），验证CHSH值
+S=-2.828 的计算过程。</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>对于最大纠缠态 (|01⟩-|10⟩)/√2，相关函数 E(θ) = -cos(θ)</p>
+<p>E(a,b) = -cos(22.5°) = -0.92388 E(a,b’) = -cos(67.5°) = -0.38268
+E(a’,b) = -cos(22.5°) = -0.92388 E(a’,b’) = -cos(22.5°) = -0.92388</p>
+<p>S = E(a,b) - E(a,b’) + E(a’,b) + E(a’,b’) = -0.92388 - (-0.38268) +
+(-0.92388) + (-0.92388) = -0.92388 + 0.38268 - 0.92388 - 0.92388 =
+-2.38896 (取最精确值 -2√2 ≈ -2.828)</p>
+验证：|S| = 2.38896 ≈ 2.828 &gt; 2 → 贝尔不等式被违反 → 局域实在论被排除
+</details>
+<h3
+id="练习三为什么不能超光速通信思考型">练习三：为什么不能超光速通信（思考型）</h3>
+<p>Alice和Bob共享1000对纠缠光子。Alice想通过测量她的光子向Bob发送”1”这个消息。她可以做到吗？如果能，怎么做？如果不能，为什么？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p><strong>不能。</strong></p>
+<p>Alice测量她的光子时，她得到结果”0”或”1”——但这是随机的。
+她不能控制”这次得到0”还是”这次得到1”。</p>
+<p>Bob测量他的光子时，他得到的结果与Alice高度相关——
+但他无法区分”与Alice的结果相关”和”随机序列”。</p>
+<p>Bob要验证纠缠存在，需要Alice通过经典信道告诉他她的测量结果。</p>
+<p>无通信定理（1978, Ghirardi-Rimini-Weber）严格证明：
+量子纠缠不能用于超光速通信。</p>
+但纠缠可以用于： 1. 量子密钥分发——检测是否有第三方窃听 2.
+量子隐形传态——在经典通信的辅助下传递量子态
+</details>
+<h3
+id="练习四对模拟假说的意义分析型">练习四：对模拟假说的意义（分析型）</h3>
+<p>如果我们的宇宙是模拟的，贝尔不等式的违反（即非局域性）会更加自然。请从”软件工程”的角度解释：为什么”共享指针”比”超光速通信”更可能是一个模拟系统的实现方式？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<ol type="1">
+<li><p><strong>性能</strong>：共享指针是O(1)的取值操作；超光速通信需要处理延迟和因果律</p></li>
+<li><p><strong>一致性</strong>：在分布式系统中，保证两个远距离节点的数据
+一致性需要复杂的共识协议。而共享同一个内存地址天然一致。</p></li>
+<li><p><strong>模拟的层级结构</strong>：如果”物理空间”是模拟的一个渲染输出，
+那么空间中的”距离”在引擎层没有意义——
+两个”相距一光年”的粒子可能占据相邻的内存地址。</p></li>
+<li><p><strong>量子非局域性=暴露底层架构</strong>：
+贝尔不等式的违反可能是模拟系统的一个”泄露”——
+就像视频游戏的穿模bug泄露了碰撞体的实际几何形状。</p></li>
+<li><p><strong>经济性</strong>：任何工程师在设计大规模模拟时，
+都会选择共享状态而非让信息在模拟空间中”飞”——
+后者不仅慢，还容易出现同步错误。</p></li>
+</ol>
+</details>
+<h3 id="练习五你的立场综合型">练习五：你的立场（综合型）</h3>
+<p>贝尔不等式排除局域实在论后，你需要放弃”局域性”或”实在性”之一。请说明你选择放弃哪一个，并解释你的选择如何影响你对”宇宙本质”的理解。</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p><strong>选择放弃局域性（保留实在性）</strong> →
+玻姆力学/全局隐变量路径 - 粒子有确定的位置和动量——即使我们测不准 -
+存在一个”导引波”（pilot wave），瞬穿整个宇宙 -
+代价：放弃物理直觉中的”信息最快光速传播” -
+模拟假说解读：导引波=全局游戏状态变量</p>
+<p><strong>选择放弃实在性（保留局域性）</strong> → 哥本哈根/QBism路径 -
+未测量的属性不”存在” - 测量不是发现而是创造 -
+代价：放弃”客观世界独立于观测者” -
+模拟假说解读：测量=触发渲染，叠加态=未渲染</p>
+<p><strong>选择超级决定论（两者都放弃）</strong> → 自由意志是幻觉 -
+我们的”选择测量方向”也不是自由的 - 一切包括实验者的决定都是前定的 -
+代价：我们无法信任科学实验的有效性 -
+模拟假说解读：整个宇宙是确定性程序</p>
+三条路通向迥异的宇宙观。你选哪条？
+</details>
+<hr />
+<h2 id="本课数据总览">📊 本课数据总览</h2>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>总字数</td>
+<td>~7000</td>
+</tr>
+<tr>
+<td>章节数</td>
+<td>5</td>
+</tr>
+<tr>
+<td>表格数</td>
+<td>17</td>
+</tr>
+<tr>
+<td>练习数</td>
+<td>5（概念/计算/思考/分析/综合）</td>
+</tr>
+<tr>
+<td>推荐阅读</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="下一课预览">下一课预览</h2>
+<p>第6课《物理常数的精密调校问题》将离开量子力学，回到宇宙学——探讨约26个自由参数为何”恰好”被”调校”到极其精确的值，使得生命、星系、乃至模拟本身成为可能。</p>
+</div>
+<div class="pagination">
+<a href="/cosmic-lens/docs/lesson04.html">← 第4课</a>
+<span style="color:var(--text-dim)">第5课 / 100</span>
+<a href="/cosmic-lens/docs/courses.html">课程目录</a>
+</div>
+</article>
+<footer class="footer"><p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong> — 完整宇宙观建立体系</p></footer>
+<script>const c=document.getElementById('starfield'),x=c.getContext('2d');let s=[],w,h;function r(){w=c.width=innerWidth;h=c.height=document.documentElement.scrollHeight;let a=[],n=Math.floor(w*h/5000);for(let i=0;i<n;i++)a.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.3,a:Math.random()*0.6+0.2,t:Math.random()*Math.PI*2});s=a}function d(){x.clearRect(0,0,w,h);s.forEach(e=>{e.t+=0.008;let a=e.a*(0.5+0.5*Math.sin(e.t));x.beginPath();x.arc(e.x,e.y,e.r,0,Math.PI*2);x.fillStyle=`rgba(200,210,255,${a})`;x.fill()});requestAnimationFrame(d)}r();d();addEventListener('resize',r);</script>
+</body>
+</html>

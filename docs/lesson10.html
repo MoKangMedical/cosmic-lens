@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第10课：多重世界 vs 哥本哈根 — 宇宙之镜</title>
+<meta name="description" content="哥本哈根、MWI、退相干历史三条路径的终极对决。维格纳的朋友悖论、分支宇宙的工程成本、以及——你选哪个宇宙？">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<style>
+:root{--bg:#050510;--bg-card:rgba(15,15,40,0.85);--text:#e0e0f0;--text-dim:#9090c0;--accent:#7b5fff;--accent2:#00d4ff;--gradient:linear-gradient(135deg,#7b5fff,#00d4ff);--border:rgba(120,100,255,0.2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC',sans-serif;line-height:1.8}
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;backdrop-filter:blur(20px);background:rgba(5,5,16,0.75);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.nav-back{color:var(--text-dim);text-decoration:none;font-size:0.9em}.nav-back:hover{color:var(--text)}
+.nav-title{font-size:0.95em;font-weight:700;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-space{width:60px}
+.content-wrapper{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:80px 20px 60px}
+.content h1{font-size:2.2em;font-weight:900}
+.content .subtitle{color:var(--accent2);font-size:1em;margin-bottom:32px}
+.audio-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:32px;display:flex;align-items:center;gap:16px}
+.audio-bar audio{flex:1;filter:invert(0.9) hue-rotate(230deg);height:36px}
+.course-meta{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:24px;font-size:0.85em;color:var(--text-dim)}
+.content h2{font-size:1.6em;font-weight:800;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--border)}
+.content h3{font-size:1.25em;font-weight:700;margin:32px 0 12px;color:var(--accent2)}
+.content blockquote{margin:16px 0;padding:16px 20px;border-left:3px solid var(--accent);background:var(--bg-card);border-radius:0 8px 8px 0;font-style:italic}
+.content p{margin:12px 0}
+.content table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.9em;overflow-x:auto;display:block}
+.content th{background:rgba(123,95,255,0.15);padding:10px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)}
+.content td{padding:10px 12px;border-bottom:1px solid rgba(120,100,255,0.1)}
+.content tr:hover td{background:rgba(123,95,255,0.05)}
+.content pre{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:10px;padding:16px 20px;overflow-x:auto;margin:16px 0}
+.content code{font-family:'SF Mono','Menlo',monospace;font-size:0.85em;color:var(--accent2)}
+.pagination{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.pagination a{color:var(--accent2);text-decoration:none;padding:8px 20px;border:1px solid var(--border);border-radius:20px;transition:all 0.2s}
+.pagination a:hover{border-color:var(--accent);background:rgba(123,95,255,0.1)}
+.footer{text-align:center;color:var(--text-dim);font-size:0.85em;padding:40px 0;position:relative;z-index:1}
+@media(max-width:600px){.content-wrapper{padding:70px 16px 40px}.content h1{font-size:1.6em}}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<nav class="nav"><a href="/cosmic-lens/docs/" class="nav-back">← 宇宙之镜</a><span class="nav-title">第10课 · 多重世界 vs 哥本哈根</span><div class="nav-space"></div></nav>
+<article class="content-wrapper">
+<h1>🌊 多重世界诠释 vs 哥本哈根</h1>
+<p class="subtitle">埃弗雷特vs玻尔：波函数坍缩是物理事实还是认知幻觉？三条路（哥本哈根、MWI、退相干历史）——你选哪个宇宙？</p>
+<div class="audio-bar"><span>🎧 音频版</span><audio controls src="/cosmic-lens/docs/audio/lesson10.mp3" preload="none"></audio></div>
+<div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+<div class="content">
+<h1 id="多重世界诠释-vs-哥本哈根分裂的宇宙还是坍缩的现实">多重世界诠释
+vs 哥本哈根：分裂的宇宙，还是坍缩的现实？</h1>
+<blockquote>
+<p><em>“在某种意义上，多世界是正确的——只有一个世界。但它被量子纠缠分裂成无数份。”</em>
+—— 大卫·华莱士，《涌现的多重世界》</p>
+</blockquote>
+<hr />
+<h2 id="本课目标">🎯 本课目标</h2>
+<ol type="1">
+<li>区别哥本哈根诠释、多世界诠释（MWI）和退相干历史——各自的优势与代价</li>
+<li>理解为什么”多世界”是最简洁（但心理最具挑战）的量子诠释</li>
+<li>用”尤金·维格纳的朋友”悖论理解观测者在量子力学中的尴尬地位</li>
+<li>追问：如果MWI正确，这对”宇宙是模拟的”意味着什么？</li>
+</ol>
+<p><strong>难度</strong>：⭐⭐⭐⭐ 硬核 |
+<strong>预计学习时间</strong>：50分钟 |
+<strong>前置课程</strong>：第4课、第5课</p>
+<hr />
+<h2
+id="一哥本哈根诠释标准教科书版本">一、哥本哈根诠释——标准教科书版本</h2>
+<h3 id="三句话总结">1.1 三句话总结</h3>
+<pre>
+1. 波函数ψ是完整的——没有隐变量
+2. 测量时ψ坍缩成一个确定结果
+3. 测量结果的概率 = |ψ|²（玻恩定则）
+</pre>
+<h3 id="优点与代价">1.2 优点与代价</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>优点</th>
+<th>代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最简单——教科书直接教这个</td>
+<td>“观测者”特殊——为什么观测导致坍缩？</td>
+</tr>
+<tr>
+<td>与所有实验一致（只要不问”什么是测量”）</td>
+<td>测量vs非测量的界限在哪？</td>
+</tr>
+<tr>
+<td>不引入额外实体</td>
+<td>“坍缩”本身不是薛定谔方程的演化——它是突然的、非幺正的</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>核心尴尬</strong>：哥本哈根诠释用了<strong>两种不同的动力学</strong>：大多数时候用薛定谔方程（光滑、连续、幺正），但一测量就用”坍缩”（突然、随机、不可逆）。一个理论有两个互相矛盾的演化规则——这不优雅。</p>
+</blockquote>
+<hr />
+<h2
+id="二多世界诠释mwi没有坍缩的量子力学">二、多世界诠释（MWI）——没有坍缩的量子力学</h2>
+<h3 id="休埃弗雷特三世1957">2.1 休·埃弗雷特三世（1957）</h3>
+<p>1957年，普林斯顿博士生休·埃弗雷特在他的博士论文中提出了一个激进的想法：</p>
+<pre>
+「坍缩不存在。波函数永不坍缩。
+
+当一个量子系统与环境相互作用时，
+整个宇宙的波函数分裂成不同的「分支」——
+每个分支对应一个可能的测量结果。
+
+我们只体验其中一个分支，因此「感觉」
+好像波函数坍缩了——但实际上宇宙一直在分裂。」
+</pre>
+<h3 id="mwi的核心要素">2.2 MWI的核心要素</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>要素</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>坍塌不存在</strong></td>
+<td>波函数严格服从薛定谔方程——只有一种演化规则</td>
+</tr>
+<tr>
+<td><strong>退相干=分支</strong></td>
+<td>系统和环境的纠缠导致不同结果”脱离”—形成不可沟通的世界</td>
+</tr>
+<tr>
+<td><strong>所有结果都发生</strong></td>
+<td>薛定谔的猫：一个世界中猫活着，另一个世界中猫死了</td>
+</tr>
+<tr>
+<td><strong>概率是幻觉</strong></td>
+<td>“我觉得只有10%的概率”是因为在90%的”我”中，结果不同</td>
+</tr>
+</tbody>
+</table>
+<h3 id="分支的多少">2.3 分支的多少？</h3>
+<p>每次量子事件都会分裂宇宙吗？</p>
+<table>
+<thead>
+<tr>
+<th>保守估计</th>
+<th>极端估计</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>每次”测量”分裂</td>
+<td>每次量子相互作用都分裂</td>
+</tr>
+<tr>
+<td>宇宙每天分裂~10⁵次</td>
+<td>宇宙每秒分裂~10⁴⁰次</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>如果MWI正确且每个量子交互都分支，宇宙”分支数”的增长率是双指数的——比宇宙中的原子数增长还快。</p>
+</blockquote>
+<hr />
+<h2
+id="三退相干历史没有坍缩不需要多世界的第三条路">三、退相干历史——“没有坍缩，不需要多世界”的第三条路</h2>
+<h3 id="退相干decoherence">3.1 退相干（Decoherence）</h3>
+<p>1980-1990年代，泽、朱雷克等人完善了退相干理论：</p>
+<table>
+<thead>
+<tr>
+<th>过程</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>量子系统+环境</td>
+<td>系统与环境纠缠</td>
+</tr>
+<tr>
+<td>叠加态泄露到环境</td>
+<td>环境携带了”系统是0还是1”的信息</td>
+</tr>
+<tr>
+<td>局部系统消相干</td>
+<td>从系统内部看，叠加态消失了</td>
+</tr>
+<tr>
+<td>没有坍缩</td>
+<td>整个宇宙的波函数依然是叠加的</td>
+</tr>
+</tbody>
+</table>
+<h3 id="三条路对比">3.2 三条路对比</h3>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 30%" />
+<col style="width: 16%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th>哥本哈根</th>
+<th>MWI</th>
+<th>退相干历史</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>有坍缩？</td>
+<td>✓ 物理坍缩</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>所有结果都发生？</td>
+<td>✗</td>
+<td>✓</td>
+<td>✓ 但”退相干”使它们不交互</td>
+</tr>
+<tr>
+<td>主观概率有意义？</td>
+<td>✓</td>
+<td>✗（所有都发生→概率无用）</td>
+<td>✓ 概率来自”我们只在一个分支”</td>
+</tr>
+<tr>
+<td>观测者特殊？</td>
+<td>✓</td>
+<td>✗</td>
+<td>✗</td>
+</tr>
+<tr>
+<td>分支数的增长</td>
+<td>n/a</td>
+<td>指数到双指数爆炸</td>
+<td>有限（取决于系统的可区分性）</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2
+id="四维格纳的朋友观测者链的尴尬">四、维格纳的朋友——观测者链的尴尬</h2>
+<h3 id="年的思想实验">4.1 1961年的思想实验</h3>
+<p>尤金·维格纳（1963年诺奖得主）设想：</p>
+<pre>
+            ┌──────────┐
+            │ 维格纳   │ ← 在外面，可以打开实验室
+            └────┬─────┘
+       ┌────────┴────────┐
+       │                 │
+  ┌────┴─────┐    ┌──────┴──────┐
+  │  朋友    │    │ 坍缩的猫？  │
+  │（观测者）│    │ 叠加的猫？  │
+  └──────────┘    └─────────────┘
+
+朋友测量了猫（猫是死是活），但维格纳没看朋友的笔记本。
+</pre>
+<table>
+<thead>
+<tr>
+<th>谁在”看”</th>
+<th>朋友的波函数</th>
+<th>猫的波函数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>没人看</td>
+<td>朋友+猫叠加</td>
+<td>猫叠加（半死半活）</td>
+</tr>
+<tr>
+<td>朋友看猫</td>
+<td>朋友看到结果→朋友分支</td>
+<td>猫坍缩？还是朋友也叠加？</td>
+</tr>
+<tr>
+<td>维格纳看朋友</td>
+<td>？</td>
+<td>？</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>悖论</strong>：维格纳说——如果猫已经坍缩（朋友看到了），那维格纳不需要”再次坍缩”猫。但量子力学说整个系统演化是幺正的——在维格纳”看朋友”之前，整个朋友+猫系统应该处于叠加态。</p>
+<p>这意味着：<strong>维格纳认为”朋友看到了确定的猫”的事实在维格纳看来不是事实，直到维格纳自己也观察朋友。</strong></p>
+</blockquote>
+<hr />
+<h2
+id="五如果多世界是对的对模拟假说的影响">五、如果多世界是对的——对模拟假说的影响</h2>
+<h3 id="分支宇宙的工程成本">5.1 “分支宇宙”的工程成本</h3>
+<table>
+<thead>
+<tr>
+<th>如果MWI正确</th>
+<th>模拟假说的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>宇宙每秒分支10⁴⁰次</td>
+<td>需要10⁴⁰倍的算力？</td>
+</tr>
+<tr>
+<td>每个分支都”同样真实”</td>
+<td>模拟需要计算所有分支？</td>
+</tr>
+<tr>
+<td>分支永不合并</td>
+<td>存储需求指数爆炸</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>巨大矛盾</strong>：如果宇宙是模拟的，MWI意味着计算资源必须能处理天文数字的分支数。这只有在”基座现实”有近乎无限的计算资源时才是可行的——但这与计算机模拟的常规假设矛盾。</p>
+</blockquote>
+<h3 id="可能解决矛盾的三种方案">5.2 可能解决矛盾的三种方案</h3>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>方案</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A. MWI是错的——只有坍缩（哥本哈根）</td>
+<td>不需要计算所有分支</td>
+</tr>
+<tr>
+<td>B. 分支不会真的”计算”——它们只是波函数的纯数学分支</td>
+<td>分支是免费的——不需要额外计算</td>
+</tr>
+<tr>
+<td>C. 基座现实的计算资源确实无限</td>
+<td>这就不是”模拟”了，是”现实”</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>关键</strong>：方案B是MWI的主流解释。分支不是物理上”创造新宇宙”——波函数一直就是一个整体，我们只是把它的不同”切片”解释为”不同世界”。在数学上，分支是免费的——不需要额外算力。</p>
+</blockquote>
+<hr />
+<h2 id="知识连接">知识连接</h2>
+<table>
+<colgroup>
+<col style="width: 60%" />
+<col style="width: 40%" />
+</colgroup>
+<thead>
+<tr>
+<th>推荐阅读</th>
+<th>作者</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>The Many-Worlds Interpretation of Quantum Mechanics</em></td>
+<td>德威特 &amp; 格雷厄姆 (1973)</td>
+</tr>
+<tr>
+<td><em>Something Deeply Hidden</em></td>
+<td>肖恩·卡罗尔 (2019)</td>
+</tr>
+<tr>
+<td><em>The Emergent Multiverse</em></td>
+<td>大卫·华莱士 (2012)</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>前置</th>
+<th>本课</th>
+<th>后续</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第4课叠加态/坍缩</td>
+<td>MWI vs 哥本哈根</td>
+<td>阶段二意识（量子意识观）</td>
+</tr>
+<tr>
+<td>第5课贝尔不等式</td>
+<td>退相干历史</td>
+<td>第16课全息模拟论</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="本课练习">🧪 本课练习</h2>
+<h3 id="练习一诠释区分概念型">练习一：诠释区分（概念型）</h3>
+<p>下面五个陈述中，哪些是哥本哈根？哪些是MWI？</p>
+<p>A. 波函数在测量时坍缩 B. 测量结果是唯一的——其他可能性不发生 C.
+所有测量结果都在不同的分支中发生 D. 观测者在量子力学中具有特殊地位 E.
+坍缩是一个不必要的假设——量子力学只需要薛定谔方程</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>哥本哈根：A, B, D MWI：C, E</p>
+关键区别： - 哥本哈根需要”坍缩”——测量将概率变成确定 -
+MWI不需要坍缩——所有结果都发生，我们用”分支”解释概率 -
+哥本哈根中观测者特殊——但MWI不区分观测者和粒子
+</details>
+<h3 id="练习二分支数估算计算型">练习二：分支数估算（计算型）</h3>
+<p>假设”每次量子事件产生一个分支”。太阳每秒钟通过核聚变发射约10³⁸个中微子——每个中微子发射是一次量子事件。请问：太阳诞生以来（约46亿年=1.45×10¹⁷秒），MWI产生了多少个分支？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>每次量子事件产生一个分支（近似为2个分支） 总事件数 = 10³⁸/秒 ×
+1.45×10¹⁷秒 ≈ 1.45×10⁵⁵ 个中微子</p>
+<p>即太阳的核聚变产生了约10⁵⁵个量子事件。</p>
+<p>但分支是总量——每有一个量子事件，所有现有的分支都”再次分裂”。
+所以分支总数 = 2^(事件数) ——这是天文数字中的天文数字。</p>
+<p>2^(10⁵⁵) ——这个数字无法用通常的记号表示。</p>
+这是MWI的主要批评——“分支的实在性”在如此巨大的数字下
+变得令人怀疑。但MWI支持者说：分支是数学对象，
+不需要”物理存在”——就像Φ没有物理存在一样。
+</details>
+<h3
+id="练习三维格纳的朋友的延续概念型">练习三：“维格纳的朋友”的延续（概念型）</h3>
+<p>2020年，实验物理学家在真实实验中实现了”维格纳的朋友”的简化版：四光子纠缠系统，其中一个光子扮演”朋友”。实验结果是什么？对MWI和哥本哈根的立场意味着什么？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>2020年《自然·物理》发表了布鲁克纳团队的实验（Bong et al. 2020）：</p>
+<p>设置： - 光子A和B纠缠 - B作为”朋友”——被测量，结果编码在光子C中 -
+外部”维格纳”——测量C的状态</p>
+<p>结果：维格纳”看到”的C与B的初始推测不一致——
+即”维格纳”和”朋友”对同一事件有不同描述。</p>
+<p>这意味着： 1. 哥本哈根不好处理——“谁是真正的观测者？” 2.
+MWI可以处理——维格纳和朋友在不同分支 3.
+退相干历史可以处理——两个历史”退相干”了</p>
+实验并未”证明”MWI——但它暴露了哥本哈根诠释 中”观测者”这个概念的模糊性。
+</details>
+<h3
+id="练习四mwi的概率问题分析型">练习四：MWI的”概率问题”（分析型）</h3>
+<p>如果MWI正确，所有结果都发生。但我做实验时我”感觉”到结果是随机的——比如有30%的概率得到0，70%得到1。MWI如何解释这种”主观概率”？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>这是MWI最棘手的挑战——称为<strong>概率问题</strong>。</p>
+<p>MWI说：所有结果都发生。但为什么我感觉不同结果有不同的权重？</p>
+<p>可能的回答： 1.
+<strong>分支权重</strong>（德威特）：不同分支的”权重”由|ψ|²给出。
+“我”的副本在这些分支中的分布是不均匀的—— 所以在70%的”我”中，我看到1。
+但问题：为什么我要”在乎”我在哪一分支？
+如果我是一个”清醒的意识”，那一分支就是我一分支—— 无所谓”概率”。</p>
+<ol start="2" type="1">
+<li><p><strong>决策论论证</strong>（多伊奇-华莱士）：即使我知道所有结果都发生，
+在我做决策时（如赌博），我”应该”按|ψ|²下注——
+因为给定我的环境，这是我”最好的赌注”。
+问题：这要求”分支”之间有可比较的规范性。</p></li>
+<li><p><strong>自定位不确定性</strong>（塞巴斯蒂安斯）：测量前”我”不知道自己
+会落入哪一分支——这种不确定性就是”概率”的来源。</p></li>
+</ol>
+至今没有共识。
+</details>
+<h3 id="练习五你的宇宙选择综合型">练习五：你的宇宙选择（综合型）</h3>
+<p>你个人倾向于哪种诠释？为什么？这个选择如何影响你对”真实”的定义？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>这是真正的哲学题——没有标准答案。</p>
+<p><strong>倾向哥本哈根</strong>： - 理由：简单、教科书、与日常直觉一致
+- 代价：“坍缩”是理论的缺陷，不是特征 -
+后果：观测者在宇宙中特殊——但为什么特殊？</p>
+<p><strong>倾向MWI</strong>： - 理由：最简洁——只有薛定谔方程，没有坍缩 -
+代价：“无穷多个我”的心理负担 -
+后果：概率需要重新定义——所有可能性都真实</p>
+<p><strong>倾向退相干历史</strong>： -
+理由：技术性最成熟——退相干已实验观察 -
+代价：不是完整的诠释——还需要补充”解释” -
+后果：叠加态在局部消失——但在全局依然存在</p>
+<p>大多数工作物理学家采取”安静主义”——不做选择：
+量子力学有效，不需要知道”为什么”。</p>
+但如果你想彻底理解宇宙本质——这个选择你做不了逃兵。
+</details>
+<hr />
+<h2 id="本课数据总览">📊 本课数据总览</h2>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>字数</td>
+<td>~6700</td>
+</tr>
+<tr>
+<td>章节</td>
+<td>5</td>
+</tr>
+<tr>
+<td>表格</td>
+<td>7</td>
+</tr>
+<tr>
+<td>练习</td>
+<td>5</td>
+</tr>
+<tr>
+<td>推荐阅读</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="阶段一完成">🎉 阶段一完成！</h2>
+<p>恭喜你完成了「物理支柱」阶段（第1-10课）！你从三个”物理Bug”出发，经历了：
+- 量子力学基础（4-5课） - 计算视角（3、7课） - 宇宙尺度（6、8、9课） -
+诠释选择（10课）</p>
+<p><strong>接下来</strong>：进入阶段二「计算支柱」——第11-20课将探讨人择原理、量子信息、计算复杂性，以及模拟世界的实际”建造”方法。</p>
+<p>→ <a
+href="/cosmic-lens/docs/lesson11.html">继续第11课：人择原理——卡特的终极「为什么」</a></p>
+</div>
+<div class="pagination">
+<a href="/cosmic-lens/docs/lesson09.html">← 第9课</a>
+<span style="color:var(--text-dim)">第10课 / 100</span>
+<a href="/cosmic-lens/docs/lesson11.html">第11课 →</a>
+</div>
+</article>
+<footer class="footer"><p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong></p></footer>
+<script>const c=document.getElementById('starfield'),x=c.getContext('2d');let s=[],w,h;function r(){w=c.width=innerWidth;h=c.height=document.documentElement.scrollHeight;let a=[],n=Math.floor(w*h/5000);for(let i=0;i<n;i++)a.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.3,a:Math.random()*0.6+0.2,t:Math.random()*Math.PI*2});s=a}function d(){x.clearRect(0,0,w,h);s.forEach(e=>{e.t+=0.008;let a=e.a*(0.5+0.5*Math.sin(e.t));x.beginPath();x.arc(e.x,e.y,e.r,0,Math.PI*2);x.fillStyle=`rgba(200,210,255,${a})`;x.fill()});requestAnimationFrame(d)}r();d();addEventListener('resize',r);</script>
+</body>
+</html>
