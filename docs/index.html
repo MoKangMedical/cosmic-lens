@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宇宙之镜 · Cosmic Lens — 建立你的完整宇宙观</title>
+<meta name="description" content="从物理学未解之谜到模拟假说，从量子纠缠到意识本质——宇宙之镜带你穿越认知边界，建立对宇宙的完整理解框架。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<style>
+:root {
+  --bg: #050510;
+  --bg-card: rgba(15,15,40,0.8);
+  --text: #e0e0f0;
+  --text-dim: #8080b0;
+  --accent: #7b5fff;
+  --accent2: #00d4ff;
+  --accent3: #ff6b9d;
+  --gradient: linear-gradient(135deg, #7b5fff, #00d4ff);
+  --gradient-warm: linear-gradient(135deg, #ff6b9d, #ffa751);
+  --border: rgba(120,100,255,0.2);
+  --glow: 0 0 40px rgba(123,95,255,0.3);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Noto Sans SC', sans-serif;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+/* Starfield canvas */
+#starfield {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+.container { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+
+/* Navigation */
+.nav { position: fixed; top:0; left:0; right:0; z-index:100; padding: 16px 24px; backdrop-filter: blur(20px); background: rgba(5,5,16,0.7); border-bottom: 1px solid var(--border); }
+.nav-inner { max-width: 1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; }
+.nav-logo { font-size: 1.3em; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.nav-links { display:flex; gap:24px; align-items:center; }
+.nav-links a { color: var(--text-dim); text-decoration:none; font-size: 0.9em; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+.nav-cta { background: var(--gradient); color:#fff; padding:8px 20px; border-radius:20px; font-weight:600; font-size:0.9em; text-decoration:none; transition: box-shadow 0.3s; }
+.nav-cta:hover { box-shadow: var(--glow); }
+
+/* Hero */
+.hero { padding: 140px 0 80px; text-align: center; }
+.hero-badge { display:inline-block; background:rgba(123,95,255,0.15); border:1px solid rgba(123,95,255,0.3); color: var(--accent); padding:6px 18px; border-radius:20px; font-size:0.85em; font-weight:600; margin-bottom:24px; }
+.hero h1 { font-size: clamp(2.4em, 6vw, 4em); font-weight: 900; line-height: 1.2; margin-bottom: 20px; }
+.hero h1 .gradient { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero h1 .warm { background: var(--gradient-warm); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.hero p { font-size: 1.15em; color: var(--text-dim); max-width: 650px; margin: 0 auto 40px; }
+.hero-buttons { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+.btn-primary { background: var(--gradient); color:#fff; padding:14px 36px; border-radius:30px; font-weight:700; font-size:1.05em; text-decoration:none; transition: all 0.3s; }
+.btn-primary:hover { box-shadow: var(--glow); transform: translateY(-2px); }
+.btn-outline { border: 2px solid var(--border); color: var(--text); padding:14px 36px; border-radius:30px; font-weight:600; font-size:1.05em; text-decoration:none; transition: all 0.3s; }
+.btn-outline:hover { border-color: var(--accent); background: rgba(123,95,255,0.1); }
+
+/* Stats Bar */
+.stats { display:flex; gap:40px; justify-content:center; flex-wrap:wrap; margin: 80px 0; padding: 30px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.stat-item { text-align:center; }
+.stat-num { font-size: 2.4em; font-weight: 900; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.stat-label { font-size: 0.85em; color: var(--text-dim); margin-top:6px; }
+
+/* Section Titles */
+.section { padding: 80px 0; }
+.section-header { text-align: center; margin-bottom: 60px; }
+.section-badge { display:inline-block; color: var(--accent2); font-size:0.85em; font-weight:600; margin-bottom:12px; text-transform:uppercase; letter-spacing:2px; }
+.section-header h2 { font-size: 2.4em; font-weight: 800; margin-bottom: 16px; }
+.section-header p { color: var(--text-dim); max-width: 600px; margin:0 auto; }
+
+/* Course Cards */
+.course-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+.course-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: var(--text);
+  display: block;
+}
+.course-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--glow); }
+.course-num { color: var(--accent); font-size: 0.8em; font-weight: 700; margin-bottom: 8px; }
+.course-card h3 { font-size: 1.2em; font-weight: 700; margin-bottom: 10px; }
+.course-card p { color: var(--text-dim); font-size: 0.9em; line-height: 1.6; }
+.course-card .meta { display:flex; gap:16px; margin-top: 16px; font-size:0.8em; color: var(--text-dim); }
+.course-card .meta span { display:flex; align-items:center; gap:4px; }
+
+/* Philosophy Pillars */
+.pillars { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:24px; }
+.pillar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  transition: all 0.3s;
+}
+.pillar:hover { border-color: var(--accent); transform: translateY(-3px); }
+.pillar-icon { font-size: 3em; margin-bottom: 16px; }
+.pillar h3 { font-size: 1.15em; margin-bottom: 10px; }
+.pillar p { color: var(--text-dim); font-size: 0.9em; }
+
+/* Coming Soon Banner */
+.coming-soon { text-align: center; padding: 40px; background: var(--bg-card); border: 1px dashed var(--border); border-radius: 16px; margin-top: 24px; }
+.coming-soon h3 { color: var(--accent); margin-bottom: 8px; }
+.coming-soon p { color: var(--text-dim); }
+
+/* Footer */
+.footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; color: var(--text-dim); font-size: 0.9em; margin-top: 80px; }
+.footer a { color: var(--accent); text-decoration: none; }
+
+/* Nebula accent */
+.nebula-left, .nebula-right {
+  position: fixed; border-radius: 50%; filter: blur(120px); opacity: 0.15; z-index: 0; pointer-events: none;
+}
+.nebula-left { background: #7b5fff; width: 600px; height: 600px; top: -200px; left: -200px; }
+.nebula-right { background: #ff6b9d; width: 500px; height: 500px; bottom: -200px; right: -150px; }
+
+/* Responsive */
+@media (max-width:768px) {
+  .hero { padding: 100px 0 60px; }
+  .section { padding: 60px 0; }
+  .stats { gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+<div class="nebula-left"></div>
+<div class="nebula-right"></div>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">🔭 宇宙之镜</div>
+    <div class="nav-links">
+      <a href="#about">关于</a>
+      <a href="#courses">课程</a>
+      <a href="#pillars">世界观</a>
+      <a href="/cosmic-lens/docs/courses.html" class="nav-cta">开始探索 →</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero container">
+  <div class="hero-badge">🌌 一个全新的宇宙观体系</div>
+  <h1>
+    你认知的边界，<br>
+    <span class="gradient">就是宇宙的边界</span>
+  </h1>
+  <p>
+    从物理学的三大未解Bug出发，穿越量子纠缠、模拟假说、暗物质之谜与意识本质——这里不是课堂，是一场与宇宙的对话。
+  </p>
+  <div class="hero-buttons">
+    <a href="/cosmic-lens/docs/courses.html" class="btn-primary">🔭 开始探索第一课</a>
+    <a href="#about" class="btn-outline">了解宇宙之镜 →</a>
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats container">
+  <div class="stat-item"><div class="stat-num">🌌</div><div class="stat-label">宇宙观体系</div></div>
+  <div class="stat-item"><div class="stat-num">1</div><div class="stat-label">首发课程</div></div>
+  <div class="stat-item"><div class="stat-num">100</div><div class="stat-label">终极目标</div></div>
+  <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">探索无尽</div></div>
+</div>
+
+<!-- Course Section -->
+<section class="section container" id="courses">
+  <div class="section-header">
+    <div class="section-badge">· 课程体系 ·</div>
+    <h2>从这里开始，触碰未知</h2>
+    <p>每门课程都是一扇窗——推开它，看见全新的宇宙维度</p>
+  </div>
+  <div class="course-grid">
+    <!-- Course 1 -->
+    <a href="/cosmic-lens/docs/lesson01.html" class="course-card">
+      <div class="course-num">第 1 课 · 基础</div>
+      <h3>🌌 宇宙是模拟的？三大物理Bug解密</h3>
+      <p>模拟假说三重论证、量子叠加/纠缠的代码解释、宇宙参数的精密调校、暗物质新解</p>
+      <div class="meta">
+        <span>📖 14章</span>
+        <span>🧪 5练习</span>
+        <span>⏱ 35分钟</span>
+      </div>
+    </a>
+    <!-- Coming soon placeholder -->
+    <div class="coming-soon">
+      <h3>🔮 第 2 课 · 即将上线</h3>
+      <p>更多宇宙观课程正在准备中<br>从量子到意识，从微观到宏观</p>
+    </div>
+  </div>
+</section>
+
+<!-- Pillars of Cosmology -->
+<section class="section container" id="pillars">
+  <div class="section-header">
+    <div class="section-badge">· 四大支柱 ·</div>
+    <h2>完整的宇宙观，由四个维度构成</h2>
+    <p>一个真正理解宇宙的框架，需要跨越学科边界</p>
+  </div>
+  <div class="pillars">
+    <div class="pillar">
+      <div class="pillar-icon">⚛️</div>
+      <h3>物理宇宙</h3>
+      <p>从量子场论到广义相对论，从标准模型到弦论——探索物理定律如何编织现实</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">🧠</div>
+      <h3>意识本质</h3>
+      <p>意识是涌现现象还是宇宙基本属性？从神经科学到整合信息理论，拆解自我之谜</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">💻</div>
+      <h3>模拟假说</h3>
+      <p>如果宇宙是代码运行的结果，那么Bug在哪里？用程序员的眼睛重新审视物理定律</p>
+    </div>
+    <div class="pillar">
+      <div class="pillar-icon">🌌</div>
+      <h3>宇宙演化</h3>
+      <p>从大爆炸到热寂，从暗能量到多重宇宙——理解宇宙的过去、现在与可能的未来</p>
+    </div>
+  </div>
+</section>
+
+<!-- About Section -->
+<section class="section container" id="about">
+  <div class="section-header">
+    <div class="section-badge">· 为什么需要宇宙之镜 ·</div>
+    <h2>你不只是一个观察者</h2>
+    <p>你是宇宙认识自身的方式。宇宙之镜帮助你建立这样一个框架：在宏大与微小之间，找到你的位置。</p>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer container">
+  <p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong> — 一个独立的知识产品</p>
+  <p style="margin-top:8px;">Powered by <a href="https://github.com/MoKangMedical/cosmic-lens">GitHub Pages</a> · License: MIT</p>
+</footer>
+
+<script>
+// Starfield animation
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+let w, h;
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = document.documentElement.scrollHeight;
+  initStars();
+}
+function initStars() {
+  stars = [];
+  const count = Math.floor(w * h / 3000);
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: Math.random() * 1.5 + 0.5,
+      a: Math.random() * 0.8 + 0.2,
+      twinkle: Math.random() * Math.PI * 2
+    });
+  }
+}
+function draw() {
+  ctx.clearRect(0, 0, w, h);
+  stars.forEach(s => {
+    s.twinkle += 0.01;
+    const alpha = s.a * (0.6 + 0.4 * Math.sin(s.twinkle));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(200,210,255,${alpha})`;
+    ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+
+resize();
+draw();
+window.addEventListener('resize', resize);
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

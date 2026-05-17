@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>课程体系 — 宇宙之镜 · Cosmic Lens</title>
+<meta name="description" content="宇宙之镜完整课程体系——从物理学Bug到模拟假说到意识本质，建立你的宇宙观">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<style>
+:root {
+  --bg: #050510; --bg-card: rgba(15,15,40,0.8); --text: #e0e0f0;
+  --text-dim: #8080b0; --accent: #7b5fff; --accent2: #00d4ff;
+  --gradient: linear-gradient(135deg, #7b5fff, #00d4ff); --border: rgba(120,100,255,0.2);
+  --glow: 0 0 30px rgba(123,95,255,0.2);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif; line-height: 1.7; }
+#starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+.container { position:relative; z-index:1; max-width:1000px; margin:0 auto; padding:0 20px; }
+
+.nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:14px 24px; backdrop-filter:blur(20px); background:rgba(5,5,16,0.75); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.nav-back { color:var(--text-dim); text-decoration:none; font-size:0.9em; transition:color 0.2s; }
+.nav-back:hover { color:var(--text); }
+.nav-title { font-size:1em; font-weight:700; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+
+.header { padding:100px 0 40px; text-align:center; }
+.header h1 { font-size:2.4em; font-weight:900; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:12px; }
+.header p { color:var(--text-dim); max-width:500px; margin:0 auto; }
+
+.courses { padding-bottom:60px; }
+.course-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: var(--text);
+}
+.course-card:hover { border-color:var(--accent); transform:translateY(-3px); box-shadow:var(--glow); }
+.course-num { 
+  background: var(--gradient);
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.4em;
+  width: 50px; height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.course-info h3 { font-size:1.2em; margin-bottom:8px; }
+.course-info p { color:var(--text-dim); font-size:0.9em; margin-bottom:12px; }
+.course-meta { display:flex; gap:16px; font-size:0.8em; color:var(--text-dim); }
+.course-meta span { display:flex; align-items:center; gap:4px; }
+
+.coming-soon {
+  background: var(--bg-card);
+  border: 1px dashed var(--border);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.coming-soon h3 { color:var(--accent2); margin-bottom:8px; }
+
+.footer { text-align:center; color:var(--text-dim); font-size:0.85em; padding:40px 0; border-top:1px solid var(--border); margin-top:60px; position:relative; z-index:1; }
+
+@media (max-width:600px) {
+  .course-card { flex-direction:column; align-items:center; text-align:center; }
+}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+
+<nav class="nav">
+  <a href="/cosmic-lens/docs/" class="nav-back">← 首页</a>
+  <span class="nav-title">📚 课程体系</span>
+  <span style="width:60px"></span>
+</nav>
+
+<div class="container">
+  <div class="header">
+    <h1>课程体系</h1>
+    <p>从第一课开始，逐步建立完整的宇宙观</p>
+  </div>
+
+  <div class="courses">
+    <!-- Course 1 -->
+    <a href="/cosmic-lens/docs/lesson01.html" class="course-card">
+      <div class="course-num">1</div>
+      <div class="course-info">
+        <h3>🌌 宇宙是模拟的？三大物理Bug解密</h3>
+        <p>模拟假说三重论证、量子叠加/纠缠的代码解释、宇宙参数的精密调校、暗物质新解</p>
+        <div class="course-meta">
+          <span>📖 14章</span><span>🧪 5练习</span><span>⏱ 35分钟</span><span>⭐ 进阶</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Coming Soon -->
+    <div class="coming-soon">
+      <h3>🔮 更多课程即将上线</h3>
+      <p style="color:var(--text-dim);">暗物质与意识本质 · 量子引力 · 宇宙演化 · 多重宇宙</p>
+      <p style="color:var(--text-dim);margin-top:4px;">终极目标：100门课程 · 完整的宇宙观体系</p>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong></p>
+</footer>
+
+<script>
+const c=document.getElementById('starfield'),x=c.getContext('2d');
+let s=[],w,h;
+function r(){w=c.width=innerWidth;h=c.height=document.documentElement.scrollHeight;
+let a=[],n=Math.floor(w*h/5000);
+for(let i=0;i<n;i++) a.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.3,a:Math.random()*0.6+0.2,t:Math.random()*Math.PI*2});
+s=a;}
+function d(){x.clearRect(0,0,w,h);s.forEach(e=>{e.t+=0.008;let a=e.a*(0.5+0.5*Math.sin(e.t));
+x.beginPath();x.arc(e.x,e.y,e.r,0,Math.PI*2);x.fillStyle=`rgba(200,210,255,${a})`;x.fill();});
+requestAnimationFrame(d);}
+r();d();addEventListener('resize',r);
+</script>
+</body>
+</html>
