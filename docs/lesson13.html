@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第13课：计算的本质 — 宇宙之镜</title>
+<meta name="description" content="三种完全不同的形式系统如何抵达同一个“可计算”边界。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<style>
+:root{--bg:#050510;--bg-card:rgba(15,15,40,0.85);--text:#e0e0f0;--text-dim:#9090c0;--accent:#7b5fff;--accent2:#00d4ff;--gradient:linear-gradient(135deg,#7b5fff,#00d4ff);--border:rgba(120,100,255,0.2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC',sans-serif;line-height:1.8}
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;backdrop-filter:blur(20px);background:rgba(5,5,16,0.75);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.nav-back{color:var(--text-dim);text-decoration:none;font-size:0.9em}.nav-back:hover{color:var(--text)}
+.nav-title{font-size:0.95em;font-weight:700;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-space{width:60px}
+.content-wrapper{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:80px 20px 60px}
+.content h1{font-size:2.2em;font-weight:900}
+.content .subtitle{color:var(--accent2);font-size:1em;margin-bottom:32px}
+.audio-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:32px;display:flex;align-items:center;gap:16px}
+.audio-bar audio{flex:1;filter:invert(0.9) hue-rotate(230deg);height:36px}
+.course-meta{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:24px;font-size:0.85em;color:var(--text-dim)}
+.content h2{font-size:1.6em;font-weight:800;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--border)}
+.content h3{font-size:1.25em;font-weight:700;margin:32px 0 12px;color:var(--accent2)}
+.content blockquote{margin:16px 0;padding:16px 20px;border-left:3px solid var(--accent);background:var(--bg-card);border-radius:0 8px 8px 0;font-style:italic}
+.content p{margin:12px 0}
+.content table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.9em;overflow-x:auto;display:block}
+.content th{background:rgba(123,95,255,0.15);padding:10px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)}
+.content td{padding:10px 12px;border-bottom:1px solid rgba(120,100,255,0.1)}
+.content tr:hover td{background:rgba(123,95,255,0.05)}
+.content pre{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:10px;padding:16px 20px;overflow-x:auto;margin:16px 0}
+.content code{font-family:'SF Mono','Menlo',monospace;font-size:0.85em;color:var(--accent2)}
+.content details{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin:14px 0}
+.content summary{cursor:pointer;color:var(--accent2);font-weight:700}
+.pagination{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.pagination a{color:var(--accent2);text-decoration:none;padding:8px 20px;border:1px solid var(--border);border-radius:20px;transition:all 0.2s}
+.pagination a:hover{border-color:var(--accent);background:rgba(123,95,255,0.1)}
+.footer{text-align:center;color:var(--text-dim);font-size:0.85em;padding:40px 0;position:relative;z-index:1}
+@media(max-width:600px){.content-wrapper{padding:70px 16px 40px}.content h1{font-size:1.6em}.audio-bar{align-items:flex-start;flex-direction:column}.audio-bar audio{width:100%}.pagination{gap:10px;flex-wrap:wrap}.pagination a{padding:8px 14px}}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<nav class="nav"><a href="/cosmic-lens/docs/" class="nav-back">← 宇宙之镜</a><span class="nav-title">第13课 · 计算的本质</span><div class="nav-space"></div></nav>
+<article class="content-wrapper">
+<h1>🧮 计算的本质：图灵机、λ演算、元胞自动机</h1>
+<p class="subtitle">三种完全不同的形式系统如何抵达同一个“可计算”边界。</p>
+<div class="audio-bar"><span>🎧 音频版</span><audio controls src="/cosmic-lens/docs/audio/lesson13.mp3" preload="none"></audio></div>
+<div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+<div class="content">
+<h1
+id="计算的本质图灵机λ演算元胞自动机">计算的本质：图灵机、λ演算、元胞自动机</h1>
+<blockquote>
+<p><em>“我们可以把可计算数定义为能够由机器计算的数。”</em> —— Alan
+Turing, 1936</p>
+</blockquote>
+<hr />
+<h2 id="本课目标">🎯 本课目标</h2>
+<ol type="1">
+<li>理解图灵机、λ演算和元胞自动机为什么都能刻画“计算”</li>
+<li>掌握通用计算、图灵完备、丘奇-图灵论题的差别</li>
+<li>看懂简单规则如何产生复杂行为</li>
+<li>为第14课康威生命游戏和第15课数字物理学打底</li>
+</ol>
+<p><strong>难度</strong>：⭐⭐⭐⭐ 硬核 |
+<strong>预计学习时间</strong>：50分钟 |
+<strong>前置课程</strong>：第7课、第12课</p>
+<hr />
+<h2 id="引言计算不等于电脑">🖋️ 引言：计算不等于电脑</h2>
+<p>当我们说“计算”，多数人会想到
+CPU、内存、代码和屏幕。但计算的本质比电子计算机更抽象：只要一个系统能按照有限规则处理符号、保存中间状态，并在足够长的时间内组合步骤，它就可能执行计算。</p>
+<p>这就是为什么同一个概念会以三种完全不同的面貌出现：图灵机像一台极简机械设备，λ演算像纯函数语言，元胞自动机像像素宇宙。它们的外表不同，却指向同一个边界：什么问题能被有限规则有效求解。</p>
+<hr />
+<h2 id="一图灵机纸带上的宇宙">一、图灵机：纸带上的宇宙</h2>
+<h3 id="五个部件">1.1 五个部件</h3>
+<p>图灵机是一个理想化模型，故意简单到几乎荒唐：一条无限纸带，一个读写头，一组内部状态，一张规则表，以及每一步移动一格的动作。</p>
+<table>
+<thead>
+<tr>
+<th>部件</th>
+<th>作用</th>
+<th>类比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>纸带</td>
+<td>存储符号</td>
+<td>内存或硬盘</td>
+</tr>
+<tr>
+<td>格子符号</td>
+<td>记录 0、1、空白等</td>
+<td>数据位</td>
+</tr>
+<tr>
+<td>读写头</td>
+<td>读取与修改当前格</td>
+<td>CPU 对内存的访问</td>
+</tr>
+<tr>
+<td>内部状态</td>
+<td>记录机器当前阶段</td>
+<td>程序计数器和寄存器</td>
+</tr>
+<tr>
+<td>转移规则</td>
+<td>决定写什么、往哪走、进入什么状态</td>
+<td>指令集</td>
+</tr>
+</tbody>
+</table>
+<p>一个典型规则可以写成：</p>
+<pre>
+如果当前状态是 A，读到 0：
+写 1，向右移动，进入状态 B。
+</pre>
+<p>这看似微不足道，但足以表达任意算法。</p>
+<h3 id="通用图灵机">1.2 通用图灵机</h3>
+<p>普通图灵机执行一个固定任务。通用图灵机更强：它可以把“另一台图灵机的描述”和“那台机器的输入”一起写在纸带上，然后模拟那台机器。</p>
+<table>
+<thead>
+<tr>
+<th>机器类型</th>
+<th>输入</th>
+<th>能力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>专用图灵机</td>
+<td>某类数据</td>
+<td>只执行固定算法</td>
+</tr>
+<tr>
+<td>通用图灵机</td>
+<td>程序描述 + 数据</td>
+<td>模拟任何图灵机</td>
+</tr>
+<tr>
+<td>现代电脑</td>
+<td>程序文件 + 输入数据</td>
+<td>工程版通用图灵机</td>
+</tr>
+<tr>
+<td>宇宙模拟器</td>
+<td>物理规则 + 初始条件</td>
+<td>如果可行，可模拟物理演化</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>关键思想</strong>：程序也可以是数据。这是现代计算机、编译器、虚拟机、模拟宇宙想象的共同基础。</p>
+</blockquote>
+<hr />
+<h2
+id="二λ演算只有函数也能计算一切">二、λ演算：只有函数，也能计算一切</h2>
+<h3 id="三条语法">2.1 三条语法</h3>
+<p>λ演算由阿隆佐·丘奇提出，它几乎只允许三件事：变量、函数抽象、函数应用。</p>
+<table>
+<thead>
+<tr>
+<th>形式</th>
+<th>例子</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>变量</td>
+<td><code>x</code></td>
+<td>一个名字</td>
+</tr>
+<tr>
+<td>抽象</td>
+<td><code>λx.x</code></td>
+<td>输入 x，返回 x 的函数</td>
+</tr>
+<tr>
+<td>应用</td>
+<td><code>(λx.x) y</code></td>
+<td>把函数应用到 y</td>
+</tr>
+<tr>
+<td>归约</td>
+<td><code>(λx.x) y → y</code></td>
+<td>用参数替换变量</td>
+</tr>
+</tbody>
+</table>
+<p>没有内置数字、循环、布尔值、数组，却仍能编码这些东西。数字可以用函数重复应用的次数表示，条件可以用选择函数表示，递归可以用不动点组合子表示。</p>
+<h3 id="为什么函数能表达计算">2.2 为什么函数能表达计算？</h3>
+<p>计算的核心不是电路，而是可机械执行的变换。λ演算把变换压缩到最纯粹形式：把表达式按规则改写，直到得到结果。</p>
+<table>
+<thead>
+<tr>
+<th>编程概念</th>
+<th>λ演算对应物</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>函数</td>
+<td>λ抽象</td>
+<td><code>λx.body</code></td>
+</tr>
+<tr>
+<td>调用</td>
+<td>应用</td>
+<td><code>f a</code></td>
+</tr>
+<tr>
+<td>变量绑定</td>
+<td>参数替换</td>
+<td>把 x 替换为输入</td>
+</tr>
+<tr>
+<td>布尔值</td>
+<td>二选一函数</td>
+<td>true 选择第一个，false 选择第二个</td>
+</tr>
+<tr>
+<td>循环/递归</td>
+<td>不动点组合子</td>
+<td>让函数引用自身</td>
+</tr>
+</tbody>
+</table>
+<p>这就是函数式编程语言的祖先，也是“计算可以是符号改写”的最强例子之一。</p>
+<hr />
+<h2
+id="三丘奇-图灵论题不是定理但像地基">三、丘奇-图灵论题：不是定理，但像地基</h2>
+<h3 id="多条路抵达同一边界">3.1 多条路抵达同一边界</h3>
+<p>20世纪30年代，数学家想形式化“有效可计算”。令人惊讶的是，多个独立模型给出同样的可计算函数集合。</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th>提出者</th>
+<th>计算图像</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图灵机</td>
+<td>Alan Turing</td>
+<td>纸带机器</td>
+</tr>
+<tr>
+<td>λ演算</td>
+<td>Alonzo Church</td>
+<td>函数代入</td>
+</tr>
+<tr>
+<td>递归函数</td>
+<td>Gödel, Kleene 等</td>
+<td>数论函数构造</td>
+</tr>
+<tr>
+<td>Post 系统</td>
+<td>Emil Post</td>
+<td>符号重写</td>
+</tr>
+<tr>
+<td>Markov 算法</td>
+<td>Andrey Markov</td>
+<td>字符串替换</td>
+</tr>
+</tbody>
+</table>
+<p>丘奇-图灵论题说：任何“有效可计算”的函数，都可以由图灵机计算。</p>
+<p>它不是数学定理，因为“有效可计算”是一个前形式化直觉；但它有极强证据，因为所有严肃形式化尝试都落在同一边界上。</p>
+<h3 id="图灵完备不等于快速">3.2 图灵完备不等于快速</h3>
+<p>一个系统图灵完备，意思是它原则上能模拟任意图灵机。但这不保证高效、方便或可工程实现。</p>
+<table>
+<colgroup>
+<col style="width: 27%" />
+<col style="width: 45%" />
+<col style="width: 27%" />
+</colgroup>
+<thead>
+<tr>
+<th>说法</th>
+<th>是否正确</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图灵完备系统能表达任意算法</td>
+<td>大体正确</td>
+<td>需要无限或足够大资源</td>
+</tr>
+<tr>
+<td>图灵完备系统一定适合编程</td>
+<td>错</td>
+<td>可能极其低效</td>
+</tr>
+<tr>
+<td>图灵完备意味着能解决停机问题</td>
+<td>错</td>
+<td>停机问题正是图灵机不能一般解决的</td>
+</tr>
+<tr>
+<td>图灵完备系统可以模拟另一个图灵完备系统</td>
+<td>原则上正确</td>
+<td>可能付出巨大开销</td>
+</tr>
+</tbody>
+</table>
+<p>对宇宙模拟论而言，“物理规律图灵完备”只是第一步；还要问资源、初始条件、误差和复杂度。</p>
+<hr />
+<h2
+id="四元胞自动机像素规则生成世界">四、元胞自动机：像素规则生成世界</h2>
+<h3 id="局部规则全局复杂">4.1 局部规则，全局复杂</h3>
+<p>元胞自动机由一堆格子组成。每个格子有有限状态，下一步状态只由邻居决定。最简单的一维二状态自动机，每个格子只看自己和左右邻居。</p>
+<table>
+<thead>
+<tr>
+<th>元胞自动机要素</th>
+<th>含义</th>
+<th>宇宙类比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>格子</td>
+<td>离散空间</td>
+<td>空间像素或自由度</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>每格取有限值</td>
+<td>场值、粒子有无</td>
+</tr>
+<tr>
+<td>邻域</td>
+<td>决定更新所看的范围</td>
+<td>局部相互作用</td>
+</tr>
+<tr>
+<td>同步更新</td>
+<td>全部格子按同一规则推进</td>
+<td>离散时间步</td>
+</tr>
+<tr>
+<td>初始条件</td>
+<td>第一帧图案</td>
+<td>宇宙初态</td>
+</tr>
+</tbody>
+</table>
+<p>这类系统非常适合模拟“简单规则如何产生复杂结构”。</p>
+<h3 id="rule-110-与通用计算">4.2 Rule 110 与通用计算</h3>
+<p>Stephen Wolfram 编号的一维元胞自动机中，Rule 110
+被证明是图灵完备的。它只有 8
+个局部情况，却能支持足够复杂的移动结构和相互作用。</p>
+<table>
+<thead>
+<tr>
+<th>三格邻域</th>
+<th>111</th>
+<th>110</th>
+<th>101</th>
+<th>100</th>
+<th>011</th>
+<th>010</th>
+<th>001</th>
+<th>000</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rule 110 输出</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>这说明通用计算不需要复杂指令集。足够丰富的局部结构、可传播信号和可控碰撞，就可能构成计算。</p>
+<hr />
+<h2 id="五计算等价性与宇宙直觉">五、计算等价性与宇宙直觉</h2>
+<h3 id="为什么这些模型对数字物理重要">5.1
+为什么这些模型对数字物理重要？</h3>
+<p>如果图灵机、λ演算和元胞自动机都能表达同一类计算，那么“计算”似乎不是某种硬件特性，而是更深的结构特性。</p>
+<table>
+<thead>
+<tr>
+<th>观点</th>
+<th>内容</th>
+<th>对宇宙观的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>硬件无关</td>
+<td>不同物理载体可实现同一计算</td>
+<td>程序可迁移、模拟可成立</td>
+</tr>
+<tr>
+<td>规则优先</td>
+<td>简单规则可产生复杂行为</td>
+<td>宇宙规律不必表面复杂</td>
+</tr>
+<tr>
+<td>通用性</td>
+<td>一个系统可模拟另一个系统</td>
+<td>“宇宙中造宇宙模拟器”可讨论</td>
+</tr>
+<tr>
+<td>限制性</td>
+<td>有些问题不可判定</td>
+<td>不存在万能预测器</td>
+</tr>
+</tbody>
+</table>
+<p>模拟假说的吸引力来自前三点；它的困难来自第四点和第12课的资源上限。</p>
+<h3 id="停机问题计算宇宙的阴影">5.2 停机问题：计算宇宙的阴影</h3>
+<p>图灵证明，不存在一个通用算法能判断任意程序是否最终停止。这不是工程失败，而是逻辑边界。</p>
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 60%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>问题</th>
+<th>是否总能算法解决</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>给定两个整数相加</td>
+<td>能</td>
+<td>普通可计算问题</td>
+</tr>
+<tr>
+<td>给定程序运行一步</td>
+<td>能</td>
+<td>局部模拟可行</td>
+</tr>
+<tr>
+<td>给定任意程序是否停机</td>
+<td>不能</td>
+<td>全局预测边界</td>
+</tr>
+<tr>
+<td>给定复杂宇宙是否必然产生文明</td>
+<td>未知且可能极难</td>
+<td>模拟者也可能无法短路预测</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>本课结论</strong>：计算的本质不是“有电脑”，而是“有限规则对符号或状态的可组合变换”。一旦一个宇宙具有可保存状态、可传播信号和可组合规则，它就可能成为计算的载体。</p>
+</blockquote>
+<hr />
+<h2 id="知识连接">🔗 知识连接</h2>
+<table>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 23%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr>
+<th>推荐阅读</th>
+<th>作者</th>
+<th>为什么读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>On Computable Numbers</em></td>
+<td>Alan Turing</td>
+<td>图灵机原始论文</td>
+</tr>
+<tr>
+<td><em>The Annotated Turing</em></td>
+<td>Charles Petzold</td>
+<td>带你逐句读懂图灵论文</td>
+</tr>
+<tr>
+<td><em>A New Kind of Science</em></td>
+<td>Stephen Wolfram</td>
+<td>元胞自动机复杂性的宏大论证</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>前置</th>
+<th>本课</th>
+<th>后续</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第7课图灵完备宇宙</td>
+<td>计算模型的共同边界</td>
+<td>第14课康威生命游戏</td>
+</tr>
+<tr>
+<td>第12课宇宙计算能力</td>
+<td>资源限制</td>
+<td>第15课数字物理学</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="本课练习">🧪 本课练习</h2>
+<h3
+id="练习一图灵机规则执行计算型">练习一：图灵机规则执行（计算型）</h3>
+<p>某图灵机规则为：状态 A 读到 0 时写 1、右移、进入 B；状态 B 读到 0
+时写 1、右移、保持 B；状态 B 读到空白时停机。初始纸带为
+<code>000□</code>，读写头在第一个 0，状态 A。停机后纸带是什么？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>第一步：A 读第一个 0，写 1，右移，进入 B。纸带
+<code>100□</code>。</p>
+<p>第二步：B 读第二个 0，写 1，右移，保持 B。纸带
+<code>110□</code>。</p>
+<p>第三步：B 读第三个 0，写 1，右移，保持 B。纸带
+<code>111□</code>。</p>
+<p>第四步：B 读空白，停机。</p>
+停机后纸带为 <code>111□</code>。这台机器把连续的 0 改写成 1。
+</details>
+<h3 id="练习二λ表达式归约计算型">练习二：λ表达式归约（计算型）</h3>
+<p>化简 <code>(λx.λy.x) A B</code>，并说明它像哪个布尔值。</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>按左结合，表达式是 <code>((λx.λy.x) A) B</code>。</p>
+<p>先把 x 替换为 A：得到 <code>(λy.A) B</code>。</p>
+<p>再把 y 替换为 B，但函数体不含 y，所以结果是 <code>A</code>。</p>
+它总是选择第一个参数，因此对应 Church 布尔值 true。
+</details>
+<h3 id="练习三图灵完备判断概念型">练习三：图灵完备判断（概念型）</h3>
+<p>一个系统有有限状态、可保存任意长纸带、能根据当前状态和读到的符号分支，并能循环。它一定图灵完备吗？还需要小心什么？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>这些条件非常接近图灵完备，但还要确认：</p>
+<ol type="1">
+<li>纸带或存储是否原则上无界，至少可随输入增长。</li>
+<li>规则是否能实现足够通用的读写和移动。</li>
+<li>分支和循环是否可组合，而不是只允许固定次数。</li>
+<li>编码程序与数据是否可行。</li>
+</ol>
+实际工程系统还会受内存和时间限制；理论图灵完备通常假设资源无界。
+</details>
+<h3 id="练习四rule-110-的意义分析型">练习四：Rule 110
+的意义（分析型）</h3>
+<p>为什么 Rule 110
+图灵完备会支持“简单规则能产生复杂宇宙”的直觉，但不能直接证明我们的宇宙是元胞自动机？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>它支持的直觉是：非常小的局部规则集也能产生通用计算，所以复杂性不必来自复杂底层规则。</p>
+<p>但它不能证明现实宇宙是元胞自动机，因为现实还涉及连续对称性、量子场、洛伦兹不变性、引力、实验数据等。一个类比不能替代物理模型。</p>
+Rule 110
+是“存在性证明”：简单离散规则足以通用计算。它不是现实宇宙的证据。
+</details>
+<h3
+id="练习五停机问题与宇宙预测综合型">练习五：停机问题与宇宙预测（综合型）</h3>
+<p>如果宇宙是一个图灵完备系统，是否意味着存在一个超级程序能预测宇宙未来所有事件？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>不意味着。</p>
+<p>图灵完备说明系统能表达任意计算，也意味着它可能包含不可判定结构。停机问题告诉我们，不存在通用算法能预判任意程序的长期行为。</p>
+即使宇宙规则是确定的，预测者仍可能必须逐步模拟，无法“跳算”所有复杂结果。再加上混沌、量子测量和资源限制，完整预测并不自动成立。
+</details>
+<hr />
+<h2 id="本课数据总览">📊 本课数据总览</h2>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>字数</td>
+<td>~7000</td>
+</tr>
+<tr>
+<td>章节</td>
+<td>5</td>
+</tr>
+<tr>
+<td>表格</td>
+<td>11</td>
+</tr>
+<tr>
+<td>练习</td>
+<td>5</td>
+</tr>
+<tr>
+<td>推荐阅读</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<div class="pagination">
+<a href="/cosmic-lens/docs/lesson12.html">← 第12课</a>
+<span style="color:var(--text-dim)">第13课 / 100</span>
+<a href="/cosmic-lens/docs/lesson14.html">第14课 →</a>
+</div>
+</article>
+<footer class="footer"><p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong></p></footer>
+<script>const c=document.getElementById('starfield'),x=c.getContext('2d');let s=[],w,h;function r(){w=c.width=innerWidth;h=c.height=document.documentElement.scrollHeight;let a=[],n=Math.floor(w*h/5000);for(let i=0;i<n;i++)a.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.3,a:Math.random()*0.6+0.2,t:Math.random()*Math.PI*2});s=a}function d(){x.clearRect(0,0,w,h);s.forEach(e=>{e.t+=0.008;let a=e.a*(0.5+0.5*Math.sin(e.t));x.beginPath();x.arc(e.x,e.y,e.r,0,Math.PI*2);x.fillStyle=`rgba(200,210,255,${a})`;x.fill()});requestAnimationFrame(d)}r();d();addEventListener('resize',r);</script>
+</body>
+</html>

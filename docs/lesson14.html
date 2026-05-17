@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第14课：康威生命游戏深潜 — 宇宙之镜</title>
+<meta name="description" content="四条生死规则如何生成滑翔机、逻辑门、图灵机，甚至原则上运行任意软件。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<style>
+:root{--bg:#050510;--bg-card:rgba(15,15,40,0.85);--text:#e0e0f0;--text-dim:#9090c0;--accent:#7b5fff;--accent2:#00d4ff;--gradient:linear-gradient(135deg,#7b5fff,#00d4ff);--border:rgba(120,100,255,0.2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC',sans-serif;line-height:1.8}
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;backdrop-filter:blur(20px);background:rgba(5,5,16,0.75);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.nav-back{color:var(--text-dim);text-decoration:none;font-size:0.9em}.nav-back:hover{color:var(--text)}
+.nav-title{font-size:0.95em;font-weight:700;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-space{width:60px}
+.content-wrapper{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:80px 20px 60px}
+.content h1{font-size:2.2em;font-weight:900}
+.content .subtitle{color:var(--accent2);font-size:1em;margin-bottom:32px}
+.audio-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:32px;display:flex;align-items:center;gap:16px}
+.audio-bar audio{flex:1;filter:invert(0.9) hue-rotate(230deg);height:36px}
+.course-meta{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:24px;font-size:0.85em;color:var(--text-dim)}
+.content h2{font-size:1.6em;font-weight:800;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--border)}
+.content h3{font-size:1.25em;font-weight:700;margin:32px 0 12px;color:var(--accent2)}
+.content blockquote{margin:16px 0;padding:16px 20px;border-left:3px solid var(--accent);background:var(--bg-card);border-radius:0 8px 8px 0;font-style:italic}
+.content p{margin:12px 0}
+.content table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.9em;overflow-x:auto;display:block}
+.content th{background:rgba(123,95,255,0.15);padding:10px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)}
+.content td{padding:10px 12px;border-bottom:1px solid rgba(120,100,255,0.1)}
+.content tr:hover td{background:rgba(123,95,255,0.05)}
+.content pre{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:10px;padding:16px 20px;overflow-x:auto;margin:16px 0}
+.content code{font-family:'SF Mono','Menlo',monospace;font-size:0.85em;color:var(--accent2)}
+.content details{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin:14px 0}
+.content summary{cursor:pointer;color:var(--accent2);font-weight:700}
+.pagination{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.pagination a{color:var(--accent2);text-decoration:none;padding:8px 20px;border:1px solid var(--border);border-radius:20px;transition:all 0.2s}
+.pagination a:hover{border-color:var(--accent);background:rgba(123,95,255,0.1)}
+.footer{text-align:center;color:var(--text-dim);font-size:0.85em;padding:40px 0;position:relative;z-index:1}
+@media(max-width:600px){.content-wrapper{padding:70px 16px 40px}.content h1{font-size:1.6em}.audio-bar{align-items:flex-start;flex-direction:column}.audio-bar audio{width:100%}.pagination{gap:10px;flex-wrap:wrap}.pagination a{padding:8px 14px}}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<nav class="nav"><a href="/cosmic-lens/docs/" class="nav-back">← 宇宙之镜</a><span class="nav-title">第14课 · 康威生命游戏深潜</span><div class="nav-space"></div></nav>
+<article class="content-wrapper">
+<h1>⬛ 康威生命游戏深潜：一个可以运行 Excel 的宇宙</h1>
+<p class="subtitle">四条生死规则如何生成滑翔机、逻辑门、图灵机，甚至原则上运行任意软件。</p>
+<div class="audio-bar"><span>🎧 音频版</span><audio controls src="/cosmic-lens/docs/audio/lesson14.mp3" preload="none"></audio></div>
+<div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+<div class="content">
+<h1
+id="康威生命游戏深潜一个可以运行-excel-的宇宙">康威生命游戏深潜：一个可以运行
+Excel 的宇宙</h1>
+<blockquote>
+<p><em>“生命游戏没有玩家。只要给定初始图案，规则就会自行展开。”</em> ——
+Martin Gardner 对 Conway’s Game of Life 的经典介绍</p>
+</blockquote>
+<hr />
+<h2 id="本课目标">🎯 本课目标</h2>
+<ol type="1">
+<li>掌握康威生命游戏的四条局部规则</li>
+<li>理解滑翔机、振荡器、滑翔机枪为什么重要</li>
+<li>看懂生命游戏如何构造逻辑门和通用计算</li>
+<li>评估“简单规则生成复杂世界”对模拟假说的启发与限制</li>
+</ol>
+<p><strong>难度</strong>：⭐⭐⭐⭐ 硬核 |
+<strong>预计学习时间</strong>：50分钟 |
+<strong>前置课程</strong>：第13课、第7课</p>
+<hr />
+<h2 id="引言一个没有上帝之手的玩具宇宙">🖋️
+引言：一个没有上帝之手的玩具宇宙</h2>
+<p>康威生命游戏不是传统游戏。没有玩家移动棋子，没有分数，没有胜负。你只做一件事：在二维网格上摆好初始图案，然后按固定规则一帧一帧更新。之后发生的一切，都由规则自动产生。</p>
+<p>令人震惊的是，这个世界能产生移动物体、周期振荡、复制结构、逻辑门、存储器，最终达到图灵完备。换句话说：如果你愿意忍受荒唐低效的实现，生命游戏宇宙原则上可以运行任意程序，包括电子表格、编译器，甚至另一个生命游戏模拟器。</p>
+<hr />
+<h2 id="一四条规则生死孤独拥挤">一、四条规则：生、死、孤独、拥挤</h2>
+<h3 id="棋盘与邻居">1.1 棋盘与邻居</h3>
+<p>生命游戏发生在无限二维方格上。每个格子只有两种状态：活或死。每一步更新时，一个格子只看周围
+8 个邻居。</p>
+<table>
+<thead>
+<tr>
+<th>当前状态</th>
+<th>活邻居数</th>
+<th>下一步状态</th>
+<th>规则名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>活</td>
+<td>0 或 1</td>
+<td>死</td>
+<td>孤独死亡</td>
+</tr>
+<tr>
+<td>活</td>
+<td>2 或 3</td>
+<td>活</td>
+<td>稳定存活</td>
+</tr>
+<tr>
+<td>活</td>
+<td>4 到 8</td>
+<td>死</td>
+<td>拥挤死亡</td>
+</tr>
+<tr>
+<td>死</td>
+<td>3</td>
+<td>活</td>
+<td>繁殖诞生</td>
+</tr>
+<tr>
+<td>死</td>
+<td>其他</td>
+<td>死</td>
+<td>保持空白</td>
+</tr>
+</tbody>
+</table>
+<p>这就是全部物理定律。没有粒子力学，没有能量守恒，没有目的，只有局部邻居计数。</p>
+<h3 id="同步更新的重要性">1.2 同步更新的重要性</h3>
+<p>所有格子必须同时按上一帧状态更新。如果你从左到右依次更新，规则就变了。</p>
+<table>
+<thead>
+<tr>
+<th>更新方式</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>同步更新</td>
+<td>标准生命游戏，所有格子看同一旧帧</td>
+</tr>
+<tr>
+<td>异步更新</td>
+<td>先更新的格子会影响后更新格子，变成另一个系统</td>
+</tr>
+<tr>
+<td>随机更新</td>
+<td>噪声更大，许多经典结构消失</td>
+</tr>
+<tr>
+<td>局部暂停</td>
+<td>破坏全局一致时间步</td>
+</tr>
+</tbody>
+</table>
+<p>这提醒我们：一个离散宇宙不仅要定义空间格点和状态，还要定义时间推进方式。</p>
+<hr />
+<h2
+id="二最小生物稳定体振荡器滑翔机">二、最小生物：稳定体、振荡器、滑翔机</h2>
+<h3 id="三类基础结构">2.1 三类基础结构</h3>
+<p>生命游戏的第一批“生物”不是生命，但像可识别对象。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>行为</th>
+<th>例子</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>稳定体</td>
+<td>每一帧不变</td>
+<td>方块、蜂巢</td>
+<td>可作为障碍或静态结构</td>
+</tr>
+<tr>
+<td>振荡器</td>
+<td>周期重复</td>
+<td>闪烁灯、蟾蜍</td>
+<td>可提供时钟信号</td>
+</tr>
+<tr>
+<td>飞船</td>
+<td>平移后重复</td>
+<td>滑翔机、轻量飞船</td>
+<td>可传递信息</td>
+</tr>
+<tr>
+<td>增殖器</td>
+<td>产生移动结构</td>
+<td>滑翔机枪</td>
+<td>可持续输出信号</td>
+</tr>
+</tbody>
+</table>
+<p>这些结构不是规则里写死的对象，而是从局部更新中涌现出的稳定模式。</p>
+<h3 id="滑翔机为什么像粒子">2.2 滑翔机为什么像粒子？</h3>
+<p>滑翔机每 4 步向斜对角移动 1 格，因此速度常写作 <code>c/4</code>，其中
+<code>c</code> 是生命游戏中信息传播的最大格速。</p>
+<table>
+<thead>
+<tr>
+<th>性质</th>
+<th>滑翔机</th>
+<th>物理粒子类比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>局部图案</td>
+<td>5 个活细胞左右</td>
+<td>局域激发</td>
+</tr>
+<tr>
+<td>稳定传播</td>
+<td>每 4 帧平移</td>
+<td>惯性运动</td>
+</tr>
+<tr>
+<td>可碰撞</td>
+<td>与其他图案相互作用</td>
+<td>散射</td>
+</tr>
+<tr>
+<td>可携带信号</td>
+<td>有/无滑翔机代表 1/0</td>
+<td>信息载体</td>
+</tr>
+<tr>
+<td>速度上限</td>
+<td>c/4</td>
+<td>受局部规则限制</td>
+</tr>
+</tbody>
+</table>
+<p>当然，滑翔机不是电子。但它说明“粒子”可以是底层场规则中的稳定传播模式，而不必是额外添加的实体。</p>
+<hr />
+<h2 id="三从滑翔机到逻辑门">三、从滑翔机到逻辑门</h2>
+<h3 id="信息编码">3.1 信息编码</h3>
+<p>要计算，先要把信息编码成物理状态。在生命游戏里，常见方法是用滑翔机流表示比特。</p>
+<table>
+<thead>
+<tr>
+<th>编码方式</th>
+<th>0</th>
+<th>1</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>有无编码</td>
+<td>某时间窗无滑翔机</td>
+<td>有滑翔机</td>
+<td>简单</td>
+<td>需要精确时钟</td>
+</tr>
+<tr>
+<td>相位编码</td>
+<td>相位 A</td>
+<td>相位 B</td>
+<td>可密集传输</td>
+<td>设计复杂</td>
+</tr>
+<tr>
+<td>路径编码</td>
+<td>走上路</td>
+<td>走下路</td>
+<td>直观</td>
+<td>占空间</td>
+</tr>
+<tr>
+<td>碰撞编码</td>
+<td>无碰撞</td>
+<td>碰撞产生输出</td>
+<td>适合逻辑门</td>
+<td>脆弱</td>
+</tr>
+</tbody>
+</table>
+<p>逻辑门就是设计滑翔机碰撞，使输入模式对应正确输出。</p>
+<h3 id="andornot-的生命游戏直觉">3.2 AND、OR、NOT 的生命游戏直觉</h3>
+<p>真正的生命游戏逻辑门图案很复杂，但原理可以用碰撞理解。</p>
+<table>
+<colgroup>
+<col style="width: 22%" />
+<col style="width: 27%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>逻辑门</th>
+<th>输入关系</th>
+<th>生命游戏实现直觉</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>NOT</td>
+<td>输入 0 输出 1，输入 1 输出 0</td>
+<td>默认滑翔机存在，输入滑翔机把它撞掉</td>
+</tr>
+<tr>
+<td>AND</td>
+<td>两个输入都为 1 才输出 1</td>
+<td>两条滑翔机流同时到达才生成输出滑翔机</td>
+</tr>
+<tr>
+<td>OR</td>
+<td>任一输入为 1 就输出 1</td>
+<td>两条路径汇合，并处理双输入冲突</td>
+</tr>
+<tr>
+<td>FANOUT</td>
+<td>复制信号</td>
+<td>用碰撞产生两个输出滑翔机</td>
+</tr>
+<tr>
+<td>CLOCK</td>
+<td>周期节拍</td>
+<td>振荡器或滑翔机枪提供同步</td>
+</tr>
+</tbody>
+</table>
+<p>只要能构造足够可靠的逻辑门、连线、交叉和存储，就能搭建通用计算机。</p>
+<hr />
+<h2
+id="四图灵完备为什么它原则上能运行-excel">四、图灵完备：为什么它原则上能运行
+Excel</h2>
+<h3 id="从逻辑门到通用计算">4.1 从逻辑门到通用计算</h3>
+<p>现代数字计算机最终也可以分解为逻辑门、存储器和时钟。生命游戏如果能实现这些部件，就能模拟一台通用计算机。</p>
+<table>
+<thead>
+<tr>
+<th>计算机部件</th>
+<th>生命游戏对应</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>导线</td>
+<td>滑翔机路径</td>
+<td>信号按时间窗传播</td>
+</tr>
+<tr>
+<td>逻辑门</td>
+<td>碰撞图案</td>
+<td>实现布尔函数</td>
+</tr>
+<tr>
+<td>时钟</td>
+<td>振荡器/滑翔机枪</td>
+<td>保持节拍</td>
+</tr>
+<tr>
+<td>存储器</td>
+<td>可翻转稳定结构</td>
+<td>保存状态</td>
+</tr>
+<tr>
+<td>程序</td>
+<td>初始图案布局</td>
+<td>把硬件和数据编码进格子</td>
+</tr>
+</tbody>
+</table>
+<p>所以“运行 Excel”是一种原则性说法：Excel
+能在普通计算机上运行，普通计算机能由逻辑门实现，逻辑门能由生命游戏结构实现，因此生命游戏可以模拟运行
+Excel 的计算过程。</p>
+<h3 id="原则可行不等于现实方便">4.2 原则可行不等于现实方便</h3>
+<p>这里要非常小心。图灵完备只说“能”，不说“快”。</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>可行性</th>
+<th>代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>实现一个 NOT 门</td>
+<td>可行</td>
+<td>图案和相位设计复杂</td>
+</tr>
+<tr>
+<td>实现一个小加法器</td>
+<td>可行</td>
+<td>面积和时间明显增加</td>
+</tr>
+<tr>
+<td>实现通用图灵机</td>
+<td>已被证明</td>
+<td>极低效</td>
+</tr>
+<tr>
+<td>运行现代软件</td>
+<td>原则可行</td>
+<td>需要巨大格子和漫长时间</td>
+</tr>
+<tr>
+<td>模拟整个现实宇宙</td>
+<td>不能由生命游戏例子直接推出</td>
+<td>需要匹配真实物理</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>关键提醒</strong>：生命游戏证明了简单规则的表达力，不证明现实一定简单，也不证明模拟宇宙容易。</p>
+</blockquote>
+<hr />
+<h2 id="五对宇宙观的启发涌现层级">五、对宇宙观的启发：涌现层级</h2>
+<h3 id="从格子到物理对象">5.1 从格子到“物理对象”</h3>
+<p>生命游戏最迷人的地方，是它清楚展示了层级涌现。</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>生命游戏中是什么</th>
+<th>类比现实</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>底层规则</td>
+<td>四条生死规则</td>
+<td>基本物理定律</td>
+</tr>
+<tr>
+<td>微观状态</td>
+<td>活/死格子</td>
+<td>场自由度或量子态</td>
+</tr>
+<tr>
+<td>稳定结构</td>
+<td>方块、蜂巢</td>
+<td>稳定粒子或束缚态</td>
+</tr>
+<tr>
+<td>传播结构</td>
+<td>滑翔机</td>
+<td>信号、粒子、波包</td>
+</tr>
+<tr>
+<td>工程结构</td>
+<td>逻辑门、存储器</td>
+<td>计算机、生命、文明</td>
+</tr>
+</tbody>
+</table>
+<p>高层对象是真实的吗？如果一个滑翔机能稳定传播、碰撞、携带信息，那么在生命游戏宇宙内部，它就具有操作意义上的真实。</p>
+<h3 id="生命游戏与模拟假说的边界">5.2 生命游戏与模拟假说的边界</h3>
+<p>生命游戏常被拿来支持模拟假说，但正确结论要克制。</p>
+<table>
+<thead>
+<tr>
+<th>它支持</th>
+<th>它不支持</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>简单局部规则能产生复杂结构</td>
+<td>我们的宇宙必然是二维格子</td>
+</tr>
+<tr>
+<td>高层对象可以从底层规则涌现</td>
+<td>所有物理都能用二状态自动机解释</td>
+</tr>
+<tr>
+<td>通用计算可在奇怪媒介中实现</td>
+<td>模拟宇宙没有资源问题</td>
+</tr>
+<tr>
+<td>初始条件非常重要</td>
+<td>规则简单就能自动产生文明</td>
+</tr>
+</tbody>
+</table>
+<h3 id="工程约束为什么能计算还不够">5.3
+工程约束：为什么“能计算”还不够</h3>
+<p>生命游戏给我们的第二个教训，是工程约束永远不会因为理论优雅而消失。一个图案可以实现逻辑门，不代表它适合作为文明基础设施；一个宇宙可以支持通用计算，也不代表它会自动长出稳定生态。</p>
+<table>
+<thead>
+<tr>
+<th>约束</th>
+<th>在生命游戏中的表现</th>
+<th>对模拟宇宙的提醒</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空间成本</td>
+<td>一个门可能占据大量格子</td>
+<td>底层简单会把复杂度转移到布局</td>
+</tr>
+<tr>
+<td>时间成本</td>
+<td>信号传播速度有限</td>
+<td>计算不能超越因果结构</td>
+</tr>
+<tr>
+<td>噪声容忍</td>
+<td>单个细胞错误可能毁掉线路</td>
+<td>真实宇宙需要鲁棒高层结构</td>
+</tr>
+<tr>
+<td>编码成本</td>
+<td>软件要变成巨大初始图案</td>
+<td>“原则可行”离“自然出现”很远</td>
+</tr>
+</tbody>
+</table>
+<p>这也是模拟假说必须面对的问题：如果我们的世界像生命游戏一样从简单规则涌现，那么最值得解释的不是规则有多短，而是为什么这些规则能稳定支持原子、化学、生命、记忆和可重复科学。</p>
+<blockquote>
+<p><strong>本课结论</strong>：生命游戏是数字物理的显微镜。它让我们亲眼看到：复杂性可以从极简规则中涌现；但要得到稳定、可编程、可居住的高层世界，规则、初态和尺度缺一不可。</p>
+</blockquote>
+<hr />
+<h2 id="知识连接">🔗 知识连接</h2>
+<table>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 23%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr>
+<th>推荐阅读</th>
+<th>作者</th>
+<th>为什么读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Mathematical Games</em> 生命游戏专栏</td>
+<td>Martin Gardner</td>
+<td>生命游戏进入大众视野的经典文本</td>
+</tr>
+<tr>
+<td><em>Winning Ways</em></td>
+<td>Berlekamp, Conway, Guy</td>
+<td>康威游戏思想的数学背景</td>
+</tr>
+<tr>
+<td><em>Cellular Automata and Complexity</em></td>
+<td>Stephen Wolfram</td>
+<td>元胞自动机复杂性的系统讨论</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>前置</th>
+<th>本课</th>
+<th>后续</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第13课计算的本质</td>
+<td>生命游戏图灵完备</td>
+<td>第15课数字物理学</td>
+</tr>
+<tr>
+<td>第7课图灵完备宇宙</td>
+<td>简单规则与复杂行为</td>
+<td>第18课大过滤器理论</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="本课练习">🧪 本课练习</h2>
+<h3 id="练习一四规则判断计算型">练习一：四规则判断（计算型）</h3>
+<p>一个活细胞周围有 4 个活邻居，下一步怎样？一个死细胞周围有 3
+个活邻居，下一步怎样？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>活细胞有 4 个活邻居，因拥挤死亡，下一步变死。</p>
+<p>死细胞有 3 个活邻居，满足繁殖规则，下一步变活。</p>
+生命游戏的核心就是邻居计数，不看更远处，也不看历史。
+</details>
+<h3 id="练习二滑翔机速度计算型">练习二：滑翔机速度（计算型）</h3>
+<p>滑翔机每 4 帧向斜对角平移 1 格。如果一个滑翔机移动 25
+格对角距离，需要多少帧？速度是多少？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>每移动 1 格需要 4 帧。</p>
+<p>移动 25 格需要 <code>25×4=100</code> 帧。</p>
+速度是 <code>1/4</code> 格/帧，通常写作 <code>c/4</code>，其中 c
+是局部规则允许的信息传播最大速度。
+</details>
+<h3 id="练习三为什么要时钟概念型">练习三：为什么要时钟？（概念型）</h3>
+<p>生命游戏逻辑门为什么需要精确时钟或相位控制？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>因为滑翔机碰撞结果取决于它们到达的时间和相位。同样两条滑翔机，如果早到或晚到一帧，可能完全错过，或者产生不同碎片。</p>
+数字电路也类似：信号必须在时钟窗口内稳定，否则会产生错误。生命游戏的“线”和“门”都是动态结构，所以同步更关键。
+</details>
+<h3 id="练习四涌现真实性分析型">练习四：涌现真实性（分析型）</h3>
+<p>滑翔机只是活细胞图案的周期变化。为什么仍可以说它是生命游戏宇宙中的“对象”？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>因为它具有稳定身份：能持续传播、与其他结构碰撞、携带信息、被生成和被摧毁。</p>
+现实中的许多对象也不是永恒实体，而是底层场或粒子的稳定组织模式。只要一个模式在高层规律中可追踪、可预测、可交互，就有操作意义上的真实性。
+</details>
+<h3 id="练习五excel-说法是否夸张综合型">练习五：Excel
+说法是否夸张？（综合型）</h3>
+<p>“生命游戏可以运行 Excel”这句话科学吗？应该怎样精确表述？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>它作为口号有夸张成分，但原则上科学。</p>
+<p>精确表述是：生命游戏是图灵完备的；任何可在通用数字计算机上执行的有限计算，都可以编码为生命游戏中的初始图案，并通过生命游戏规则演化来模拟。</p>
+实际运行现代 Excel
+需要极其巨大的格子、复杂编码和漫长时间，所以这是原则可行，不是工程可行。
+</details>
+<hr />
+<h2 id="本课数据总览">📊 本课数据总览</h2>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>字数</td>
+<td>~7300</td>
+</tr>
+<tr>
+<td>章节</td>
+<td>5</td>
+</tr>
+<tr>
+<td>表格</td>
+<td>12</td>
+</tr>
+<tr>
+<td>练习</td>
+<td>5</td>
+</tr>
+<tr>
+<td>推荐阅读</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<div class="pagination">
+<a href="/cosmic-lens/docs/lesson13.html">← 第13课</a>
+<span style="color:var(--text-dim)">第14课 / 100</span>
+<a href="/cosmic-lens/docs/lesson15.html">第15课 →</a>
+</div>
+</article>
+<footer class="footer"><p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong></p></footer>
+<script>const c=document.getElementById('starfield'),x=c.getContext('2d');let s=[],w,h;function r(){w=c.width=innerWidth;h=c.height=document.documentElement.scrollHeight;let a=[],n=Math.floor(w*h/5000);for(let i=0;i<n;i++)a.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.3,a:Math.random()*0.6+0.2,t:Math.random()*Math.PI*2});s=a}function d(){x.clearRect(0,0,w,h);s.forEach(e=>{e.t+=0.008;let a=e.a*(0.5+0.5*Math.sin(e.t));x.beginPath();x.arc(e.x,e.y,e.r,0,Math.PI*2);x.fillStyle=`rgba(200,210,255,${a})`;x.fill()});requestAnimationFrame(d)}r();d();addEventListener('resize',r);</script>
+</body>
+</html>

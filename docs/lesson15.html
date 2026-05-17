@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第15课：数字物理学 — 宇宙之镜</title>
+<meta name="description" content="从“每个物理量来自是/否问题”到信息本体论、离散宇宙和模拟假说的强弱版本。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<style>
+:root{--bg:#050510;--bg-card:rgba(15,15,40,0.85);--text:#e0e0f0;--text-dim:#9090c0;--accent:#7b5fff;--accent2:#00d4ff;--gradient:linear-gradient(135deg,#7b5fff,#00d4ff);--border:rgba(120,100,255,0.2)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC',sans-serif;line-height:1.8}
+#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;backdrop-filter:blur(20px);background:rgba(5,5,16,0.75);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.nav-back{color:var(--text-dim);text-decoration:none;font-size:0.9em}.nav-back:hover{color:var(--text)}
+.nav-title{font-size:0.95em;font-weight:700;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-space{width:60px}
+.content-wrapper{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:80px 20px 60px}
+.content h1{font-size:2.2em;font-weight:900}
+.content .subtitle{color:var(--accent2);font-size:1em;margin-bottom:32px}
+.audio-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:32px;display:flex;align-items:center;gap:16px}
+.audio-bar audio{flex:1;filter:invert(0.9) hue-rotate(230deg);height:36px}
+.course-meta{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:24px;font-size:0.85em;color:var(--text-dim)}
+.content h2{font-size:1.6em;font-weight:800;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--border)}
+.content h3{font-size:1.25em;font-weight:700;margin:32px 0 12px;color:var(--accent2)}
+.content blockquote{margin:16px 0;padding:16px 20px;border-left:3px solid var(--accent);background:var(--bg-card);border-radius:0 8px 8px 0;font-style:italic}
+.content p{margin:12px 0}
+.content table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.9em;overflow-x:auto;display:block}
+.content th{background:rgba(123,95,255,0.15);padding:10px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)}
+.content td{padding:10px 12px;border-bottom:1px solid rgba(120,100,255,0.1)}
+.content tr:hover td{background:rgba(123,95,255,0.05)}
+.content pre{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:10px;padding:16px 20px;overflow-x:auto;margin:16px 0}
+.content code{font-family:'SF Mono','Menlo',monospace;font-size:0.85em;color:var(--accent2)}
+.content details{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin:14px 0}
+.content summary{cursor:pointer;color:var(--accent2);font-weight:700}
+.pagination{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
+.pagination a{color:var(--accent2);text-decoration:none;padding:8px 20px;border:1px solid var(--border);border-radius:20px;transition:all 0.2s}
+.pagination a:hover{border-color:var(--accent);background:rgba(123,95,255,0.1)}
+.footer{text-align:center;color:var(--text-dim);font-size:0.85em;padding:40px 0;position:relative;z-index:1}
+@media(max-width:600px){.content-wrapper{padding:70px 16px 40px}.content h1{font-size:1.6em}.audio-bar{align-items:flex-start;flex-direction:column}.audio-bar audio{width:100%}.pagination{gap:10px;flex-wrap:wrap}.pagination a{padding:8px 14px}}
+</style>
+</head>
+<body>
+<canvas id="starfield"></canvas>
+<nav class="nav"><a href="/cosmic-lens/docs/" class="nav-back">← 宇宙之镜</a><span class="nav-title">第15课 · 数字物理学</span><div class="nav-space"></div></nav>
+<article class="content-wrapper">
+<h1>🔢 数字物理学：惠勒 it from bit 的完整论证</h1>
+<p class="subtitle">从“每个物理量来自是/否问题”到信息本体论、离散宇宙和模拟假说的强弱版本。</p>
+<div class="audio-bar"><span>🎧 音频版</span><audio controls src="/cosmic-lens/docs/audio/lesson15.mp3" preload="none"></audio></div>
+<div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+<div class="content">
+<h1 id="数字物理学惠勒-it-from-bit-的完整论证">数字物理学：惠勒 it from
+bit 的完整论证</h1>
+<blockquote>
+<p><em>“Every it — every particle, every field of force, even the
+spacetime continuum itself — derives its function, meaning, its very
+existence entirely from bits.”</em> —— John Archibald Wheeler</p>
+</blockquote>
+<hr />
+<h2 id="本课目标">🎯 本课目标</h2>
+<ol type="1">
+<li>理解 Wheeler “it from bit” 的真正含义</li>
+<li>区分信息描述、信息动力学和信息本体论三种强度</li>
+<li>掌握数字物理学与模拟假说的关系</li>
+<li>识别“世界是信息”这句话的可检验难题</li>
+</ol>
+<p><strong>难度</strong>：⭐⭐⭐⭐ 硬核 |
+<strong>预计学习时间</strong>：50分钟 |
+<strong>前置课程</strong>：第8课、第13课、第14课</p>
+<hr />
+<h2 id="引言先有物还是先有区分">🖋️ 引言：先有物，还是先有区分？</h2>
+<p>你看到一颗粒子，通常会认为粒子先存在，然后你测量它的位置、动量和自旋。惠勒反过来问：如果没有任何可区分的测量结果，谈论“它是什么”还有意义吗？</p>
+<p>“It from bit”
+的激进之处在于，它把信息从物理的说明书提升为物理的地基。一个“物”之所以成为物，是因为它能在某些实验问题下给出回答：是或否，0
+或
+1，响或不响。物理事实不是静静躺在世界里等待标签，而是在可区分事件网络中获得意义。</p>
+<hr />
+<h2 id="一惠勒的核心论证物来自问答">一、惠勒的核心论证：物来自问答</h2>
+<h3 id="是否问题的宇宙">1.1 “是/否问题”的宇宙</h3>
+<p>惠勒强调的 bit，不一定是计算机内存里的 0 和
+1，而是任何可区分的二元回答。</p>
+<table>
+<thead>
+<tr>
+<th>物理问题</th>
+<th>可能回答</th>
+<th>bit 视角</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>探测器是否点击？</td>
+<td>是/否</td>
+<td>一个事件 bit</td>
+</tr>
+<tr>
+<td>自旋沿 z 方向测量是向上吗？</td>
+<td>是/否</td>
+<td>一个量子测量 bit</td>
+</tr>
+<tr>
+<td>光子是否通过偏振片？</td>
+<td>是/否</td>
+<td>一个实验 bit</td>
+</tr>
+<tr>
+<td>黑洞视界面积对应多少状态？</td>
+<td>多个 bits</td>
+<td>熵的信息计数</td>
+</tr>
+<tr>
+<td>粒子是否在某区域内？</td>
+<td>是/否</td>
+<td>空间区分变成信息问题</td>
+</tr>
+</tbody>
+</table>
+<p>这里的重点不是把宇宙比作台式机，而是说物理事实必须通过可区分结果进入理论。</p>
+<h3 id="参与式宇宙">1.2 参与式宇宙</h3>
+<p>惠勒还提出“参与式宇宙”图像：观察不是被动读取，而是现实事实形成链条中的一部分。这个观点容易被误解成“意识创造现实”，但更克制的版本是：测量设置决定哪些问题有确定回答。</p>
+<table>
+<thead>
+<tr>
+<th>解读</th>
+<th>是否稳健</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>测量问题决定可获得事实</td>
+<td>稳健</td>
+<td>与量子实验相容</td>
+</tr>
+<tr>
+<td>意识让波函数坍缩</td>
+<td>有争议</td>
+<td>需要额外意识理论</td>
+</tr>
+<tr>
+<td>宇宙必须产生观察者才完整</td>
+<td>强人择色彩</td>
+<td>哲学风险高</td>
+</tr>
+<tr>
+<td>信息是物理描述的核心</td>
+<td>稳健</td>
+<td>黑洞热力学、量子信息都支持</td>
+</tr>
+</tbody>
+</table>
+<p>本课采用中间立场：信息是物理学不可绕开的结构，但这不自动推出人类意识是宇宙中心。</p>
+<hr />
+<h2 id="二数字物理学的三种强度">二、数字物理学的三种强度</h2>
+<h3 id="弱中强版本">2.1 弱、中、强版本</h3>
+<p>“世界是信息”可以表达很弱，也可以表达极强。混淆强度会制造伪争论。</p>
+<table>
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 23%" />
+<col style="width: 30%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th>版本</th>
+<th>命题</th>
+<th>可信度</th>
+<th>代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>弱数字物理</td>
+<td>物理状态可用信息描述</td>
+<td>很高</td>
+<td>几乎不具排他性</td>
+</tr>
+<tr>
+<td>中数字物理</td>
+<td>物理演化可视为信息处理</td>
+<td>较高</td>
+<td>需要说明量子和相对论细节</td>
+</tr>
+<tr>
+<td>强数字物理</td>
+<td>宇宙底层是离散计算程序</td>
+<td>未证实</td>
+<td>必须面对实验检验</td>
+</tr>
+<tr>
+<td>模拟假说</td>
+<td>宇宙运行在外部计算基底上</td>
+<td>更强</td>
+<td>还要引入外部世界和模拟者</td>
+</tr>
+</tbody>
+</table>
+<p>很多争论其实是把弱版本的证据拿去支持强版本。黑洞熵说明信息非常基本，但不等于证明宇宙就是某种
+C++ 程序。</p>
+<h3 id="信息本体论的吸引力">2.2 信息本体论的吸引力</h3>
+<p>为什么数字物理有吸引力？因为多个方向都指向信息。</p>
+<table>
+<thead>
+<tr>
+<th>方向</th>
+<th>信息为何出现</th>
+<th>代表概念</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>热力学</td>
+<td>熵计数微观状态</td>
+<td>玻尔兹曼熵、香农熵</td>
+</tr>
+<tr>
+<td>量子力学</td>
+<td>测量给出离散结果</td>
+<td>qubit、纠缠熵</td>
+</tr>
+<tr>
+<td>黑洞物理</td>
+<td>熵正比视界面积</td>
+<td>贝肯斯坦-霍金熵</td>
+</tr>
+<tr>
+<td>计算理论</td>
+<td>规律可被形式化执行</td>
+<td>图灵机、算法</td>
+</tr>
+<tr>
+<td>宇宙学</td>
+<td>可观测宇宙有信息边界</td>
+<td>全息原理</td>
+</tr>
+</tbody>
+</table>
+<p>这些线索共同说明：信息不是物理学的装饰语言，而是跨领域的核心量。</p>
+<hr />
+<h2 id="三连续世界与离散世界的拉扯">三、连续世界与离散世界的拉扯</h2>
+<h3 id="现实看起来连续">3.1 现实看起来连续</h3>
+<p>强数字物理常被质疑：如果底层是离散的，为什么我们看到连续空间、连续时间、连续旋转对称性？</p>
+<table>
+<thead>
+<tr>
+<th>连续特征</th>
+<th>数字物理需要解释什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空间连续性</td>
+<td>离散格点如何不暴露方向偏好</td>
+</tr>
+<tr>
+<td>时间连续性</td>
+<td>离散步进如何恢复相对论时间</td>
+</tr>
+<tr>
+<td>旋转对称性</td>
+<td>格子通常偏好特定方向</td>
+</tr>
+<tr>
+<td>洛伦兹不变性</td>
+<td>光速不变与局部因果结构如何涌现</td>
+</tr>
+<tr>
+<td>量子振幅连续性</td>
+<td>复数振幅是否可由离散结构逼近</td>
+</tr>
+</tbody>
+</table>
+<p>一个离散理论不是不能成功，但它必须解释为什么低能尺度下看起来连续。</p>
+<h3 id="离散不一定是方格">3.2 离散不一定是方格</h3>
+<p>数字物理不必等于像素方格宇宙。离散结构可以更抽象。</p>
+<table>
+<thead>
+<tr>
+<th>离散模型</th>
+<th>基本对象</th>
+<th>优点</th>
+<th>难点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>元胞自动机</td>
+<td>规则格点</td>
+<td>直观、可计算</td>
+<td>对称性难处理</td>
+</tr>
+<tr>
+<td>因果集</td>
+<td>事件及因果关系</td>
+<td>接近相对论精神</td>
+<td>动力学困难</td>
+</tr>
+<tr>
+<td>自旋网络</td>
+<td>量子几何图结构</td>
+<td>与圈量子引力相关</td>
+<td>与标准模型连接复杂</td>
+</tr>
+<tr>
+<td>张量网络</td>
+<td>纠缠结构</td>
+<td>连接全息与量子信息</td>
+<td>是否本体论不清</td>
+</tr>
+<tr>
+<td>量子电路宇宙</td>
+<td>qubit 与量子门</td>
+<td>适合信息语言</td>
+<td>需要恢复时空</td>
+</tr>
+</tbody>
+</table>
+<p>真正成熟的数字物理必须能从底层离散结构推出已知物理，而不只是画出漂亮类比。</p>
+<hr />
+<h2 id="四与模拟假说的关系">四、与模拟假说的关系</h2>
+<h3 id="数字物理不等于模拟假说">4.1 数字物理不等于模拟假说</h3>
+<p>这是本阶段最重要的区分之一。</p>
+<table>
+<thead>
+<tr>
+<th>命题</th>
+<th>是否需要外部模拟者</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>物理可计算</td>
+<td>不需要</td>
+<td>只是说规律可形式化</td>
+</tr>
+<tr>
+<td>物理就是信息处理</td>
+<td>不需要</td>
+<td>宇宙可“自计算”</td>
+</tr>
+<tr>
+<td>底层是离散规则</td>
+<td>不需要</td>
+<td>可能是自然本身的结构</td>
+</tr>
+<tr>
+<td>我们在外部机器上运行</td>
+<td>需要</td>
+<td>这是强模拟假说</td>
+</tr>
+<tr>
+<td>有文明故意运行祖先模拟</td>
+<td>需要</td>
+<td>博斯特罗姆路线</td>
+</tr>
+</tbody>
+</table>
+<p>数字物理可以支持模拟假说的可想象性，但它本身也可以是一种反模拟观点：宇宙不是被模拟，它就是计算过程本身。</p>
+<h3 id="如果世界是-bitbug-在哪里">4.2 如果世界是 bit，bug 在哪里？</h3>
+<p>很多人期待数字宇宙会出现像游戏一样的像素、刷新率、边界错误。但强数字物理不一定给出这么粗糙的痕迹。</p>
+<table>
+<colgroup>
+<col style="width: 29%" />
+<col style="width: 35%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr>
+<th>可能痕迹</th>
+<th>为什么诱人</th>
+<th>为什么困难</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最高能宇宙射线方向偏差</td>
+<td>格点可能破坏旋转对称</td>
+<td>实验噪声和天体物理复杂</td>
+</tr>
+<tr>
+<td>普朗克尺度离散</td>
+<td>像像素大小</td>
+<td>远低于当前直接探测能力</td>
+</tr>
+<tr>
+<td>量子随机数异常</td>
+<td>像伪随机生成器</td>
+<td>真随机与伪随机区分极难</td>
+</tr>
+<tr>
+<td>物理常数可压缩</td>
+<td>像程序参数</td>
+<td>简洁性不是唯一标准</td>
+</tr>
+<tr>
+<td>宇宙背景低阶异常</td>
+<td>像边界条件痕迹</td>
+<td>宇宙方差限制强</td>
+</tr>
+</tbody>
+</table>
+<p>如果模拟足够底层、足够一致，它未必留下容易观测的“贴图错误”。</p>
+<hr />
+<h2 id="五it-from-bit-的完整论证链">五、it from bit 的完整论证链</h2>
+<h3 id="从事实到信息再到本体">5.1 从事实到信息，再到本体</h3>
+<p>可以把 Wheeler 的论证拆成五步，每一步强度递增。</p>
+<table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>命题</th>
+<th>需要的支撑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>物理事实必须能被区分</td>
+<td>实验方法论</td>
+</tr>
+<tr>
+<td>2</td>
+<td>可区分事实可编码为信息</td>
+<td>信息论</td>
+</tr>
+<tr>
+<td>3</td>
+<td>熵、纠缠、黑洞显示信息具有物理效应</td>
+<td>热力学、量子信息、引力</td>
+</tr>
+<tr>
+<td>4</td>
+<td>物理演化可看成信息处理</td>
+<td>计算理论与量子动力学</td>
+</tr>
+<tr>
+<td>5</td>
+<td>信息比物质更基本</td>
+<td>本体论选择，需要更强理论</td>
+</tr>
+</tbody>
+</table>
+<p>前四步相对稳健，第五步最诱人也最危险。它可能是真的，但不能靠一句口号完成。</p>
+<h3 id="本阶段小结第二支柱成形">5.2 本阶段小结：第二支柱成形</h3>
+<p>第11到15课完成了计算支柱的前半段：</p>
+<table>
+<colgroup>
+<col style="width: 17%" />
+<col style="width: 29%" />
+<col style="width: 52%" />
+</colgroup>
+<thead>
+<tr>
+<th>课程</th>
+<th>核心问题</th>
+<th>给模拟假说的贡献</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>11 人择原理</td>
+<td>为什么我们看到适合观察者的宇宙</td>
+<td>处理选择效应与调参解释</td>
+</tr>
+<tr>
+<td>12 Lloyd 上限</td>
+<td>宇宙最多计算了多少</td>
+<td>给模拟宇宙算资源账</td>
+</tr>
+<tr>
+<td>13 计算本质</td>
+<td>什么叫可计算</td>
+<td>建立图灵完备语言</td>
+</tr>
+<tr>
+<td>14 生命游戏</td>
+<td>简单规则如何涌现复杂世界</td>
+<td>展示可计算宇宙样板</td>
+</tr>
+<tr>
+<td>15 数字物理</td>
+<td>信息是否比物质更基本</td>
+<td>连接 it from bit 与模拟论</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>本课结论</strong>：it from bit
+是一条强有力的路线，但它不是终点。它告诉我们信息可能是物理实在的骨架；下一步必须解释量子信息、全息投影和意识观察者如何嵌入这副骨架。</p>
+</blockquote>
+<hr />
+<h2 id="知识连接">🔗 知识连接</h2>
+<table>
+<colgroup>
+<col style="width: 38%" />
+<col style="width: 23%" />
+<col style="width: 38%" />
+</colgroup>
+<thead>
+<tr>
+<th>推荐阅读</th>
+<th>作者</th>
+<th>为什么读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><em>Information, Physics, Quantum: The Search for Links</em></td>
+<td>John Wheeler</td>
+<td>it from bit 的核心文本</td>
+</tr>
+<tr>
+<td><em>The Fabric of Reality</em></td>
+<td>David Deutsch</td>
+<td>计算、量子和实在论的综合视角</td>
+</tr>
+<tr>
+<td><em>Decoding Reality</em></td>
+<td>Vlatko Vedral</td>
+<td>信息作为物理核心的通俗论证</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>前置</th>
+<th>本课</th>
+<th>后续</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第8课信息守恒与黑洞</td>
+<td>信息具有物理重量</td>
+<td>第16课全息模拟论</td>
+</tr>
+<tr>
+<td>第13课计算的本质</td>
+<td>可计算边界</td>
+<td>第17课量子信息速通</td>
+</tr>
+<tr>
+<td>第14课生命游戏</td>
+<td>简单规则涌现复杂性</td>
+<td>第20课阶段二总结</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="本课练习">🧪 本课练习</h2>
+<h3 id="练习一香农熵计算计算型">练习一：香农熵计算（计算型）</h3>
+<p>一个二元事件 A/B 的概率分别为 1/2 和 1/2。另一个事件 C/D 的概率分别为
+0.9 和 0.1。哪个熵更高？为什么？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>香农熵公式：<code>H=-Σ p log2 p</code>。</p>
+<p>A/B：<code>H = -2×(0.5 log2 0.5)=1 bit</code>。</p>
+<p>C/D：<code>H = -(0.9 log2 0.9 + 0.1 log2 0.1)</code>，约
+<code>0.469 bit</code>。</p>
+均匀分布更不确定，所以熵更高。bit 衡量的是可区分结果的不确定性。
+</details>
+<h3
+id="练习二弱数字物理还是强数字物理概念型">练习二：弱数字物理还是强数字物理？（概念型）</h3>
+<p>判断下列陈述属于弱、中、强数字物理，还是模拟假说：</p>
+<p>A. 物理状态可以用信息描述。 B. 宇宙底层是一套离散更新规则。 C.
+宇宙运行在外部文明的计算机上。 D. 物理演化可以看成量子信息处理。</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>A 是弱数字物理。</p>
+<p>D 是中数字物理。</p>
+<p>B 是强数字物理。</p>
+C 是模拟假说，比强数字物理还多引入外部计算基底和模拟者。
+</details>
+<h3
+id="练习三连续对称性挑战分析型">练习三：连续对称性挑战（分析型）</h3>
+<p>为什么离散格点宇宙很难自然解释旋转对称性和洛伦兹不变性？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>规则格点通常有特殊方向，例如正方形格子的水平、垂直和对角方向并不完全等价。这会在高能或长距离传播中留下方向偏好。</p>
+<p>洛伦兹不变性要求所有惯性观察者测得同样光速，没有绝对静止参考系。固定格点和全局同步更新容易引入隐藏参考系。</p>
+离散理论必须证明这些偏差在可观测尺度下消失，或使用更抽象的离散结构避免固定背景。
+</details>
+<h3
+id="练习四黑洞为何支持信息物理综合型">练习四：黑洞为何支持信息物理？（综合型）</h3>
+<p>黑洞熵正比视界面积而不是体积，这对 it from bit 有什么启发？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>黑洞是同一区域内熵最大的对象。如果最大熵与边界面积相关，说明空间区域可容纳的信息不是按体积无限增长。</p>
+<p>这把引力、热力学和信息论直接连在一起：信息容量成为物理边界，而不是观察者的主观描述。</p>
+它支持“信息具有物理地位”，并为全息原理铺路。但它仍不直接证明宇宙是外部计算机模拟。
+</details>
+<h3 id="练习五可检验性设计哲学型">练习五：可检验性设计（哲学型）</h3>
+<p>如果你要让“强数字物理”变成科学理论，而不只是哲学口号，你会要求它给出哪三类可检验预测？</p>
+<details>
+<summary>
+点击查看参考答案
+</summary>
+<p>可以要求：</p>
+<ol type="1">
+<li>低能极限：严格推出标准模型、广义相对论或它们的可测修正。</li>
+<li>高能痕迹：在宇宙射线、引力波、早期宇宙背景或粒子实验中给出明确偏差。</li>
+<li>信息边界：对黑洞熵、纠缠熵、宇宙常数或量子测量给出比现有理论更精确的结果。</li>
+</ol>
+没有可区分预测的数字物理，更像形而上解释框架，而不是成熟物理理论。
+</details>
+<hr />
+<h2 id="本课数据总览">📊 本课数据总览</h2>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>数值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>字数</td>
+<td>~7200</td>
+</tr>
+<tr>
+<td>章节</td>
+<td>5</td>
+</tr>
+<tr>
+<td>表格</td>
+<td>12</td>
+</tr>
+<tr>
+<td>练习</td>
+<td>5</td>
+</tr>
+<tr>
+<td>推荐阅读</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+<div class="pagination">
+<a href="/cosmic-lens/docs/lesson14.html">← 第14课</a>
+<span style="color:var(--text-dim)">第15课 / 100</span>
+<a href="/cosmic-lens/docs/lesson16.html">第16课 →</a>
+</div>
+</article>
+<footer class="footer"><p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong></p></footer>
+<script>const c=document.getElementById('starfield'),x=c.getContext('2d');let s=[],w,h;function r(){w=c.width=innerWidth;h=c.height=document.documentElement.scrollHeight;let a=[],n=Math.floor(w*h/5000);for(let i=0;i<n;i++)a.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.3,a:Math.random()*0.6+0.2,t:Math.random()*Math.PI*2});s=a}function d(){x.clearRect(0,0,w,h);s.forEach(e=>{e.t+=0.008;let a=e.a*(0.5+0.5*Math.sin(e.t));x.beginPath();x.arc(e.x,e.y,e.r,0,Math.PI*2);x.fillStyle=`rgba(200,210,255,${a})`;x.fill()});requestAnimationFrame(d)}r();d();addEventListener('resize',r);</script>
+</body>
+</html>
