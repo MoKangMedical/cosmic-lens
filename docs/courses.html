@@ -3,312 +3,1149 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>课程体系 — 宇宙之镜 · Cosmic Lens</title>
-<meta name="description" content="宇宙之镜完整课程体系——从物理学Bug到模拟假说到意识本质，建立你的宇宙观">
+<title>课程体系 - 宇宙之镜 · Cosmic Lens</title>
+<meta name="description" content="宇宙之镜完整课程体系，从物理支柱到计算支柱，建立面向模拟假说的未来宇宙观。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
 <style>
 :root {
-  --bg: #050510; --bg-card: rgba(15,15,40,0.8); --text: #e0e0f0;
-  --text-dim: #8080b0; --accent: #7b5fff; --accent2: #00d4ff;
-  --gradient: linear-gradient(135deg, #7b5fff, #00d4ff); --border: rgba(120,100,255,0.2);
-  --glow: 0 0 30px rgba(123,95,255,0.2);
+  --bg: #09090b;
+  --bg2: #0f0f13;
+  --bg3: #18181b;
+  --panel: rgba(20, 20, 25, 0.78);
+  --panel-strong: rgba(28, 28, 33, 0.92);
+  --card: rgba(28, 28, 33, 0.82);
+  --card2: rgba(34, 34, 40, 0.9);
+  --border: rgba(63, 63, 70, 0.72);
+  --border-soft: rgba(226, 182, 79, 0.18);
+  --text: #fafafa;
+  --text2: #d4d4d8;
+  --text3: #a1a1aa;
+  --muted: #71717a;
+  --gold: #e2b64f;
+  --gold2: #f5d98a;
+  --blue: #3b82f6;
+  --cyan: #22d3ee;
+  --purple: #a78bfa;
+  --green: #22c55e;
+  --red: #ef4444;
+  --radius: 18px;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.36);
+  --glow: 0 0 32px rgba(226, 182, 79, 0.18), 0 0 72px rgba(59, 130, 246, 0.12);
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Noto Sans SC', sans-serif; line-height: 1.7; }
-#starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
-.container { position:relative; z-index:1; max-width:1000px; margin:0 auto; padding:0 20px; }
 
-.nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:14px 24px; backdrop-filter:blur(20px); background:rgba(5,5,16,0.75); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
-.nav-back { color:var(--text-dim); text-decoration:none; font-size:0.9em; transition:color 0.2s; }
-.nav-back:hover { color:var(--text); }
-.nav-title { font-size:1em; font-weight:700; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-
-.header { padding:100px 0 40px; text-align:center; }
-.header h1 { font-size:2.4em; font-weight:900; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin-bottom:12px; }
-.header p { color:var(--text-dim); max-width:500px; margin:0 auto; }
-
-.courses { padding-bottom:60px; }
-.course-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 28px;
-  margin-bottom: 20px;
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  transition: all 0.3s;
-  text-decoration: none;
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 80% 55% at 50% 0%, rgba(226, 182, 79, 0.12), transparent 62%),
+    radial-gradient(ellipse 42% 36% at 92% 18%, rgba(59, 130, 246, 0.16), transparent 64%),
+    radial-gradient(ellipse 52% 42% at 8% 70%, rgba(167, 139, 250, 0.13), transparent 66%),
+    linear-gradient(180deg, var(--bg) 0%, #07070a 46%, #050507 100%);
   color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", sans-serif;
+  line-height: 1.65;
+  overflow-x: hidden;
 }
-.course-card:hover { border-color:var(--accent); transform:translateY(-3px); box-shadow:var(--glow); }
-.course-num { 
-  background: var(--gradient);
-  color: #fff;
-  font-weight: 800;
-  font-size: 1.4em;
-  width: 50px; height: 50px;
-  border-radius: 14px;
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(226, 182, 79, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(to bottom, transparent, #000 16%, #000 68%, transparent);
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 24% 22%, rgba(245, 217, 138, 0.13), transparent 18%),
+    radial-gradient(circle at 72% 12%, rgba(34, 211, 238, 0.11), transparent 19%),
+    radial-gradient(circle at 78% 82%, rgba(167, 139, 250, 0.12), transparent 21%);
+  filter: blur(22px);
+  opacity: 0.75;
+}
+
+a { color: inherit; }
+#starfield {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: rgba(9, 9, 11, 0.82);
+  border-bottom: 1px solid rgba(63, 63, 70, 0.72);
+  backdrop-filter: blur(22px);
+}
+
+.nav-inner {
+  max-width: 1180px;
+  height: 66px;
+  margin: 0 auto;
+  padding: 0 24px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.75), transparent 16%),
+    linear-gradient(135deg, var(--gold), var(--blue));
+  color: #09090b;
+  box-shadow: 0 0 28px rgba(226, 182, 79, 0.3);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-text strong { font-size: 0.98rem; letter-spacing: 0; }
+.brand-text span { color: var(--text3); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text3);
+  font-size: 0.9rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 999px;
+  transition: color 0.2s, background 0.2s;
+}
+
+.nav-links a:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.nav-cta,
+.btn {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(226, 182, 79, 0.35);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(226, 182, 79, 0.96), rgba(245, 217, 138, 0.9));
+  color: #111113;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 12px 34px rgba(226, 182, 79, 0.16);
+  transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+}
+
+.nav-cta:hover,
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 44px rgba(226, 182, 79, 0.25);
+}
+
+.btn.secondary {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: none;
+}
+
+.btn.secondary:hover { border-color: rgba(34, 211, 238, 0.36); }
+
+.hero {
+  min-height: 82vh;
+  padding: 136px 0 72px;
+  display: grid;
+  align-items: center;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 370px;
+  gap: 38px;
+  align-items: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 12px;
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  background: rgba(226, 182, 79, 0.08);
+  color: var(--gold2);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--green);
+  box-shadow: 0 0 0 6px rgba(34, 197, 94, 0.12), 0 0 24px rgba(34, 197, 94, 0.55);
+}
+
+.hero h1 {
+  margin-top: 22px;
+  font-size: clamp(2.8rem, 7.6vw, 6.2rem);
+  line-height: 0.96;
+  max-width: 830px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.hero h1 span {
+  display: block;
+  background: linear-gradient(135deg, var(--text) 0%, var(--gold2) 38%, var(--cyan) 74%, var(--purple) 100%);
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hero-copy {
+  max-width: 730px;
+  margin-top: 24px;
+  color: var(--text2);
+  font-size: 1.08rem;
+}
+
+.hero-actions {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.hero-metrics {
+  margin-top: 34px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  max-width: 760px;
+}
+
+.metric {
+  min-height: 92px;
+  padding: 18px;
+  border: 1px solid rgba(63, 63, 70, 0.72);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(28, 28, 33, 0.82), rgba(15, 15, 19, 0.68));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.metric strong {
+  display: block;
+  color: var(--gold2);
+  font-size: 1.55rem;
+  line-height: 1.05;
+}
+
+.metric span {
+  display: block;
+  margin-top: 8px;
+  color: var(--text3);
+  font-size: 0.82rem;
+}
+
+.mission-panel {
+  position: relative;
+  padding: 24px;
+  border: 1px solid rgba(226, 182, 79, 0.2);
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(28, 28, 33, 0.92), rgba(12, 12, 15, 0.88)),
+    radial-gradient(circle at 70% 20%, rgba(59, 130, 246, 0.18), transparent 38%);
+  box-shadow: var(--shadow), var(--glow);
+  overflow: hidden;
+}
+
+.mission-panel::before {
+  content: "";
+  position: absolute;
+  inset: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+}
+
+.orbit {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+
+.orbit-ring,
+.orbit-ring::before,
+.orbit-ring::after {
+  position: absolute;
+  border: 1px solid rgba(245, 217, 138, 0.18);
+  border-radius: 50%;
+  inset: 14%;
+}
+
+.orbit-ring::before,
+.orbit-ring::after {
+  content: "";
+  inset: 14%;
+  border-color: rgba(59, 130, 246, 0.18);
+  transform: rotate(36deg);
+}
+
+.orbit-ring::after {
+  inset: 28%;
+  border-color: rgba(167, 139, 250, 0.18);
+  transform: rotate(-22deg);
+}
+
+.core {
+  position: relative;
+  z-index: 1;
+  width: 132px;
+  height: 132px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.86), transparent 9%),
+    radial-gradient(circle at 50% 50%, rgba(226, 182, 79, 0.95), rgba(59, 130, 246, 0.28) 55%, rgba(9, 9, 11, 0.15) 72%);
+  box-shadow: 0 0 48px rgba(226, 182, 79, 0.35), 0 0 92px rgba(59, 130, 246, 0.18);
+  color: #111113;
+  font-weight: 900;
+}
+
+.node {
+  position: absolute;
+  width: 84px;
+  min-height: 64px;
+  padding: 10px;
+  border: 1px solid rgba(245, 217, 138, 0.24);
+  border-radius: 16px;
+  background: rgba(9, 9, 11, 0.72);
+  backdrop-filter: blur(14px);
+  color: var(--text2);
+  font-size: 0.74rem;
+  text-align: center;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.28);
+}
+
+.node strong {
+  display: block;
+  color: var(--text);
+  font-size: 0.96rem;
+}
+
+.node.one { top: 8%; left: 50%; transform: translateX(-50%); }
+.node.two { right: 2%; top: 50%; transform: translateY(-50%); }
+.node.three { bottom: 8%; left: 50%; transform: translateX(-50%); }
+.node.four { left: 2%; top: 50%; transform: translateY(-50%); }
+
+.section {
+  position: relative;
+  z-index: 1;
+  padding: 70px 0;
+}
+
+.section-head {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.section-label {
+  color: var(--gold);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.section h2 {
+  margin-top: 8px;
+  font-size: clamp(1.9rem, 4vw, 3.2rem);
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.section-desc {
+  max-width: 460px;
+  color: var(--text3);
+  font-size: 0.94rem;
+}
+
+.phase-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.phase-card {
+  position: relative;
+  min-height: 202px;
+  padding: 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, rgba(28, 28, 33, 0.82), rgba(12, 12, 15, 0.72));
+  overflow: hidden;
+}
+
+.phase-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 76% 16%, var(--phase-glow, rgba(226, 182, 79, 0.16)), transparent 42%);
+  opacity: 0.9;
+}
+
+.phase-card > * { position: relative; z-index: 1; }
+.phase-card.complete { --phase-glow: rgba(34, 197, 94, 0.14); border-color: rgba(34, 197, 94, 0.28); }
+.phase-card.active { --phase-glow: rgba(226, 182, 79, 0.22); border-color: rgba(226, 182, 79, 0.32); box-shadow: var(--glow); }
+.phase-card.next { --phase-glow: rgba(59, 130, 246, 0.14); }
+
+.phase-kicker {
+  display: inline-flex;
+  padding: 5px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  color: var(--text3);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.phase-card h3 {
+  margin-top: 18px;
+  font-size: 1.08rem;
+  letter-spacing: 0;
+}
+
+.phase-card p {
+  margin-top: 9px;
+  color: var(--text3);
+  font-size: 0.88rem;
+}
+
+.phase-progress {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  bottom: 20px;
+}
+
+.progress-line {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.progress-line span {
+  display: block;
+  height: 100%;
+  width: var(--progress, 0%);
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gold), var(--cyan));
+}
+
+.progress-text {
+  margin-top: 8px;
+  color: var(--text3);
+  font-size: 0.78rem;
+}
+
+.course-console {
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  background: rgba(13, 13, 17, 0.76);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.console-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(63, 63, 70, 0.62);
+  background: rgba(20, 20, 24, 0.72);
+}
+
+.traffic {
+  display: flex;
+  gap: 8px;
   flex-shrink: 0;
 }
-.course-info h3 { font-size:1.2em; margin-bottom:8px; }
-.course-info p { color:var(--text-dim); font-size:0.9em; margin-bottom:12px; }
-.course-meta { display:flex; gap:16px; font-size:0.8em; color:var(--text-dim); }
-.course-meta span { display:flex; align-items:center; gap:4px; }
+
+.traffic span {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--gold);
+}
+
+.traffic span:nth-child(2) { background: var(--blue); }
+.traffic span:nth-child(3) { background: var(--green); }
+
+.console-title {
+  min-width: 0;
+  color: var(--text2);
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mode-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mode-tab {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text3);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 800;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.mode-tab:hover {
+  color: var(--text);
+  border-color: rgba(245, 217, 138, 0.32);
+}
+
+.mode-tab.active {
+  color: #111113;
+  border-color: rgba(245, 217, 138, 0.7);
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+}
+
+.courses {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px;
+}
+
+.course-card {
+  position: relative;
+  min-height: 210px;
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid rgba(63, 63, 70, 0.78);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(34, 34, 40, 0.82), rgba(15, 15, 19, 0.78)),
+    radial-gradient(circle at 82% 18%, rgba(59, 130, 246, 0.12), transparent 38%);
+  color: var(--text);
+  text-decoration: none;
+  overflow: hidden;
+  transition: transform 0.22s, border-color 0.22s, box-shadow 0.22s, background 0.22s;
+}
+
+.course-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-left: 3px solid var(--phase-color, var(--gold));
+  opacity: 0.95;
+}
+
+.course-card::after {
+  content: "";
+  position: absolute;
+  right: -48px;
+  top: -54px;
+  width: 150px;
+  height: 150px;
+  border-radius: 999px;
+  background: var(--phase-color, var(--gold));
+  opacity: 0.08;
+  filter: blur(2px);
+}
+
+.course-card:hover,
+.course-card:focus-visible {
+  transform: translateY(-4px);
+  border-color: rgba(226, 182, 79, 0.38);
+  box-shadow: var(--glow);
+  outline: none;
+}
+
+.course-card.hidden { display: none; }
+.course-card[data-phase="physical"] { --phase-color: var(--gold); }
+.course-card[data-phase="compute"] { --phase-color: var(--cyan); }
+.course-card[data-phase="bridge"] { --phase-color: var(--purple); }
+
+.course-num {
+  position: relative;
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(135deg, rgba(245, 217, 138, 0.96), rgba(59, 130, 246, 0.78)),
+    rgba(255, 255, 255, 0.08);
+  color: #09090b;
+  font-size: 1.38rem;
+  font-weight: 900;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.25);
+}
+
+.course-info {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-info h3 {
+  font-size: 1.05rem;
+  line-height: 1.42;
+  letter-spacing: 0;
+  padding-right: 8px;
+}
+
+.course-info p {
+  margin-top: 9px;
+  color: var(--text3);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.course-meta {
+  margin-top: auto;
+  padding-top: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.course-meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text2);
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
 
 .coming-soon {
-  background: var(--bg-card);
-  border: 1px dashed var(--border);
-  border-radius: 16px;
-  padding: 32px;
+  margin: 18px;
+  padding: 30px;
+  border: 1px dashed rgba(226, 182, 79, 0.28);
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(226, 182, 79, 0.1), transparent 34%),
+    rgba(20, 20, 24, 0.72);
   text-align: center;
-  margin-bottom: 20px;
 }
-.coming-soon h3 { color:var(--accent2); margin-bottom:8px; }
 
-.footer { text-align:center; color:var(--text-dim); font-size:0.85em; padding:40px 0; border-top:1px solid var(--border); margin-top:60px; position:relative; z-index:1; }
+.coming-soon h3 {
+  color: var(--gold2);
+  font-size: 1.2rem;
+  letter-spacing: 0;
+}
 
-@media (max-width:600px) {
-  .course-card { flex-direction:column; align-items:center; text-align:center; }
+.coming-soon p {
+  max-width: 720px;
+  margin: 8px auto 0;
+  color: var(--text3);
+  font-size: 0.92rem;
+}
+
+.footer {
+  position: relative;
+  z-index: 1;
+  padding: 48px 24px 54px;
+  border-top: 1px solid rgba(63, 63, 70, 0.72);
+  color: var(--text3);
+  text-align: center;
+  font-size: 0.88rem;
+}
+
+.footer strong { color: var(--text); }
+
+@media (max-width: 980px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .mission-panel { max-width: 430px; }
+  .phase-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .courses { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .nav-inner { height: 62px; padding: 0 16px; }
+  .brand-text span { display: none; }
+  .nav-links { display: none; }
+  .nav-cta { min-height: 38px; padding: 0 12px; font-size: 0.82rem; }
+  .container { padding: 0 16px; }
+  .hero { min-height: auto; padding: 108px 0 48px; }
+  .hero h1 { font-size: clamp(2.5rem, 14vw, 4.2rem); }
+  .hero-copy { font-size: 1rem; }
+  .hero-metrics { grid-template-columns: 1fr; }
+  .mission-panel { padding: 16px; }
+  .node { width: 72px; min-height: 58px; font-size: 0.68rem; }
+  .section { padding: 48px 0; }
+  .section-head { display: block; }
+  .section-desc { margin-top: 12px; }
+  .phase-grid { grid-template-columns: 1fr; }
+  .console-top { display: block; }
+  .console-title { margin: 12px 0; white-space: normal; }
+  .courses { padding: 12px; gap: 12px; }
+  .course-card {
+    grid-template-columns: 54px minmax(0, 1fr);
+    gap: 14px;
+    min-height: 0;
+    padding: 18px;
+  }
+  .course-num { width: 52px; height: 52px; border-radius: 15px; font-size: 1.12rem; }
+  .course-info h3 { font-size: 0.98rem; }
+  .course-meta span { font-size: 0.72rem; }
+  .coming-soon { margin: 12px; padding: 24px 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 </style>
 </head>
 <body>
-<canvas id="starfield"></canvas>
+<canvas id="starfield" aria-hidden="true"></canvas>
 
 <nav class="nav">
-  <a href="/cosmic-lens/" class="nav-back">← 首页</a>
-  <span class="nav-title">📚 课程体系</span>
-  <span style="width:60px"></span>
+  <div class="nav-inner">
+    <a href="/cosmic-lens/" class="brand" aria-label="返回宇宙之镜首页">
+      <span class="brand-mark">🔭</span>
+      <span class="brand-text">
+        <strong>宇宙之镜</strong>
+        <span>Cosmic Lens Academy</span>
+      </span>
+    </a>
+    <div class="nav-links" aria-label="页面导航">
+      <a href="/cosmic-lens/">首页</a>
+      <a href="#phase-map">阶段雷达</a>
+      <a href="#course-list">课程列表</a>
+    </div>
+    <a class="nav-cta" href="/cosmic-lens/lesson20.html">继续第20课</a>
+  </div>
 </nav>
 
-<div class="container">
-  <div class="header">
-    <h1>课程体系</h1>
-    <p>从第一课开始，逐步建立完整的宇宙观</p>
-  </div>
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow"><span class="pulse-dot"></span> Phase 02 Online · A级音频已部署</div>
+        <h1>宇宙之镜 <span>未来课程中枢</span></h1>
+        <p class="hero-copy">用星空、物理支柱与计算支柱串联模拟假说：从量子测量、黑洞信息、图灵完备，到量子信息与意识边界，建立一条可以持续扩展到 100 课的认知航线。</p>
+        <div class="hero-actions">
+          <a class="btn" href="#course-list">进入课程矩阵</a>
+          <a class="btn secondary" href="/cosmic-lens/lesson01.html">从第1课开始</a>
+        </div>
+        <div class="hero-metrics" aria-label="课程上线指标">
+          <div class="metric"><strong>20/100</strong><span>核心课程已上线</span></div>
+          <div class="metric"><strong>20/20</strong><span>核心音频 A级标准</span></div>
+          <div class="metric"><strong>2/5</strong><span>宇宙观阶段完成</span></div>
+        </div>
+      </div>
 
-  <div class="courses">
-    <!-- Course 1 -->
-    <a href="/cosmic-lens/lesson01.html" class="course-card">
-      <div class="course-num">1</div>
-      <div class="course-info">
-        <h3>🌌 宇宙是模拟的？三大物理Bug解密</h3>
-        <p>模拟假说三重论证、量子叠加/纠缠的代码解释、宇宙参数的精密调校、暗物质新解</p>
-        <div class="course-meta">
-          <span>📖 14章</span><span>🧪 5练习</span><span>⏱ 35分钟</span><span>⭐ 进阶</span>
+      <aside class="mission-panel" aria-label="课程阶段轨道图">
+        <div class="orbit">
+          <div class="orbit-ring"></div>
+          <div class="core">COSMIC<br>LENS</div>
+          <div class="node one"><strong>01-10</strong>物理支柱</div>
+          <div class="node two"><strong>11-20</strong>计算支柱</div>
+          <div class="node three"><strong>21-40</strong>模拟检测</div>
+          <div class="node four"><strong>41-100</strong>意识与伦理</div>
         </div>
-      </div>
-    </a>
-    <!-- Course 2 -->
-    <a href="/cosmic-lens/lesson02.html" class="course-card">
-      <div class="course-num">2</div>
-      <div class="course-info">
-        <h3>🧩 博斯特罗姆三难困境深度拆解</h3>
-        <p>从哲学怀疑论到统计学论证——三命题展开、嵌套模拟倍增器、四大反驳与回应、伦理意义</p>
-        <div class="course-meta">
-          <span>📖 6章</span><span>🧪 5练习</span><span>⏱ 40分钟</span><span>⭐ 进阶</span>
-        </div>
-      </div>
-    </a>
-    <!-- Course 3 -->
-    <a href="/cosmic-lens/lesson03.html" class="course-card">
-      <div class="course-num">3</div>
-      <div class="course-info">
-        <h3>⚡ 计算宇宙学：指令周期与内存限制</h3>
-        <p>普朗克时间→宇宙主频10⁴³Hz | 贝肯斯坦界限→内存10¹²²bits | 劳埃德终极笔记本 | 全息原理</p>
-        <div class="course-meta">
-          <span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐⭐ 硬核</span>
-        </div>
-      </div>
-    </a>
-    <!-- Course 4 -->
-    <a href="/cosmic-lens/lesson04.html" class="course-card">
-      <div class="course-num">4</div>
-      <div class="course-info">
-        <h3>🌀 量子力学速通：叠加态·测量·退相干</h3>
-        <p>双缝实验「观测即改变」| 叠加态=延迟计算 | 四种诠释 | 退相干=自动降级 | 量子力学三件套</p>
-        <div class="course-meta">
-          <span>📖 5章</span><span>🧪 5练习</span><span>⏱ 40分钟</span><span>⭐⭐⭐ 进阶</span>
-        </div>
-      </div>
-    </a>
-    <!-- Course 5 -->
-    <a href="/cosmic-lens/lesson05.html" class="course-card">
-      <div class="course-num">5</div>
-      <div class="course-info">
-        <h3>🔗 量子纠缠与贝尔不等式</h3>
-        <p>EPR悖论 | CHSH不等式 | 2022诺奖实验 | 局域实在论被排除 | 纠缠=共享指针</p>
-        <div class="course-meta">
-          <span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐⭐ 硬核</span>
-        </div>
-      </div>
-    </a>
-    <!-- Course 6 -->
-    <a href="/cosmic-lens/lesson06.html" class="course-card">
-      <div class="course-num">6</div>
-      <div class="course-info">
-        <h3>⚙️ 物理常数的精密调校问题</h3>
-        <p>26个自由参数 | α≈1/137天窗 | 暗能量10¹²⁰优化 | 人择原理三等级 | 多重宇宙的哲学代价</p>
-        <div class="course-meta">
-          <span>📖 4章</span><span>🧪 5练习</span><span>⏱ 40分钟</span><span>⭐⭐⭐ 进阶</span>
-        </div>
-      </div>
-    </a>
-    <!-- Course 7 -->
-    <a href="/cosmic-lens/lesson07.html" class="course-card">
-      <div class="course-num">7</div>
-      <div class="course-info">
-        <h3>💻 图灵完备宇宙</h3>
-        <p>丘奇-图灵-多伊奇论题 | 康威生命游戏4条规则→图灵完备 | 数字物理学 | it from bit</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
-      </div>
-    </a>
-    <!-- Course 8 -->
-    <a href="/cosmic-lens/lesson08.html" class="course-card">
-      <div class="course-num">8</div>
-      <div class="course-info">
-        <h3>🕳️ 信息守恒与黑洞</h3>
-        <p>黑洞信息悖论 | 霍金辐射 | 熵∝面积 | 全息原理 | 3D世界=2D投影 | 萨斯坎德「黑洞战争」</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
-      </div>
-    </a>
-    <!-- Course 9 -->
-    <a href="/cosmic-lens/lesson09.html" class="course-card">
-      <div class="course-num">9</div>
-      <div class="course-info">
-        <h3>🌌 暗能量与宇宙膨胀</h3>
-        <p>1998加速膨胀诺奖发现 | 暗能量68% | w≈-1 | 大冻结/大撕裂 | 哈勃张力5σ之谜</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 40分钟</span><span>⭐⭐⭐ 进阶</span></div>
-      </div>
-    </a>
-    <!-- Course 10 -->
-    <a href="/cosmic-lens/lesson10.html" class="course-card">
-      <div class="course-num">10</div>
-      <div class="course-info">
-        <h3>🌊 多重世界 vs 哥本哈根</h3>
-        <p>MWI埃弗雷特1957 | 坍缩不存在 | 退相干历史 | 维格纳的朋友 | 无穷分支vs唯一现实</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
-      </div>
-    </a>
-    <!-- Course 11 -->
-    <a href="/cosmic-lens/lesson11.html" class="course-card">
-      <div class="course-num">11</div>
-      <div class="course-info">
-        <h3>🧭 人择原理</h3>
-        <p>卡特人择原理 | 选择效应 | 弱/强人择 | 精细调校 | 多重宇宙推理</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐ 进阶</span></div>
-      </div>
-    </a>
-    <!-- Course 12 -->
-    <a href="/cosmic-lens/lesson12.html" class="course-card">
-      <div class="course-num">12</div>
-      <div class="course-info">
-        <h3>⚛️ 宇宙是量子计算机</h3>
-        <p>Seth Lloyd | 宇宙计算上限 | 10^120次操作 | 10^90比特 | 贝肯斯坦界限</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
-      </div>
-    </a>
-    <!-- Course 13 -->
-    <a href="/cosmic-lens/lesson13.html" class="course-card">
-      <div class="course-num">13</div>
-      <div class="course-info">
-        <h3>🧮 计算的本质</h3>
-        <p>图灵机 | λ演算 | Church-Turing论题 | Rule 110 | 计算等价性</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
-      </div>
-    </a>
-    <!-- Course 14 -->
-    <a href="/cosmic-lens/lesson14.html" class="course-card">
-      <div class="course-num">14</div>
-      <div class="course-info">
-        <h3>⬛ 康威生命游戏深潜</h3>
-        <p>生命游戏 | 四条规则 | 滑翔机 | 逻辑门 | 图灵完备 | 涌现复杂性</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
-      </div>
-    </a>
-    <!-- Course 15 -->
-    <a href="/cosmic-lens/lesson15.html" class="course-card">
-      <div class="course-num">15</div>
-      <div class="course-info">
-        <h3>🔢 数字物理学</h3>
-        <p>Wheeler it from bit | 信息本体论 | 数字物理 | 离散宇宙 | 可检验性</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
-      </div>
-    </a>
-    <!-- Course 16 -->
-    <a href="/cosmic-lens/lesson16.html" class="course-card">
-      <div class="course-num">16</div>
-      <div class="course-info">
-        <h3>🧊 全息模拟论</h3>
-        <p>全息原理 | 黑洞面积熵 | AdS/CFT | 量子纠错 | 2D编码3D空间</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
-      </div>
-    </a>
-    <!-- Course 17 -->
-    <a href="/cosmic-lens/lesson17.html" class="course-card">
-      <div class="course-num">17</div>
-      <div class="course-info">
-        <h3>🧬 量子信息速通</h3>
-        <p>qubit | 量子门 | 纠缠 | Grover算法 | Shor算法 | 量子纠错</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 55分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
-      </div>
-    </a>
-    <!-- Course 18 -->
-    <a href="/cosmic-lens/lesson18.html" class="course-card">
-      <div class="course-num">18</div>
-      <div class="course-info">
-        <h3>🛸 大过滤器理论</h3>
-        <p>费米悖论 | Drake方程 | 大过滤器 | 动物园假说 | 模拟沙盒 | 宇宙沉默</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐ 进阶</span></div>
-      </div>
-    </a>
-    <!-- Course 19 -->
-    <a href="/cosmic-lens/lesson19.html" class="course-card">
-      <div class="course-num">19</div>
-      <div class="course-info">
-        <h3>🧠 意识不可计算？</h3>
-        <p>Penrose | 皇帝新脑 | Gödel论证 | Orch-OR | 意识不可计算 | AI边界</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 55分钟</span><span>⭐⭐⭐⭐⭐ 挑战</span></div>
-      </div>
-    </a>
-    <!-- Course 20 -->
-    <a href="/cosmic-lens/lesson20.html" class="course-card">
-      <div class="course-num">20</div>
-      <div class="course-info">
-        <h3>🧱 阶段二总结</h3>
-        <p>阶段总结 | 物理支柱 | 计算支柱 | 三支柱模型 | 模拟假说路线图</p>
-        <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐ 进阶</span></div>
-      </div>
-    </a>
-
-    <!-- Coming Soon -->
-    <div class="coming-soon">
-      <h3>🔮 更多课程即将上线</h3>
-      <p style="color:var(--text-dim);">祖先模拟 · 基座现实 · 嵌套模拟 · 模拟检测 · 模拟伦理</p>
-      <p style="color:var(--text-dim);margin-top:4px;">终极目标：100门课程 · 完整的宇宙观体系</p>
+      </aside>
     </div>
-  </div>
-</div>
+  </section>
+
+  <section class="section" id="phase-map">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Learning Radar</div>
+          <h2>四段式宇宙观推进</h2>
+        </div>
+        <p class="section-desc">页面采用深色玻璃态、金色高亮与星云蓝紫辅助色，保留学院感，同时让课程状态更像一个可继续推进的任务控制台。</p>
+      </div>
+
+      <div class="phase-grid">
+        <article class="phase-card complete">
+          <span class="phase-kicker">已完成</span>
+          <h3>物理支柱</h3>
+          <p>量子叠加、贝尔不等式、宇宙常数与多重世界，搭建模拟假说的物理证据层。</p>
+          <div class="phase-progress"><div class="progress-line"><span style="--progress:100%"></span></div><div class="progress-text">第1-10课 · 100%</div></div>
+        </article>
+        <article class="phase-card active">
+          <span class="phase-kicker">当前阶段</span>
+          <h3>计算支柱</h3>
+          <p>图灵机、生命游戏、全息原理、量子信息与意识边界，解释宇宙如何像计算系统运行。</p>
+          <div class="phase-progress"><div class="progress-line"><span style="--progress:100%"></span></div><div class="progress-text">第11-20课 · 100%</div></div>
+        </article>
+        <article class="phase-card next">
+          <span class="phase-kicker">规划中</span>
+          <h3>模拟检测</h3>
+          <p>祖先模拟、基座现实、嵌套模拟、可检验信号与边界条件。</p>
+          <div class="phase-progress"><div class="progress-line"><span style="--progress:0%"></span></div><div class="progress-text">第21-40课 · 待上线</div></div>
+        </article>
+        <article class="phase-card next">
+          <span class="phase-kicker">规划中</span>
+          <h3>意识与伦理</h3>
+          <p>观察者、自由意志、AI意识、模拟伦理与终极宇宙观整合。</p>
+          <div class="phase-progress"><div class="progress-line"><span style="--progress:0%"></span></div><div class="progress-text">第41-100课 · 待上线</div></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="course-list">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="section-label">Course Matrix</div>
+          <h2>20课核心课程矩阵</h2>
+        </div>
+        <p class="section-desc">切换学习模式可以快速筛选物理支柱、计算支柱和阶段总结课。所有课程均包含正文、练习和统一规格音频。</p>
+      </div>
+
+      <div class="course-console">
+        <div class="console-top">
+          <div class="traffic" aria-hidden="true"><span></span><span></span><span></span></div>
+          <div class="console-title">cosmic-lens://curriculum/core-lessons · 20 modules online</div>
+          <div class="mode-tabs" aria-label="学习模式筛选">
+            <button class="mode-tab active" type="button" data-filter="all">全部</button>
+            <button class="mode-tab" type="button" data-filter="physical">物理支柱</button>
+            <button class="mode-tab" type="button" data-filter="compute">计算支柱</button>
+            <button class="mode-tab" type="button" data-filter="bridge">总结桥接</button>
+          </div>
+        </div>
+
+        <div class="courses">
+          <a href="/cosmic-lens/lesson01.html" class="course-card" data-phase="physical">
+            <div class="course-num">01</div>
+            <div class="course-info">
+              <h3>🌌 宇宙是模拟的？三大物理Bug解密</h3>
+              <p>模拟假说三重论证、量子叠加/纠缠的代码解释、宇宙参数的精密调校、暗物质新解</p>
+              <div class="course-meta"><span>📖 14章</span><span>🧪 5练习</span><span>⏱ 35分钟</span><span>⭐ 进阶</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson02.html" class="course-card" data-phase="physical">
+            <div class="course-num">02</div>
+            <div class="course-info">
+              <h3>🧩 博斯特罗姆三难困境深度拆解</h3>
+              <p>从哲学怀疑论到统计学论证，三命题展开、嵌套模拟倍增器、四大反驳与回应、伦理意义</p>
+              <div class="course-meta"><span>📖 6章</span><span>🧪 5练习</span><span>⏱ 40分钟</span><span>⭐ 进阶</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson03.html" class="course-card" data-phase="physical">
+            <div class="course-num">03</div>
+            <div class="course-info">
+              <h3>⚡ 计算宇宙学：指令周期与内存限制</h3>
+              <p>普朗克时间对应宇宙主频，贝肯斯坦界限对应内存，全息原理揭示信息边界</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson04.html" class="course-card" data-phase="physical">
+            <div class="course-num">04</div>
+            <div class="course-info">
+              <h3>🌀 量子力学速通：叠加态·测量·退相干</h3>
+              <p>双缝实验、叠加态、测量问题、四种诠释与退相干，把量子力学改写成计算语言</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 40分钟</span><span>⭐⭐⭐ 进阶</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson05.html" class="course-card" data-phase="physical">
+            <div class="course-num">05</div>
+            <div class="course-info">
+              <h3>🔗 量子纠缠与贝尔不等式</h3>
+              <p>EPR悖论、CHSH不等式与2022诺奖实验，说明局域实在论为何被排除</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson06.html" class="course-card" data-phase="physical">
+            <div class="course-num">06</div>
+            <div class="course-info">
+              <h3>⚙️ 物理常数的精密调校问题</h3>
+              <p>26个自由参数、精细结构常数、暗能量微调、人择原理与多重宇宙的哲学成本</p>
+              <div class="course-meta"><span>📖 4章</span><span>🧪 5练习</span><span>⏱ 40分钟</span><span>⭐⭐⭐ 进阶</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson07.html" class="course-card" data-phase="physical">
+            <div class="course-num">07</div>
+            <div class="course-info">
+              <h3>💻 图灵完备宇宙</h3>
+              <p>丘奇-图灵-多伊奇论题、康威生命游戏、数字物理学与 Wheeler 的 it from bit</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson08.html" class="course-card" data-phase="physical">
+            <div class="course-num">08</div>
+            <div class="course-info">
+              <h3>🕳️ 信息守恒与黑洞</h3>
+              <p>黑洞信息悖论、霍金辐射、面积熵、全息原理与萨斯坎德的黑洞战争</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson09.html" class="course-card" data-phase="physical">
+            <div class="course-num">09</div>
+            <div class="course-info">
+              <h3>🌌 暗能量与宇宙膨胀</h3>
+              <p>1998加速膨胀、暗能量占比、状态方程、大冻结/大撕裂与哈勃张力之谜</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 40分钟</span><span>⭐⭐⭐ 进阶</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson10.html" class="course-card" data-phase="physical">
+            <div class="course-num">10</div>
+            <div class="course-info">
+              <h3>🌊 多重世界 vs 哥本哈根</h3>
+              <p>埃弗雷特多重世界、退相干历史、维格纳的朋友，以及唯一现实和无穷分支的冲突</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson11.html" class="course-card" data-phase="compute">
+            <div class="course-num">11</div>
+            <div class="course-info">
+              <h3>🧭 人择原理</h3>
+              <p>卡特人择原理、选择效应、弱/强人择、精细调校与多重宇宙推理</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐ 进阶</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson12.html" class="course-card" data-phase="compute">
+            <div class="course-num">12</div>
+            <div class="course-info">
+              <h3>⚛️ 宇宙是量子计算机</h3>
+              <p>Seth Lloyd 的宇宙计算上限、10^120次操作、10^90比特与贝肯斯坦界限</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson13.html" class="course-card" data-phase="compute">
+            <div class="course-num">13</div>
+            <div class="course-info">
+              <h3>🧮 计算的本质</h3>
+              <p>图灵机、λ演算、Church-Turing论题、Rule 110 与计算等价性</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson14.html" class="course-card" data-phase="compute">
+            <div class="course-num">14</div>
+            <div class="course-info">
+              <h3>⬛ 康威生命游戏深潜</h3>
+              <p>生命游戏四条规则、滑翔机、逻辑门、图灵完备与涌现复杂性</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson15.html" class="course-card" data-phase="compute">
+            <div class="course-num">15</div>
+            <div class="course-info">
+              <h3>🔢 数字物理学</h3>
+              <p>Wheeler 的 it from bit、信息本体论、数字物理、离散宇宙与可检验性</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson16.html" class="course-card" data-phase="compute">
+            <div class="course-num">16</div>
+            <div class="course-info">
+              <h3>🧊 全息模拟论</h3>
+              <p>全息原理、黑洞面积熵、AdS/CFT、量子纠错与二维编码三维空间</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 50分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson17.html" class="course-card" data-phase="compute">
+            <div class="course-num">17</div>
+            <div class="course-info">
+              <h3>🧬 量子信息速通</h3>
+              <p>qubit、量子门、纠缠、Grover算法、Shor算法与量子纠错</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 55分钟</span><span>⭐⭐⭐⭐ 硬核</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson18.html" class="course-card" data-phase="compute">
+            <div class="course-num">18</div>
+            <div class="course-info">
+              <h3>🛸 大过滤器理论</h3>
+              <p>费米悖论、Drake方程、大过滤器、动物园假说、模拟沙盒与宇宙沉默</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐ 进阶</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson19.html" class="course-card" data-phase="compute">
+            <div class="course-num">19</div>
+            <div class="course-info">
+              <h3>🧠 意识不可计算？</h3>
+              <p>Penrose、《皇帝新脑》、Gödel论证、Orch-OR、意识不可计算与AI边界</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 55分钟</span><span>⭐⭐⭐⭐⭐ 挑战</span></div>
+            </div>
+          </a>
+          <a href="/cosmic-lens/lesson20.html" class="course-card" data-phase="bridge">
+            <div class="course-num">20</div>
+            <div class="course-info">
+              <h3>🧱 阶段二总结</h3>
+              <p>阶段总结、物理支柱、计算支柱、三支柱模型与模拟假说路线图</p>
+              <div class="course-meta"><span>📖 5章</span><span>🧪 5练习</span><span>⏱ 45分钟</span><span>⭐⭐⭐ 进阶</span></div>
+            </div>
+          </a>
+        </div>
+
+        <div class="coming-soon">
+          <h3>更多课程即将上线</h3>
+          <p>祖先模拟 · 基座现实 · 嵌套模拟 · 模拟检测 · 模拟伦理</p>
+          <p>终极目标：100门课程，形成完整的模拟假说与宇宙观体系。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
 
 <footer class="footer">
-  <p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong></p>
+  <p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong> · Future Curriculum Console</p>
 </footer>
 
 <script>
-const c=document.getElementById('starfield'),x=c.getContext('2d');
-let s=[],w,h;
-function r(){w=c.width=innerWidth;h=c.height=document.documentElement.scrollHeight;
-let a=[],n=Math.floor(w*h/5000);
-for(let i=0;i<n;i++) a.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.3,a:Math.random()*0.6+0.2,t:Math.random()*Math.PI*2});
-s=a;}
-function d(){x.clearRect(0,0,w,h);s.forEach(e=>{e.t+=0.008;let a=e.a*(0.5+0.5*Math.sin(e.t));
-x.beginPath();x.arc(e.x,e.y,e.r,0,Math.PI*2);x.fillStyle=`rgba(200,210,255,${a})`;x.fill();});
-requestAnimationFrame(d);}
-r();d();addEventListener('resize',r);
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [];
+let width = 0;
+let height = 0;
+let animationFrame = null;
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function resizeStarfield() {
+  width = canvas.width = window.innerWidth;
+  height = canvas.height = Math.max(document.documentElement.scrollHeight, window.innerHeight);
+  const density = Math.min(520, Math.floor((width * height) / 5200));
+  stars = Array.from({ length: density }, () => ({
+    x: Math.random() * width,
+    y: Math.random() * height,
+    r: Math.random() * 1.35 + 0.25,
+    a: Math.random() * 0.55 + 0.18,
+    t: Math.random() * Math.PI * 2,
+    v: Math.random() * 0.18 + 0.04
+  }));
+}
+
+function drawStarfield() {
+  ctx.clearRect(0, 0, width, height);
+  stars.forEach((star) => {
+    if (!reduceMotion) star.t += star.v * 0.035;
+    const alpha = star.a * (0.62 + 0.38 * Math.sin(star.t));
+    ctx.beginPath();
+    ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(245, 248, 255, ${alpha})`;
+    ctx.fill();
+  });
+
+  ctx.strokeStyle = 'rgba(226, 182, 79, 0.08)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < stars.length; i += 8) {
+    const a = stars[i];
+    const b = stars[(i + 11) % stars.length];
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist < 140) {
+      ctx.globalAlpha = 1 - dist / 140;
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.stroke();
+    }
+  }
+  ctx.globalAlpha = 1;
+
+  if (!reduceMotion) animationFrame = requestAnimationFrame(drawStarfield);
+}
+
+resizeStarfield();
+drawStarfield();
+window.addEventListener('resize', () => {
+  if (animationFrame) cancelAnimationFrame(animationFrame);
+  resizeStarfield();
+  drawStarfield();
+});
+
+document.querySelectorAll('.mode-tab').forEach((button) => {
+  button.addEventListener('click', () => {
+    const filter = button.dataset.filter;
+    document.querySelectorAll('.mode-tab').forEach((item) => item.classList.toggle('active', item === button));
+    document.querySelectorAll('.course-card').forEach((card) => {
+      card.classList.toggle('hidden', filter !== 'all' && card.dataset.phase !== filter);
+    });
+  });
+});
 </script>
 </body>
 </html>
