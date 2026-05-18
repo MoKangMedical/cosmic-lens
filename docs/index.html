@@ -112,6 +112,8 @@ body {
 .coming-soon { text-align: center; padding: 40px; background: var(--bg-card); border: 1px dashed var(--border); border-radius: 16px; margin-top: 24px; }
 .coming-soon h3 { color: var(--accent); margin-bottom: 8px; }
 .coming-soon p { color: var(--text-dim); }
+.coming-soon a { color: var(--accent2); text-decoration: none; font-weight: 700; }
+.coming-soon a:hover { color: var(--text); }
 
 /* Footer */
 .footer { border-top: 1px solid var(--border); padding: 40px 0; text-align: center; color: var(--text-dim); font-size: 0.9em; margin-top: 80px; }
@@ -129,6 +131,11 @@ body {
   .hero { padding: 100px 0 60px; }
   .section { padding: 60px 0; }
   .stats { gap: 20px; }
+  .nav { padding: 12px 16px; }
+  .nav-logo { font-size: 1.05em; white-space: nowrap; }
+  .nav-links { gap: 0; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .nav-cta { padding: 8px 14px; font-size: 0.82em; white-space: nowrap; }
 }
 </style>
 </head>
@@ -159,7 +166,7 @@ body {
     <span class="gradient">就是宇宙的边界</span>
   </h1>
   <p>
-    从物理学的三大未解Bug出发，穿越量子纠缠、模拟假说、暗物质之谜与意识本质——这里不是课堂，是一场与宇宙的对话。
+    从物理学的三大未解Bug出发，穿越量子纠缠、计算宇宙、全息原理与意识本质——20门核心课程已上线，这里不是课堂，是一场与宇宙的对话。
   </p>
   <div class="hero-buttons">
     <a href="/cosmic-lens/docs/courses.html" class="btn-primary">🔭 开始探索第一课</a>
@@ -169,10 +176,10 @@ body {
 
 <!-- Stats -->
 <div class="stats container">
-  <div class="stat-item"><div class="stat-num">🌌</div><div class="stat-label">宇宙观体系</div></div>
-  <div class="stat-item"><div class="stat-num">1</div><div class="stat-label">首发课程</div></div>
+  <div class="stat-item"><div class="stat-num">20</div><div class="stat-label">已上线课程</div></div>
+  <div class="stat-item"><div class="stat-num">2/5</div><div class="stat-label">阶段完成</div></div>
   <div class="stat-item"><div class="stat-num">100</div><div class="stat-label">终极目标</div></div>
-  <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">探索无尽</div></div>
+  <div class="stat-item"><div class="stat-num">A级</div><div class="stat-label">音频审计</div></div>
 </div>
 
 <!-- Course Section -->
@@ -183,21 +190,33 @@ body {
     <p>每门课程都是一扇窗——推开它，看见全新的宇宙维度</p>
   </div>
   <div class="course-grid">
-    <!-- Course 1 -->
-    <a href="/cosmic-lens/docs/lesson01.html" class="course-card">
-      <div class="course-num">第 1 课 · 基础</div>
-      <h3>🌌 宇宙是模拟的？三大物理Bug解密</h3>
-      <p>模拟假说三重论证、量子叠加/纠缠的代码解释、宇宙参数的精密调校、暗物质新解</p>
-      <div class="meta">
-        <span>📖 14章</span>
-        <span>🧪 5练习</span>
-        <span>⏱ 35分钟</span>
-      </div>
+    <a href="/cosmic-lens/docs/lesson20.html" class="course-card">
+      <div class="course-num">第 20 课 · 阶段总结</div>
+      <h3>🧱 阶段二总结</h3>
+      <p>回收物理支柱与计算支柱，建立模拟假说三支柱路线图，进入下一阶段的祖先模拟深潜。</p>
+      <div class="meta"><span>📖 5章</span><span>🧪 5练习</span><span>🎧 A级音频</span></div>
     </a>
-    <!-- Coming soon placeholder -->
+    <a href="/cosmic-lens/docs/lesson19.html" class="course-card">
+      <div class="course-num">第 19 课 · 意识边界</div>
+      <h3>🧠 意识不可计算？</h3>
+      <p>从彭罗斯、哥德尔论证到 Orch-OR，讨论模拟假说绕不开的主观体验与 AI 边界。</p>
+      <div class="meta"><span>📖 5章</span><span>🧪 5练习</span><span>🎧 A级音频</span></div>
+    </a>
+    <a href="/cosmic-lens/docs/lesson18.html" class="course-card">
+      <div class="course-num">第 18 课 · 宇宙沉默</div>
+      <h3>🛸 大过滤器理论</h3>
+      <p>从费米悖论、Drake方程到模拟沙盒解释，把“他们在哪里”变成概率与选择效应地图。</p>
+      <div class="meta"><span>📖 5章</span><span>🧪 5练习</span><span>🎧 A级音频</span></div>
+    </a>
+    <a href="/cosmic-lens/docs/lesson17.html" class="course-card">
+      <div class="course-num">第 17 课 · 量子语法</div>
+      <h3>🧬 量子信息速通</h3>
+      <p>量子比特、量子门、纠缠、Grover 与 Shor 算法，理解量子计算真正快在哪里。</p>
+      <div class="meta"><span>📖 5章</span><span>🧪 5练习</span><span>🎧 A级音频</span></div>
+    </a>
     <div class="coming-soon">
-      <h3>🔮 第 2 课 · 即将上线</h3>
-      <p>更多宇宙观课程正在准备中<br>从量子到意识，从微观到宏观</p>
+      <h3>📚 20 门核心课程已上线</h3>
+      <p>阶段一「物理支柱」与阶段二「计算支柱」已完成<br><a href="/cosmic-lens/docs/courses.html">查看完整课程目录 →</a></p>
     </div>
   </div>
 </section>
