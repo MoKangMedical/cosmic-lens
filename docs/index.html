@@ -163,7 +163,7 @@
 <div class="overlay">
   <div class="top-bar">
     <a href="/cosmic-lens/" class="brand">
-      <div class="brand-mark">🔭</div>
+      <div class="brand-mark"></div>
       <div class="brand-text">
         <strong>宇宙之镜</strong>
         <span>Cosmic Lens Academy</span>
@@ -173,7 +173,7 @@
       <a href="courses.html">课程矩阵</a>
       <a href="lesson01.html">开始探索</a>
     </div>
-    <a class="nav-cta" href="lesson01.html">🚀 进入宇宙</a>
+    <a class="nav-cta" href="lesson01.html">进入宇宙</a>
   </div>
 
   <div class="bottom-bar">
@@ -195,10 +195,10 @@
   <h3 id="infoTitle"></h3>
   <p id="infoDesc"></p>
   <div class="meta" id="infoMeta"></div>
-  <div class="click-hint">🖱 点击进入课程</div>
+  <div class="click-hint">点击进入课程</div>
 </div>
 
-<div class="hint">🖱 拖拽旋转 &nbsp;·&nbsp; 滚轮缩放 &nbsp;·&nbsp; 悬停星球查看课程 &nbsp;·&nbsp; 点击跳转</div>
+<div class="hint">拖拽旋转 &nbsp;·&nbsp; 滚轮缩放 &nbsp;·&nbsp; 悬停星球查看课程 &nbsp;·&nbsp; 点击跳转</div>
 
 <script type="importmap">
 {
@@ -215,26 +215,26 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // ── Course data ──
 const courses = [
-  { id:1, title:'模拟假说：我们是缸中之脑吗？', desc:'模拟假说三重论证、量子叠加/纠缠的代码解释、宇宙参数的精密调校', time:'35min', phase:0, icon:'🌌' },
-  { id:2, title:'博斯特罗姆三难困境深度拆解', desc:'从哲学怀疑论到统计学论证，三命题展开、嵌套模拟倍增器', time:'40min', phase:0, icon:'🧩' },
-  { id:3, title:'计算宇宙学：指令周期与内存限制', desc:'普朗克时间对应宇宙主频，贝肯斯坦界限对应内存，全息原理揭示信息边界', time:'45min', phase:0, icon:'⚡' },
-  { id:4, title:'量子力学速通：叠加态·测量·退相干', desc:'双缝实验、叠加态、测量问题、四种诠释与退相干', time:'40min', phase:0, icon:'🌀' },
-  { id:5, title:'量子纠缠与贝尔不等式', desc:'EPR悖论、CHSH不等式与2022诺奖实验，说明局域实在论为何被排除', time:'45min', phase:0, icon:'🔗' },
-  { id:6, title:'物理常数的精密调校问题', desc:'26个自由参数、精细结构常数、暗能量微调、人择原理', time:'40min', phase:0, icon:'⚙️' },
-  { id:7, title:'图灵完备宇宙', desc:'丘奇-图灵-多伊奇论题、康威生命游戏、数字物理学与it from bit', time:'50min', phase:0, icon:'💻' },
-  { id:8, title:'信息守恒与黑洞', desc:'黑洞信息悖论、霍金辐射、面积熵、全息原理与萨斯坎德的黑洞战争', time:'45min', phase:0, icon:'🕳️' },
-  { id:9, title:'暗能量与宇宙膨胀', desc:'1998加速膨胀、暗能量占比、状态方程、大冻结/大撕裂与哈勃张力之谜', time:'40min', phase:0, icon:'🌌' },
-  { id:10, title:'多重世界 vs 哥本哈根', desc:'埃弗雷特多重世界、退相干历史、维格纳的朋友，唯一现实和无穷分支', time:'50min', phase:0, icon:'🌊' },
-  { id:11, title:'人择原理', desc:'卡特人择原理、选择效应、弱/强人择、精细调校与多重宇宙推理', time:'45min', phase:1, icon:'🧭' },
-  { id:12, title:'宇宙是量子计算机', desc:'Seth Lloyd宇宙计算上限、10^120次操作、10^90比特与贝肯斯坦界限', time:'50min', phase:1, icon:'⚛️' },
-  { id:13, title:'计算的本质', desc:'图灵机、λ演算、Church-Turing论题、Rule 110 与计算等价性', time:'50min', phase:1, icon:'🧮' },
-  { id:14, title:'康威生命游戏深潜', desc:'生命游戏四条规则、滑翔机、逻辑门、图灵完备与涌现复杂性', time:'50min', phase:1, icon:'⬛' },
-  { id:15, title:'数字物理学', desc:'Wheeler 的 it from bit、信息本体论、数字物理、离散宇宙与可检验性', time:'50min', phase:1, icon:'🔢' },
-  { id:16, title:'全息模拟论', desc:'全息原理、黑洞面积熵、AdS/CFT、量子纠错与二维编码三维空间', time:'50min', phase:1, icon:'🧊' },
-  { id:17, title:'量子信息速通', desc:'qubit、量子门、纠缠、Grover算法、Shor算法与量子纠错', time:'55min', phase:1, icon:'🧬' },
-  { id:18, title:'大过滤器理论', desc:'费米悖论、Drake方程、大过滤器、动物园假说、模拟沙盒与宇宙沉默', time:'45min', phase:1, icon:'🛸' },
-  { id:19, title:'意识不可计算？', desc:'Penrose、《皇帝新脑》、Gödel论证、Orch-OR、意识不可计算与AI边界', time:'55min', phase:1, icon:'🧠' },
-  { id:20, title:'阶段二总结', desc:'物理支柱 + 计算支柱、三支柱模型与模拟假说路线图', time:'45min', phase:1, icon:'🧱' },
+  { id:1, title:'模拟假说：我们是缸中之脑吗？', desc:'模拟假说三重论证、量子叠加/纠缠的代码解释、宇宙参数的精密调校', time:'35min', phase:0 },
+  { id:2, title:'博斯特罗姆三难困境深度拆解', desc:'从哲学怀疑论到统计学论证，三命题展开、嵌套模拟倍增器', time:'40min', phase:0 },
+  { id:3, title:'计算宇宙学：指令周期与内存限制', desc:'普朗克时间对应宇宙主频，贝肯斯坦界限对应内存，全息原理揭示信息边界', time:'45min', phase:0 },
+  { id:4, title:'量子力学速通：叠加态·测量·退相干', desc:'双缝实验、叠加态、测量问题、四种诠释与退相干', time:'40min', phase:0 },
+  { id:5, title:'量子纠缠与贝尔不等式', desc:'EPR悖论、CHSH不等式与2022诺奖实验，说明局域实在论为何被排除', time:'45min', phase:0 },
+  { id:6, title:'物理常数的精密调校问题', desc:'26个自由参数、精细结构常数、暗能量微调、人择原理', time:'40min', phase:0 },
+  { id:7, title:'图灵完备宇宙', desc:'丘奇-图灵-多伊奇论题、康威生命游戏、数字物理学与it from bit', time:'50min', phase:0 },
+  { id:8, title:'信息守恒与黑洞', desc:'黑洞信息悖论、霍金辐射、面积熵、全息原理与萨斯坎德的黑洞战争', time:'45min', phase:0 },
+  { id:9, title:'暗能量与宇宙膨胀', desc:'1998加速膨胀、暗能量占比、状态方程、大冻结/大撕裂与哈勃张力之谜', time:'40min', phase:0 },
+  { id:10, title:'多重世界 vs 哥本哈根', desc:'埃弗雷特多重世界、退相干历史、维格纳的朋友，唯一现实和无穷分支', time:'50min', phase:0 },
+  { id:11, title:'人择原理', desc:'卡特人择原理、选择效应、弱/强人择、精细调校与多重宇宙推理', time:'45min', phase:1 },
+  { id:12, title:'宇宙是量子计算机', desc:'Seth Lloyd宇宙计算上限、10^120次操作、10^90比特与贝肯斯坦界限', time:'50min', phase:1 },
+  { id:13, title:'计算的本质', desc:'图灵机、λ演算、Church-Turing论题、Rule 110 与计算等价性', time:'50min', phase:1 },
+  { id:14, title:'康威生命游戏深潜', desc:'生命游戏四条规则、滑翔机、逻辑门、图灵完备与涌现复杂性', time:'50min', phase:1 },
+  { id:15, title:'数字物理学', desc:'Wheeler 的 it from bit、信息本体论、数字物理、离散宇宙与可检验性', time:'50min', phase:1 },
+  { id:16, title:'全息模拟论', desc:'全息原理、黑洞面积熵、AdS/CFT、量子纠错与二维编码三维空间', time:'50min', phase:1 },
+  { id:17, title:'量子信息速通', desc:'qubit、量子门、纠缠、Grover算法、Shor算法与量子纠错', time:'55min', phase:1 },
+  { id:18, title:'大过滤器理论', desc:'费米悖论、Drake方程、大过滤器、动物园假说、模拟沙盒与宇宙沉默', time:'45min', phase:1 },
+  { id:19, title:'意识不可计算？', desc:'Penrose、《皇帝新脑》、Gödel论证、Orch-OR、意识不可计算与AI边界', time:'55min', phase:1 },
+  { id:20, title:'阶段二总结', desc:'物理支柱 + 计算支柱、三支柱模型与模拟假说路线图', time:'45min', phase:1 },
 ];
 
 const phaseColors = [
@@ -559,9 +559,9 @@ function updateInfoPanel(node, screenX, screenY) {
   }
   const c = node.course;
   infoNum.textContent = `第 ${c.id} 课 · Phase ${c.phase + 1}`;
-  infoTitle.textContent = `${c.icon} ${c.title}`;
+  infoTitle.textContent = `${c.title}`;
   infoDesc.textContent = c.desc;
-  infoMeta.textContent = `⏱ ${c.time} · 📖 5章 · 🧪 5练习`;
+  infoMeta.textContent = `${c.time} · 5章 · 5练习`;
   infoPanel.style.left = screenX + 'px';
   infoPanel.style.top = screenY + 'px';
   infoPanel.classList.add('active');
