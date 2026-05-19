@@ -7,37 +7,185 @@
 <meta name="description" content="从“每个物理量来自是/否问题”到信息本体论、离散宇宙和模拟假说的强弱版本。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
 <style>
-:root{--bg:#050510;--bg-card:rgba(15,15,40,0.85);--text:#e0e0f0;--text-dim:#9090c0;--accent:#7b5fff;--accent2:#00d4ff;--gradient:linear-gradient(135deg,#7b5fff,#00d4ff);--border:rgba(120,100,255,0.2)}
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Noto Sans SC',sans-serif;line-height:1.8}
-#starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 24px;backdrop-filter:blur(20px);background:rgba(5,5,16,0.75);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.nav-back{color:var(--text-dim);text-decoration:none;font-size:0.9em}.nav-back:hover{color:var(--text)}
-.nav-title{font-size:0.95em;font-weight:700;background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.nav-space{width:60px}
-.content-wrapper{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:80px 20px 60px}
-.content h1{font-size:2.2em;font-weight:900}
-.content .subtitle{color:var(--accent2);font-size:1em;margin-bottom:32px}
-.audio-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:32px;display:flex;align-items:center;gap:16px}
-.audio-bar audio{flex:1;filter:invert(0.9) hue-rotate(230deg);height:36px}
-.course-meta{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:24px;font-size:0.85em;color:var(--text-dim)}
-.content h2{font-size:1.6em;font-weight:800;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--border)}
-.content h3{font-size:1.25em;font-weight:700;margin:32px 0 12px;color:var(--accent2)}
-.content blockquote{margin:16px 0;padding:16px 20px;border-left:3px solid var(--accent);background:var(--bg-card);border-radius:0 8px 8px 0;font-style:italic}
-.content p{margin:12px 0}
-.content table{width:100%;border-collapse:collapse;margin:20px 0;font-size:0.9em;overflow-x:auto;display:block}
-.content th{background:rgba(123,95,255,0.15);padding:10px 12px;text-align:left;font-weight:700;border-bottom:2px solid var(--border)}
-.content td{padding:10px 12px;border-bottom:1px solid rgba(120,100,255,0.1)}
-.content tr:hover td{background:rgba(123,95,255,0.05)}
-.content pre{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:10px;padding:16px 20px;overflow-x:auto;margin:16px 0}
-.content code{font-family:'SF Mono','Menlo',monospace;font-size:0.85em;color:var(--accent2)}
-.content details{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin:14px 0}
-.content summary{cursor:pointer;color:var(--accent2);font-weight:700}
-.pagination{display:flex;justify-content:center;align-items:center;gap:20px;margin-top:48px;padding-top:24px;border-top:1px solid var(--border)}
-.pagination a{color:var(--accent2);text-decoration:none;padding:8px 20px;border:1px solid var(--border);border-radius:20px;transition:all 0.2s}
-.pagination a:hover{border-color:var(--accent);background:rgba(123,95,255,0.1)}
-.footer{text-align:center;color:var(--text-dim);font-size:0.85em;padding:40px 0;position:relative;z-index:1}
-@media(max-width:600px){.content-wrapper{padding:70px 16px 40px}.content h1{font-size:1.6em}.audio-bar{align-items:flex-start;flex-direction:column}.audio-bar audio{width:100%}.pagination{gap:10px;flex-wrap:wrap}.pagination a{padding:8px 14px}}
+:root {
+  --bg: #07070a;
+  --bg-card: rgba(18,18,24,0.9);
+  --bg-card2: rgba(24,24,31,0.95);
+  --text: #f5f5f7;
+  --text2: #a0a0ab;
+  --text3: #656570;
+  --gold: #e2b64f;
+  --gold-light: #f0d478;
+  --gold-dark: #b8922e;
+  --border: #22222d;
+  --border2: #2e2e3a;
+  --radius: 14px;
+  --radius-lg: 20px;
+  --serif: 'Noto Serif SC', serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(226,182,79,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 60%, rgba(59,130,246,0.03) 0%, transparent 60%);
+}
+
+/* Starfield canvas */
+#starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+
+/* Navigation */
+.nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:14px 24px; backdrop-filter:blur(20px); background:rgba(7,7,10,0.82); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.nav-back { color:var(--text3); text-decoration:none; font-size:0.88em; transition:color 0.2s; }
+.nav-back:hover { color:var(--text); }
+.nav-title { font-size:0.92em; font-weight:700; color:var(--gold); font-family:var(--serif); }
+.nav-space { width:60px; }
+
+/* Content */
+.content-wrapper { position:relative; z-index:1; max-width:780px; margin:0 auto; padding:80px 20px 60px; }
+.content h1 { font-size:2.2em; font-weight:900; margin-bottom:8px; line-height:1.3; font-family:var(--serif); }
+.content .subtitle { color:var(--text2); font-size:1em; margin-bottom:32px; }
+
+/* Audio Player */
+.audio-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.audio-bar span { color:var(--gold); font-weight:600; font-size:0.9em; }
+.audio-bar audio { flex:1; filter: invert(0.85) sepia(1) hue-rotate(10deg) saturate(2); height:36px; }
+
+/* Course Meta */
+.course-meta {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  font-size: 0.85em;
+  color: var(--text3);
+}
+.course-meta span { display:flex; align-items:center; gap:4px; }
+
+/* Exercise Box */
+.exercise-box {
+  background: linear-gradient(135deg, rgba(226,182,79,0.06), rgba(245,217,138,0.03));
+  border: 1px solid rgba(226,182,79,0.15);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin: 20px 0;
+}
+.exercise-box summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--gold);
+  font-size: 1em;
+  padding: 4px 0;
+  list-style: none;
+}
+.exercise-box summary::-webkit-details-marker { display:none; }
+.exercise-box summary::before { content: '▶ '; font-size:0.8em; transition: transform 0.2s; display:inline-block; }
+.exercise-box[open] summary::before { transform: rotate(90deg); }
+
+/* Pandoc Styles */
+.content h2 { font-size:1.6em; font-weight:800; margin:48px 0 16px; padding-top:24px; border-top:1px solid var(--border); font-family:var(--serif); }
+.content h3 { font-size:1.25em; font-weight:700; margin:32px 0 12px; color:var(--gold); }
+.content h4 { font-size:1.1em; font-weight:600; margin:24px 0 8px; }
+.content blockquote {
+  margin: 16px 0;
+  padding: 16px 20px;
+  border-left: 3px solid var(--gold);
+  background: var(--bg-card);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: var(--text2);
+}
+.content p { margin:12px 0; }
+.content ul, .content ol { margin:12px 0; padding-left:1.8em; }
+.content li { margin:6px 0; }
+.content a { color:var(--gold); }
+.content hr { border:none; border-top:1px solid var(--border); margin:32px 0; }
+.content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 0.9em;
+  overflow-x: auto;
+  display: block;
+}
+.content th {
+  background: rgba(226,182,79,0.1);
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 700;
+  border-bottom: 2px solid rgba(226,182,79,0.2);
+}
+.content td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.content tr:hover td { background: rgba(226,182,79,0.04); }
+.content pre {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+.content code {
+  font-family: 'SF Mono', 'Fira Code', 'Menlo', monospace;
+  font-size: 0.85em;
+  color: var(--gold-light);
+}
+.content pre code { color: var(--text); display:block; }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.pagination a {
+  color: var(--gold);
+  text-decoration: none;
+  padding: 8px 20px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+.pagination a:hover { border-color:var(--gold); background:rgba(226,182,79,0.08); }
+
+/* Footer */
+.footer { text-align:center; color:var(--text3); font-size:0.85em; padding:40px 0; position:relative; z-index:1; }
+.footer a { color: var(--gold); }
+
+/* Starfield warm tint */
+.star-warm { color: #f0d478; }
+
+@media (max-width:600px) {
+  .content-wrapper { padding:70px 16px 40px; }
+  .content h1 { font-size:1.6em; }
+}
 </style>
 </head>
 <body>
