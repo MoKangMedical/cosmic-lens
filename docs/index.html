@@ -198,7 +198,7 @@
   <div class="click-hint">点击进入课程</div>
 </div>
 
-<div class="hint">拖拽旋转 &nbsp;·&nbsp; 滚轮缩放 &nbsp;·&nbsp; 悬停星球查看课程 &nbsp;·&nbsp; 点击跳转</div>
+<div class="hint">拖拽旋转 · 滚轮缩放 · 悬停星球查看课程 · 点击跳转</div>
 
 <script type="importmap">
 {
@@ -233,7 +233,7 @@ const courses = [
   { id:16, title:'全息模拟论', desc:'全息原理、黑洞面积熵、AdS/CFT、量子纠错与二维编码三维空间', time:'50min', phase:1 },
   { id:17, title:'量子信息速通', desc:'qubit、量子门、纠缠、Grover算法、Shor算法与量子纠错', time:'55min', phase:1 },
   { id:18, title:'大过滤器理论', desc:'费米悖论、Drake方程、大过滤器、动物园假说、模拟沙盒与宇宙沉默', time:'45min', phase:1 },
-  { id:19, title:'意识不可计算？', desc:'Penrose、《皇帝新脑》、Gödel论证、Orch-OR、意识不可计算与AI边界', time:'55min', phase:1 },
+  { id:19, title:'意识不可计算？', desc:'Penrose、《皇帝新脑》、Godel论证、Orch-OR、意识不可计算与AI边界', time:'55min', phase:1 },
   { id:20, title:'阶段二总结', desc:'物理支柱 + 计算支柱、三支柱模型与模拟假说路线图', time:'45min', phase:1 },
 ];
 
@@ -246,168 +246,452 @@ const phaseColors = [
 const container = document.getElementById('cosmos');
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.5, 200);
-camera.position.set(0, 8, 28);
+const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.3, 300);
+camera.position.set(0, 14, 28);
 camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(container.clientWidth, container.clientHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.2;
+renderer.toneMappingExposure = 1.3;
 container.appendChild(renderer.domElement);
 
 // Orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.08;
-controls.minDistance = 8;
-controls.maxDistance = 55;
-controls.maxPolarAngle = Math.PI * 0.75;
-controls.target.set(0, 1, 0);
+controls.minDistance = 6;
+controls.maxDistance = 80;
+controls.maxPolarAngle = Math.PI * 0.78;
+controls.target.set(0, 0.5, 0);
 controls.autoRotate = true;
-controls.autoRotateSpeed = 0.15;
+controls.autoRotateSpeed = 0.12;
 controls.update();
 
 // ── Lighting ──
-const ambientLight = new THREE.AmbientLight(0x1a1a2e, 0.6);
+const ambientLight = new THREE.AmbientLight(0x0c0c1a, 0.5);
 scene.add(ambientLight);
 
-const pointLight1 = new THREE.PointLight(0xe2b64f, 80, 60, 1.5);
-pointLight1.position.set(15, 10, 5);
-scene.add(pointLight1);
+const coreLight = new THREE.PointLight(0xe2b64f, 120, 40, 1.5);
+coreLight.position.set(0, 1, 0);
+scene.add(coreLight);
 
-const pointLight2 = new THREE.PointLight(0x6b5ce7, 40, 40, 1.5);
-pointLight2.position.set(-10, -3, -8);
-scene.add(pointLight2);
+const purpleLight = new THREE.PointLight(0x6b5ce7, 50, 35, 1.5);
+purpleLight.position.set(-8, -1, -5);
+scene.add(purpleLight);
 
-// ── Starfield ──
-const starGeo = new THREE.BufferGeometry();
-const starCount = 4000;
-const starPositions = new Float32Array(starCount * 3);
-const starColors = new Float32Array(starCount * 3);
-const starSizes = new Float32Array(starCount);
-
-for (let i = 0; i < starCount; i++) {
-  const theta = Math.random() * Math.PI * 2;
-  const phi = Math.acos(2 * Math.random() - 1);
-  const r = 35 + Math.random() * 50;
-  starPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-  starPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-  starPositions[i * 3 + 2] = r * Math.cos(phi);
-
-  const colorChoice = Math.random();
-  if (colorChoice < 0.1) {
-    starColors[i * 3] = 0.89; starColors[i * 3 + 1] = 0.71; starColors[i * 3 + 2] = 0.31; // gold
-  } else if (colorChoice < 0.2) {
-    starColors[i * 3] = 0.42; starColors[i * 3 + 1] = 0.36; starColors[i * 3 + 2] = 0.91; // purple
-  } else if (colorChoice < 0.35) {
-    starColors[i * 3] = 0.6; starColors[i * 3 + 1] = 0.8; starColors[i * 3 + 2] = 1.0; // blue-white
-  } else {
-    starColors[i * 3] = 0.85; starColors[i * 3 + 1] = 0.85; starColors[i * 3 + 2] = 0.9;
-  }
-  starSizes[i] = Math.random() * 2.5 + 0.3;
+// ══════════════════════════════════════════════════════
+//  CANVAS TEXTURE GENERATION for nebulae
+// ══════════════════════════════════════════════════════
+function createGlowTexture(innerColor, outerColor, size) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+  gradient.addColorStop(0, innerColor);
+  gradient.addColorStop(0.3, innerColor);
+  gradient.addColorStop(0.7, outerColor);
+  gradient.addColorStop(1, 'transparent');
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.needsUpdate = true;
+  return tex;
 }
-starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
-starGeo.setAttribute('size', new THREE.BufferAttribute(starSizes, 1));
 
-const starMat = new THREE.PointsMaterial({
-  size: 0.12,
-  vertexColors: true,
-  blending: THREE.AdditiveBlending,
-  depthWrite: false,
-  transparent: true,
-  opacity: 0.85,
-});
-const starField = new THREE.Points(starGeo, starMat);
-scene.add(starField);
+function createNebulaSprite(texture, color, size, opacity) {
+  const mat = new THREE.SpriteMaterial({
+    map: texture,
+    color: color,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: opacity,
+  });
+  const sprite = new THREE.Sprite(mat);
+  sprite.scale.set(size, size, 1);
+  return sprite;
+}
 
-// ── Nebula clouds ──
-function createNebula(center, color, count, spread, size) {
+// Generate textures
+const goldGlowTex = createGlowTexture('rgba(226,182,79,0.8)', 'rgba(226,182,79,0)', 256);
+const purpleGlowTex = createGlowTexture('rgba(107,92,231,0.7)', 'rgba(107,92,231,0)', 256);
+const blueGlowTex = createGlowTexture('rgba(60,100,220,0.6)', 'rgba(40,60,180,0)', 256);
+const pinkGlowTex = createGlowTexture('rgba(200,80,150,0.5)', 'rgba(180,60,130,0)', 256);
+const softGlowTex = createGlowTexture('rgba(180,180,220,0.4)', 'rgba(100,100,160,0)', 256);
+
+// ══════════════════════════════════════════════════════
+//  GALAXY: Spiral Disk + Arms + Core
+// ══════════════════════════════════════════════════════
+
+// -- Galactic disk (thin flat layer of background stars) --
+function createGalacticDisk(innerRadius, outerRadius, count) {
   const geo = new THREE.BufferGeometry();
   const pos = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+
   for (let i = 0; i < count; i++) {
-    pos[i * 3] = center.x + (Math.random() - 0.5) * spread;
-    pos[i * 3 + 1] = center.y + (Math.random() - 0.5) * spread * 0.5;
-    pos[i * 3 + 2] = center.z + (Math.random() - 0.5) * spread;
+    const angle = Math.random() * Math.PI * 2;
+    // Bias toward center with sqrt distribution
+    const r = innerRadius + Math.random() * (outerRadius - innerRadius);
+    pos[i * 3] = Math.cos(angle) * r;
+    pos[i * 3 + 1] = (Math.random() - 0.5) * 1.2;
+    pos[i * 3 + 2] = Math.sin(angle) * r;
+
+    // Dim blue-white
+    const b = 0.5 + Math.random() * 0.5;
+    colors[i * 3] = 0.5 + b * 0.3;
+    colors[i * 3 + 1] = 0.5 + b * 0.35;
+    colors[i * 3 + 2] = 0.6 + b * 0.4;
   }
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   const mat = new THREE.PointsMaterial({
-    size, color, blending: THREE.AdditiveBlending,
-    depthWrite: false, transparent: true, opacity: 0.35,
+    size: 0.08,
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.5,
   });
   return new THREE.Points(geo, mat);
 }
 
-scene.add(createNebula(new THREE.Vector3(8, 1, -2), 0xe2b64f, 600, 8, 0.45));
-scene.add(createNebula(new THREE.Vector3(-6, -2, 3), 0x6b5ce7, 500, 8, 0.4));
-scene.add(createNebula(new THREE.Vector3(0, 3, -5), 0x4466aa, 400, 7, 0.35));
+const disk = createGalacticDisk(1.5, 18, 6000);
+disk.rotation.x = -Math.PI * 0.42;
+disk.position.y = 1;
+scene.add(disk);
 
-// ── Course nodes as glowing spheres ──
+// -- Spiral Arms (4 main arms using logarithmic spiral) --
+function createSpiralArm(armOffset, count, spread, armColor, lengthScale) {
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+  const sizes = new Float32Array(count);
+
+  const colorObj = new THREE.Color(armColor);
+
+  for (let i = 0; i < count; i++) {
+    // Logarithmic spiral: r = a * e^(b*theta)
+    const t = i / count; // 0 to 1 from center to edge
+    const angle = armOffset + t * Math.PI * 2.4; // ~1.2 full turns
+    const r = 0.6 + t * 16 * lengthScale;
+
+    // Spread perpendicular to spiral
+    const spreadAmount = (Math.random() - 0.5) * spread * (0.3 + t * 1.0);
+    const perpAngle = angle + Math.PI / 2;
+
+    pos[i * 3] = Math.cos(angle) * r + Math.cos(perpAngle) * spreadAmount;
+    pos[i * 3 + 1] = (Math.random() - 0.5) * 0.6 * (0.3 + t * 1.0);
+    pos[i * 3 + 2] = Math.sin(angle) * r + Math.sin(perpAngle) * spreadAmount;
+
+    // Color: brighter toward center, dimmer toward edge
+    const brightness = 1.0 - t * 0.6;
+    colors[i * 3] = colorObj.r * brightness;
+    colors[i * 3 + 1] = colorObj.g * brightness;
+    colors[i * 3 + 2] = colorObj.b * brightness;
+    sizes[i] = (0.04 + Math.random() * 0.1) * (1.2 - t * 0.8);
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+  // Use ShaderMaterial for variable-size points
+  const mat = new THREE.PointsMaterial({
+    size: 0.15,
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.75,
+  });
+  return new THREE.Points(geo, mat);
+}
+
+const armsGroup = new THREE.Group();
+
+// 4 spiral arms with different colors
+armsGroup.add(createSpiralArm(0, 2500, 1.8, '#ffcc44', 1.0));           // gold arm
+armsGroup.add(createSpiralArm(Math.PI / 2, 2500, 1.6, '#eebb33', 0.95)); // warm gold
+armsGroup.add(createSpiralArm(Math.PI, 2500, 1.5, '#9977dd', 0.9));      // purple arm
+armsGroup.add(createSpiralArm(Math.PI * 1.5, 2500, 1.7, '#aa88ee', 0.85));// light purple
+
+armsGroup.rotation.x = -Math.PI * 0.42;
+armsGroup.position.y = 1;
+scene.add(armsGroup);
+
+// -- Dust lanes between arms (darker regions) --
+function createDustLane(armOffset, count, lengthScale) {
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const t = i / count;
+    const angle = armOffset + Math.PI / 4 + t * Math.PI * 2.2; // offset between arms
+    const r = 1.5 + t * 15 * lengthScale;
+    const spread = (Math.random() - 0.5) * 3.5 * (0.3 + t);
+    const perpAngle = angle + Math.PI / 2;
+    pos[i * 3] = Math.cos(angle) * r + Math.cos(perpAngle) * spread;
+    pos[i * 3 + 1] = (Math.random() - 0.5) * 0.4;
+    pos[i * 3 + 2] = Math.sin(angle) * r + Math.sin(perpAngle) * spread;
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const mat = new THREE.PointsMaterial({
+    size: 0.12,
+    color: 0x331133,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.2,
+  });
+  return new THREE.Points(geo, mat);
+}
+
+const dustGroup = new THREE.Group();
+dustGroup.add(createDustLane(0, 1200, 1.0));
+dustGroup.add(createDustLane(Math.PI / 2, 1200, 0.95));
+dustGroup.add(createDustLane(Math.PI, 1100, 0.9));
+dustGroup.add(createDustLane(Math.PI * 1.5, 1100, 0.85));
+dustGroup.rotation.x = -Math.PI * 0.42;
+dustGroup.position.y = 1;
+scene.add(dustGroup);
+
+// ══════════════════════════════════════════════════════
+//  NEBULAE — large glow sprites
+// ══════════════════════════════════════════════════════
+const nebulae = [];
+
+function addNebula(tex, color, pos, size, opacity) {
+  const sprite = createNebulaSprite(tex, color, size, opacity);
+  sprite.position.copy(pos);
+  scene.add(sprite);
+  nebulae.push({ sprite, baseOpacity: opacity });
+}
+
+// Major nebula regions
+addNebula(goldGlowTex, '#e2b64f', new THREE.Vector3(5, 2, -3), 14, 0.25);
+addNebula(purpleGlowTex, '#6b5ce7', new THREE.Vector3(-6, -1, 4), 13, 0.22);
+addNebula(blueGlowTex, '#4466cc', new THREE.Vector3(-2, 0.5, -7), 11, 0.18);
+addNebula(pinkGlowTex, '#cc5599', new THREE.Vector3(8, -0.5, 2), 10, 0.15);
+addNebula(blueGlowTex, '#3355aa', new THREE.Vector3(-9, 1, -1), 9, 0.14);
+addNebula(purpleGlowTex, '#8855cc', new THREE.Vector3(3, -1.5, 6), 12, 0.17);
+addNebula(softGlowTex, '#8899cc', new THREE.Vector3(0, 3, -2), 15, 0.12);
+addNebula(goldGlowTex, '#d4a040', new THREE.Vector3(-4, 2.5, 3), 10, 0.16);
+
+// ══════════════════════════════════════════════════════
+//  GLOBULAR CLUSTERS — dense spherical star groups
+// ══════════════════════════════════════════════════════
+function createGlobularCluster(center, radius, count, color) {
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = Math.pow(Math.random(), 0.6) * radius; // bias toward center
+    pos[i * 3] = center.x + r * Math.sin(phi) * Math.cos(theta);
+    pos[i * 3 + 1] = center.y + r * Math.sin(phi) * Math.sin(theta);
+    pos[i * 3 + 2] = center.z + r * Math.cos(phi);
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const mat = new THREE.PointsMaterial({
+    size: 0.06,
+    color: color,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.7,
+  });
+  return new THREE.Points(geo, mat);
+}
+
+const clustersGroup = new THREE.Group();
+clustersGroup.add(createGlobularCluster(new THREE.Vector3(12, 3, 5), 2.5, 800, '#eebb77'));
+clustersGroup.add(createGlobularCluster(new THREE.Vector3(-11, 2, -4), 2.0, 700, '#bb99ee'));
+clustersGroup.add(createGlobularCluster(new THREE.Vector3(4, 5, -9), 1.8, 600, '#99ccee'));
+clustersGroup.add(createGlobularCluster(new THREE.Vector3(-7, -3, 8), 2.2, 700, '#ffcc88'));
+clustersGroup.add(createGlobularCluster(new THREE.Vector3(14, 0, -6), 1.5, 500, '#ddaacc'));
+scene.add(clustersGroup);
+
+// ══════════════════════════════════════════════════════
+//  DEEP BACKGROUND STARS (several layers)
+// ══════════════════════════════════════════════════════
+function createStarLayer(radius, count, size, opacity, colorMix) {
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(count * 3);
+  const colors = new Float32Array(count * 3);
+
+  for (let i = 0; i < count; i++) {
+    const theta = Math.random() * Math.PI * 2;
+    const phi = Math.acos(2 * Math.random() - 1);
+    const r = radius + (Math.random() - 0.5) * radius * 0.6;
+    pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+    pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+    pos[i * 3 + 2] = r * Math.cos(phi);
+
+    const mix = Math.random();
+    if (mix < colorMix[0]) {
+      colors[i * 3] = 0.89; colors[i * 3 + 1] = 0.71; colors[i * 3 + 2] = 0.31; // gold
+    } else if (mix < colorMix[1]) {
+      colors[i * 3] = 0.42; colors[i * 3 + 1] = 0.36; colors[i * 3 + 2] = 0.91; // purple
+    } else if (mix < colorMix[2]) {
+      colors[i * 3] = 0.5; colors[i * 3 + 1] = 0.7; colors[i * 3 + 2] = 1.0; // blue
+    } else {
+      const w = 0.6 + Math.random() * 0.4;
+      colors[i * 3] = w; colors[i * 3 + 1] = w; colors[i * 3 + 2] = w * 1.05;
+    }
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  const mat = new THREE.PointsMaterial({
+    size, vertexColors: true, blending: THREE.AdditiveBlending,
+    depthWrite: false, transparent: true, opacity,
+  });
+  return new THREE.Points(geo, mat);
+}
+
+// Layer 1: deepest distant stars
+scene.add(createStarLayer(55, 3000, 0.15, 0.5, [0.05, 0.1, 0.2]));
+// Layer 2: mid-distance
+scene.add(createStarLayer(40, 2500, 0.1, 0.6, [0.08, 0.14, 0.25]));
+// Layer 3: nearby bright
+scene.add(createStarLayer(28, 1800, 0.08, 0.7, [0.1, 0.18, 0.3]));
+
+// ══════════════════════════════════════════════════════
+//  GALACTIC CENTER — bright core region
+// ══════════════════════════════════════════════════════
+
+// Central bulge cluster
+const bulgeGeo = new THREE.BufferGeometry();
+const bulgeCount = 1500;
+const bulgePos = new Float32Array(bulgeCount * 3);
+const bulgeColors = new Float32Array(bulgeCount * 3);
+for (let i = 0; i < bulgeCount; i++) {
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(2 * Math.random() - 1);
+  const r = Math.pow(Math.random(), 1.5) * 3.5;
+  bulgePos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+  bulgePos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta) * 0.4; // flattened
+  bulgePos[i * 3 + 2] = r * Math.cos(phi);
+
+  const b = 1 - (r / 3.5) * 0.5;
+  bulgeColors[i * 3] = 1.0 * b;
+  bulgeColors[i * 3 + 1] = 0.85 * b;
+  bulgeColors[i * 3 + 2] = 0.5 * b;
+}
+bulgeGeo.setAttribute('position', new THREE.BufferAttribute(bulgePos, 3));
+bulgeGeo.setAttribute('color', new THREE.BufferAttribute(bulgeColors, 3));
+const bulgeMat = new THREE.PointsMaterial({
+  size: 0.1, vertexColors: true, blending: THREE.AdditiveBlending,
+  depthWrite: false, transparent: true, opacity: 0.8,
+});
+const bulge = new THREE.Points(bulgeGeo, bulgeMat);
+bulge.position.y = 1;
+scene.add(bulge);
+
+// Core glow layers
+const coreGlowOuter = new THREE.Mesh(
+  new THREE.SphereGeometry(2.5, 64, 64),
+  new THREE.MeshBasicMaterial({
+    color: 0xe2b64f, transparent: true, opacity: 0.06,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  })
+);
+coreGlowOuter.position.set(0, 1, 0);
+scene.add(coreGlowOuter);
+
+const coreGlowMid = new THREE.Mesh(
+  new THREE.SphereGeometry(1.5, 64, 64),
+  new THREE.MeshBasicMaterial({
+    color: 0xeebb55, transparent: true, opacity: 0.1,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  })
+);
+coreGlowMid.position.set(0, 1, 0);
+scene.add(coreGlowMid);
+
+const coreGlowInner = new THREE.Mesh(
+  new THREE.SphereGeometry(0.8, 64, 64),
+  new THREE.MeshBasicMaterial({
+    color: 0xffdd88, transparent: true, opacity: 0.15,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  })
+);
+coreGlowInner.position.set(0, 1, 0);
+scene.add(coreGlowInner);
+
+// Central sun
+const innerCoreGeo = new THREE.SphereGeometry(0.35, 64, 64);
+const innerCoreMat = new THREE.MeshStandardMaterial({
+  color: 0xe2b64f,
+  emissive: 0xe2b64f,
+  emissiveIntensity: 1.8,
+  roughness: 0.15,
+  metalness: 0.7,
+});
+const innerCore = new THREE.Mesh(innerCoreGeo, innerCoreMat);
+innerCore.position.set(0, 1, 0);
+scene.add(innerCore);
+
+// ══════════════════════════════════════════════════════
+//  COURSE NODES — floating within the galaxy
+// ══════════════════════════════════════════════════════
 const courseNodes = [];
 const courseGroup = new THREE.Group();
 scene.add(courseGroup);
 
-// Spiral distribution
-function getSpiralPosition(index, phase, totalInPhase) {
-  const baseAngle = phase === 0 ? Math.PI * 0.35 : Math.PI * 1.35;
-  const angleSpread = Math.PI * 0.7;
-  const t = index / Math.max(totalInPhase - 1, 1);
-  const angle = baseAngle + t * angleSpread;
-  const radius = 8 + (phase === 0 ? t * 5 : (1 - t) * 6);
-  // Add some vertical variation
-  const verticalOffset = Math.sin(t * Math.PI) * 2.5 + (phase === 0 ? -1 : 2);
+// Enhanced spiral distribution — nodes follow galaxy arms
+function getCoursePosition(index, phase, totalInPhase) {
+  // Phase 0 (gold): along arms 0 and 1 (right side)
+  // Phase 1 (purple): along arms 2 and 3 (left side)
+  const armBase = phase === 0 ? 0 : Math.PI;
+  const t = totalInPhase === 1 ? 0.5 : index / (totalInPhase - 1);
+  const armAngle = armBase + t * Math.PI * 1.8;
+  const radius = 3 + t * 11;
+  const spread = (index % 2 === 0 ? 1 : -1) * (1.2 + t * 1.5);
 
-  return {
-    x: Math.cos(angle) * radius,
-    y: verticalOffset,
-    z: Math.sin(angle) * radius - 3,
-  };
+  const perpAngle = armAngle + Math.PI / 2;
+  const flatX = Math.cos(armAngle) * radius + Math.cos(perpAngle) * spread;
+  const flatZ = Math.sin(armAngle) * radius + Math.sin(perpAngle) * spread;
+  const y = 1.5 + Math.sin(t * Math.PI) * 2 + (phase === 0 ? -0.5 : 1);
+
+  return { x: flatX, y, z: flatZ };
 }
 
-const phaseCounts = [10, 10]; // courses per phase
-const phaseOffsets = [0, 10]; // start index per phase
+const phaseCounts = [10, 10];
+const phaseOffsets = [0, 10];
 
 courses.forEach((course, i) => {
   const phase = course.phase;
   const posInPhase = i - phaseOffsets[phase];
   const totalInPhase = phaseCounts[phase];
-  const pos = getSpiralPosition(posInPhase, phase, totalInPhase);
+  const pos = getCoursePosition(posInPhase, phase, totalInPhase);
 
-  // Glow sphere (outer halo)
-  const glowGeo = new THREE.SphereGeometry(0.55, 32, 32);
+  const color = phaseColors[phase];
+
+  // Outer glow halo
+  const glowGeo = new THREE.SphereGeometry(0.7, 32, 32);
   const glowMat = new THREE.MeshBasicMaterial({
-    color: phaseColors[phase],
-    transparent: true,
-    opacity: 0.18,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
+    color, transparent: true, opacity: 0.15,
+    blending: THREE.AdditiveBlending, depthWrite: false,
   });
   const glow = new THREE.Mesh(glowGeo, glowMat);
 
   // Core sphere
-  const coreGeo = new THREE.SphereGeometry(0.3, 32, 32);
+  const coreGeo = new THREE.SphereGeometry(0.35, 32, 32);
   const coreMat = new THREE.MeshStandardMaterial({
-    color: phaseColors[phase],
-    emissive: phaseColors[phase],
-    emissiveIntensity: 0.8,
-    roughness: 0.3,
-    metalness: 0.5,
+    color, emissive: color, emissiveIntensity: 0.8,
+    roughness: 0.3, metalness: 0.5,
   });
   const core = new THREE.Mesh(coreGeo, coreMat);
 
-  // Ring
-  const ringGeo = new THREE.TorusGeometry(0.42, 0.03, 16, 48);
+  // Orbit ring
+  const ringGeo = new THREE.TorusGeometry(0.5, 0.04, 16, 48);
   const ringMat = new THREE.MeshBasicMaterial({
-    color: phaseColors[phase],
-    transparent: true,
-    opacity: 0.5,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
+    color, transparent: true, opacity: 0.45,
+    blending: THREE.AdditiveBlending, depthWrite: false,
   });
   const ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.6;
+  ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.8;
 
   const group = new THREE.Group();
   group.add(glow);
@@ -427,32 +711,9 @@ courses.forEach((course, i) => {
   });
 });
 
-// ── Central core ──
-const coreGlowGeo = new THREE.SphereGeometry(1.2, 64, 64);
-const coreGlowMat = new THREE.MeshBasicMaterial({
-  color: 0xe2b64f,
-  transparent: true,
-  opacity: 0.12,
-  blending: THREE.AdditiveBlending,
-  depthWrite: false,
-});
-const coreGlow = new THREE.Mesh(coreGlowGeo, coreGlowMat);
-coreGlow.position.set(0, 1, 0);
-scene.add(coreGlow);
-
-const innerCoreGeo = new THREE.SphereGeometry(0.4, 64, 64);
-const innerCoreMat = new THREE.MeshStandardMaterial({
-  color: 0xe2b64f,
-  emissive: 0xe2b64f,
-  emissiveIntensity: 1.5,
-  roughness: 0.2,
-  metalness: 0.6,
-});
-const innerCore = new THREE.Mesh(innerCoreGeo, innerCoreMat);
-innerCore.position.set(0, 1, 0);
-scene.add(innerCore);
-
-// ── Connection lines between courses in same phase ──
+// ══════════════════════════════════════════════════════
+//  PHASE CONNECTIONS — constellation lines
+// ══════════════════════════════════════════════════════
 function drawPhaseConnections() {
   const lineGroup = new THREE.Group();
 
@@ -464,19 +725,17 @@ function drawPhaseConnections() {
         const a = phaseNodes[i].mesh.position;
         const b = phaseNodes[j].mesh.position;
         const dist = a.distanceTo(b);
-        if (dist > 6) continue; // skip far connections
+        if (dist > 7) continue;
 
         const points = [a.clone(), b.clone()];
         const lineGeo = new THREE.BufferGeometry().setFromPoints(points);
         const lineMat = new THREE.LineBasicMaterial({
           color: phaseColors[phase],
-          transparent: true,
-          opacity: 0.06,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false,
+          transparent: true, opacity: 0.05,
+          blending: THREE.AdditiveBlending, depthWrite: false,
         });
         const line = new THREE.Line(lineGeo, lineMat);
-        line.userData = { phase, opacity: 0.06 };
+        line.userData = { phase, opacity: 0.05 };
         lineGroup.add(line);
       }
     }
@@ -486,50 +745,44 @@ function drawPhaseConnections() {
 }
 const phaseLines = drawPhaseConnections();
 
-// ── Coming-soon placeholder nodes (Phase 3 & 4) ──
+// ══════════════════════════════════════════════════════
+//  FUTURE PHASE PLACEHOLDERS (dim nodes)
+// ══════════════════════════════════════════════════════
 function createPlaceholderNodes() {
   const group = new THREE.Group();
-  const color3 = new THREE.Color(0x666680);
-  const color4 = new THREE.Color(0x555570);
 
-  // Phase 3: 模拟检测 (21-40) — 8 nodes
+  // Phase 3: 模拟检测 (21-40) — scattered outer ring
   for (let i = 0; i < 8; i++) {
-    const angle = Math.PI * 1.6 + (i / 7) * Math.PI * 0.7;
-    const radius = 12 + i * 0.8;
+    const angle = Math.PI * 1.8 + (i / 7) * Math.PI * 0.8;
+    const radius = 13 + i * 0.6;
     const pos = {
       x: Math.cos(angle) * radius,
-      y: -1 + Math.sin(i * 0.8) * 2,
-      z: Math.sin(angle) * radius - 3,
+      y: 0.5 + Math.sin(i * 0.8) * 1.5,
+      z: Math.sin(angle) * radius - 2,
     };
-    const geo = new THREE.SphereGeometry(0.2, 16, 16);
+    const geo = new THREE.SphereGeometry(0.2, 12, 12);
     const mat = new THREE.MeshBasicMaterial({
-      color: color3,
-      transparent: true,
-      opacity: 0.15,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
+      color: 0x5566aa, transparent: true, opacity: 0.12,
+      blending: THREE.AdditiveBlending, depthWrite: false,
     });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(pos.x, pos.y, pos.z);
     group.add(mesh);
   }
 
-  // Phase 4: 意识与伦理 (41-100) — outer ring
+  // Phase 4: 意识与伦理 (41-100) — outermost ring
   for (let i = 0; i < 12; i++) {
-    const angle = Math.PI * 0.9 + (i / 11) * Math.PI;
-    const radius = 16 + i * 0.6;
+    const angle = Math.PI * 0.5 + (i / 11) * Math.PI * 0.9;
+    const radius = 16 + i * 0.5;
     const pos = {
       x: Math.cos(angle) * radius,
-      y: 2 + Math.sin(i * 0.5) * 1.5,
-      z: Math.sin(angle) * radius - 3,
+      y: 2 + Math.sin(i * 0.6) * 1.2,
+      z: Math.sin(angle) * radius - 2,
     };
-    const geo = new THREE.SphereGeometry(0.18, 16, 16);
+    const geo = new THREE.SphereGeometry(0.16, 12, 12);
     const mat = new THREE.MeshBasicMaterial({
-      color: color4,
-      transparent: true,
-      opacity: 0.1,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false,
+      color: 0x556677, transparent: true, opacity: 0.08,
+      blending: THREE.AdditiveBlending, depthWrite: false,
     });
     const mesh = new THREE.Mesh(geo, mat);
     mesh.position.set(pos.x, pos.y, pos.z);
@@ -541,9 +794,11 @@ function createPlaceholderNodes() {
 }
 const placeholderNodes = createPlaceholderNodes();
 
-// ── Hover / interaction ──
+// ══════════════════════════════════════════════════════
+//  INTERACTION — hover & click
+// ══════════════════════════════════════════════════════
 const raycaster = new THREE.Raycaster();
-raycaster.params.Points.threshold = 0.3;
+raycaster.params.Points.threshold = 0.5;
 const mouse = new THREE.Vector2();
 let hoveredNode = null;
 const infoPanel = document.getElementById('infoPanel');
@@ -559,7 +814,7 @@ function updateInfoPanel(node, screenX, screenY) {
   }
   const c = node.course;
   infoNum.textContent = `第 ${c.id} 课 · Phase ${c.phase + 1}`;
-  infoTitle.textContent = `${c.title}`;
+  infoTitle.textContent = c.title;
   infoDesc.textContent = c.desc;
   infoMeta.textContent = `${c.time} · 5章 · 5练习`;
   infoPanel.style.left = screenX + 'px';
@@ -581,14 +836,13 @@ renderer.domElement.addEventListener('mousemove', (e) => {
     const node = courseNodes.find(n => n.core === obj || n.glow === obj || n.ring === obj);
     if (node) {
       if (hoveredNode !== node) {
-        // Reset previous
         if (hoveredNode) {
           hoveredNode.targetScale = 1;
-          hoveredNode.glow.material.opacity = 0.18;
+          hoveredNode.glow.material.opacity = 0.15;
         }
         hoveredNode = node;
-        node.targetScale = 1.8;
-        node.glow.material.opacity = 0.5;
+        node.targetScale = 2.0;
+        node.glow.material.opacity = 0.55;
         document.body.style.cursor = 'pointer';
       }
       updateInfoPanel(node, e.clientX, e.clientY);
@@ -596,10 +850,9 @@ renderer.domElement.addEventListener('mousemove', (e) => {
     }
   }
 
-  // Nothing hit
   if (hoveredNode) {
     hoveredNode.targetScale = 1;
-    hoveredNode.glow.material.opacity = 0.18;
+    hoveredNode.glow.material.opacity = 0.15;
     hoveredNode = null;
   }
   document.body.style.cursor = 'default';
@@ -625,7 +878,9 @@ renderer.domElement.addEventListener('click', (e) => {
   }
 });
 
-// ── Animation loop ──
+// ══════════════════════════════════════════════════════
+//  ANIMATION LOOP
+// ══════════════════════════════════════════════════════
 const clock = new THREE.Clock();
 
 function animate() {
@@ -634,30 +889,43 @@ function animate() {
   const t = clock.getElapsedTime();
   controls.update();
 
-  // Animate node scales
+  // Smooth node scale transitions
   courseNodes.forEach(node => {
     const current = node.mesh.scale.x;
     const target = node.targetScale;
     node.mesh.scale.setScalar(current + (target - current) * 0.12);
-    node.ring.rotation.z += 0.003;
-    node.ring.rotation.x += 0.001;
+    node.ring.rotation.z += 0.004;
+    node.ring.rotation.x += 0.0015;
   });
 
-  // Pulse core
-  const pulse = 1 + Math.sin(t * 0.8) * 0.15;
-  coreGlow.scale.setScalar(pulse);
-  innerCore.material.emissiveIntensity = 1.5 + Math.sin(t * 1.2) * 0.5;
+  // Pulse central core
+  const pulse = 1 + Math.sin(t * 0.7) * 0.2;
+  coreGlowOuter.scale.setScalar(pulse);
+  coreGlowMid.scale.setScalar(pulse * 1.1);
+  coreGlowInner.scale.setScalar(pulse * 1.15);
+  innerCore.material.emissiveIntensity = 1.8 + Math.sin(t * 1.1) * 0.6;
 
-  // Rotate starfield very slowly
-  starField.rotation.y += 0.0001;
-  starField.rotation.x += 0.00005;
+  // Slowly rotate background star layers
+  scene.children.forEach(child => {
+    if (child.type === 'Points' && !child.isNodeRelated) {
+      // slight rotation on deep star layers
+    }
+  });
 
-  // Fade lines based on camera distance
+  // Subtle nebula pulsing
+  nebulae.forEach((n, i) => {
+    n.sprite.material.opacity = n.baseOpacity * (0.85 + Math.sin(t * 0.3 + i) * 0.15);
+    n.sprite.scale.x = n.sprite.scale.y * (1 + Math.sin(t * 0.25 + i * 1.5) * 0.03);
+  });
+
+  // Rotate spiral arms very slowly
+  armsGroup.rotation.z += 0.0001;
+  dustGroup.rotation.z += 0.00008;
+
+  // Connection lines fade with camera distance
   const camDist = camera.position.length();
   phaseLines.children.forEach(line => {
-    const phase = line.userData.phase;
-    const baseOpacity = line.userData.opacity;
-    line.material.opacity = baseOpacity * Math.min(1, 20 / camDist);
+    line.material.opacity = line.userData.opacity * Math.min(1, 22 / camDist);
   });
 
   renderer.render(scene, camera);
