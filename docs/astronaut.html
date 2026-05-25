@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宇航员视角 · 总观效应</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Noto+Serif+SC:wght@400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #020408;
+      --gold: #e2b64f;
+      --gold-light: #f0d478;
+      --gold-dark: #b8922e;
+      --blue: #4a9eff;
+      --blue-deep: #1a3a6e;
+      --text: #f5f5f7;
+      --text2: #a0a0ab;
+      --text3: #6a6a78;
+      --serif: 'Noto Serif SC', serif;
+      --sans: 'Inter', -apple-system, sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: var(--bg); font-family: var(--sans); color: var(--text); }
+
+    #cosmos { position: fixed; inset: 0; z-index: 0; }
+
+    /* Overlay */
+    .overlay {
+      position: fixed; inset: 0; z-index: 10;
+      pointer-events: none;
+      display: flex; flex-direction: column;
+      padding: 28px 36px 24px;
+    }
+    .overlay > * { pointer-events: auto; }
+
+    /* Top bar */
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-shrink: 0;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--text2); text-decoration: none; font-size: 0.85rem;
+      padding: 8px 16px; border-radius: 999px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.25s;
+    }
+    .back-link:hover {
+      color: var(--text); background: rgba(255,255,255,0.1);
+      border-color: rgba(226,182,79,0.25);
+    }
+    .title-area { text-align: right; }
+    .title-area .sub { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.14em; }
+    .title-area .main { font-size: 1.02rem; font-family: var(--serif); color: var(--gold); }
+
+    /* Center content area */
+    .center-stage {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+
+    /* Content panels */
+    .stage-panel {
+      position: absolute;
+      max-width: 560px; width: 90%;
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      pointer-events: none;
+      text-align: center;
+    }
+    .stage-panel.active {
+      opacity: 1; transform: translateY(0);
+      pointer-events: auto;
+    }
+    .stage-number {
+      font-size: 0.7rem; color: var(--gold); text-transform: uppercase;
+      letter-spacing: 0.2em; margin-bottom: 12px;
+    }
+    .stage-title {
+      font-family: var(--serif); font-size: 2rem; font-weight: 900;
+      color: var(--text); line-height: 1.25; margin-bottom: 20px;
+      text-shadow: 0 0 80px rgba(226,182,79,0.2);
+    }
+    .stage-body {
+      font-size: 0.95rem; line-height: 1.75; color: var(--text2);
+      font-weight: 300;
+    }
+    .stage-body strong { color: var(--text); font-weight: 600; }
+    .stage-body .highlight { color: var(--gold); }
+    .stage-body .quote {
+      display: block; margin: 16px 0; padding: 16px 20px;
+      border-left: 2px solid var(--gold);
+      background: rgba(226,182,79,0.05);
+      font-family: var(--serif); font-style: italic;
+      color: var(--gold-light); font-size: 0.9rem;
+      text-align: left;
+    }
+    .stage-body .stat {
+      display: inline-block; margin: 4px 6px; padding: 6px 14px;
+      border-radius: 999px; font-size: 0.8rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.06);
+      color: var(--text);
+    }
+
+    /* Bottom progress */
+    .bottom-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; flex-shrink: 0; padding-top: 16px;
+    }
+    .stage-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.08);
+      cursor: pointer; transition: all 0.3s;
+      position: relative;
+    }
+    .stage-dot:hover { background: rgba(226,182,79,0.3); border-color: var(--gold); }
+    .stage-dot.active { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 12px rgba(226,182,79,0.5); }
+    .stage-dot.visited { background: rgba(226,182,79,0.3); border-color: rgba(226,182,79,0.3); }
+
+    .hint-text {
+      font-size: 0.7rem; color: var(--text3);
+      margin-left: 12px; opacity: 0.7;
+    }
+
+    /* Intro overlay */
+    .intro-overlay {
+      position: fixed; inset: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(2,4,8,0.85);
+      backdrop-filter: blur(20px);
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+      cursor: pointer;
+      flex-direction: column; gap: 24px;
+    }
+    .intro-overlay.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .intro-title {
+      font-family: var(--serif); font-size: 2.4rem; font-weight: 900;
+      color: var(--text); text-align: center;
+      text-shadow: 0 0 120px rgba(226,182,79,0.3);
+    }
+    .intro-sub {
+      font-size: 1rem; color: var(--text2); text-align: center; max-width: 420px;
+      line-height: 1.7; font-weight: 300;
+    }
+    .intro-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 48px; padding: 0 32px;
+      border-radius: 999px; font-size: 0.95rem; font-weight: 700;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: #111; border: none; cursor: pointer;
+      box-shadow: 0 8px 32px rgba(226,182,79,0.25);
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: var(--sans);
+    }
+    .intro-btn:hover { transform: scale(1.04); box-shadow: 0 12px 40px rgba(226,182,79,0.35); }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .overlay { padding: 16px 18px 14px; }
+      .stage-title { font-size: 1.4rem; }
+      .stage-body { font-size: 0.85rem; }
+      .intro-title { font-size: 1.6rem; }
+      .top-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .title-area { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Intro overlay -->
+  <div class="intro-overlay" id="intro">
+    <div class="intro-title">从太空回望地球</div>
+    <div class="intro-sub">
+      当人类第一次挣脱大气层，回望那颗悬浮在无尽黑暗中的蓝色星球——
+      一切关于生命、死亡与意义的认知，都将被永久改写。
+    </div>
+    <button class="intro-btn" onclick="beginJourney()">开始旅程</button>
+  </div>
+
+  <!-- 3D Canvas -->
+  <div id="cosmos"></div>
+
+  <!-- Content overlay -->
+  <div class="overlay">
+    <div class="top-bar">
+      <a href="/cosmic-lens/" class="back-link">← 返回宇宙之镜</a>
+      <div class="title-area">
+        <div class="sub">Overview Effect</div>
+        <div class="main">宇航员视角</div>
+      </div>
+    </div>
+
+    <div class="center-stage" id="centerStage">
+      <!-- Panels filled by JS -->
+    </div>
+
+    <div class="bottom-bar" id="bottomBar">
+      <!-- Dots filled by JS -->
+    </div>
+  </div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+
+// ==================== STAGE DATA ====================
+const stages = [
+  {
+    id: 1,
+    title: '先驱者的代价',
+    body: `
+      <p>1957年，苏联将流浪狗<strong>莱卡</strong>送入太空。她成为第一个进入地球轨道的生命，也是第一个<strong class="highlight">太空牺牲品</strong>。</p>
+      <p>莱卡的死亡在当时被宣传为英雄主义，但背后揭示了生物在极端环境下的<strong>绝对脆弱性</strong>——没有氧气、没有重力、没有归途。</p>
+      <span class="quote">她在升空后数小时内因过热和恐慌死亡——这个事实被隐瞒了45年。</span>
+      <p>1961年，加加林在返回途中遭遇<strong class="highlight">失压性肺水肿</strong>——太空环境对人类身体的致命威胁，在人类首次轨道飞行中就已被验证。</p>
+      <p>1984年，宇航员布鲁斯·麦坎德利斯解开安全绳，完成人类首次<strong>无系留太空行走</strong>。他拍摄的照片——一个孤独的人悬浮在无尽黑暗中——成为关于<strong class="highlight">人类存在意义</strong>最震撼的视觉追问。</p>
+    `
+  },
+  {
+    id: 2,
+    title: '总观效应的发现',
+    body: `
+      <p>1987年，作家弗兰克·怀特在采访了数十位宇航员后，首次定义了<strong class="highlight">「总观效应」</strong>（Overview Effect）——从太空看地球对人类心理产生的<strong>深刻且永久性的认知转变</strong>。</p>
+      <p><span class="stat">600+ 宇航员</span> 返回后出现性格巨变：职业转向、宗教信仰觉醒、或情绪失控。这不是个例，而是<strong>普遍现象</strong>。</p>
+      <p>2016年的神经科学研究发现：在太空环境中，大脑负责<strong class="highlight">「自我边界」</strong>的区域会突然失活，导致：</p>
+      <p>自我认知结构被<strong>彻底重构</strong>；价值观发生<strong>永久性改变</strong>；产生与宇宙的<strong>融合感</strong>——部分宇航员将其描述为类似「三摩地」的超越状态。</p>
+    `
+  },
+  {
+    id: 3,
+    title: '改变世界的图像',
+    body: `
+      <p>1968年，阿波罗8号的宇航员在绕月轨道上，第一次从月球视角拍下了<strong class="highlight">地球升起</strong>的照片——《地出》（Earthrise）。</p>
+      <span class="quote">那是人类第一次同时看到自己的家园和远方的地平线。环保运动由此被点燃。</span>
+      <p>登月第二人<strong>巴兹·奥尔德林</strong>，在目睹地球的脆弱性后陷入长期抑郁。他将地球称为<strong class="highlight">「随时会碎的蓝色玻璃珠」</strong>。</p>
+      <p>1990年，旅行者1号在60亿公里外回望，拍下了<strong>「暗淡蓝点」</strong>——地球仅占<strong>0.12像素</strong>。卡尔·萨根由此写下了人类文明史上最深邃的反思：</p>
+      <span class="quote">再看看那个光点吧。它就在这里。那是我们的家园，我们的一切。你所爱的每一个人，你认识的每一个人，你听说过的每一个人，曾经存在过的每一个人，都在它上面度过了一生。</span>
+    `
+  },
+  {
+    id: 4,
+    title: '平民太空时代',
+    body: `
+      <p>2021年，SpaceX的Inspiration4任务首次将<strong class="highlight">全平民机组</strong>送入轨道。科学研究证实：</p>
+      <p>普通人仅需<strong>3天</strong>的太空停留，就会出现：</p>
+      <p><span class="stat">基因表达变化</span> <span class="stat">端粒酶活性改变</span> <span class="stat">神经认知功能重组</span></p>
+      <p>这意味着——总观效应<strong>不是精英宇航员的特权</strong>，而是所有人类在离开地球后共有的<strong class="highlight">生物学反应</strong>。</p>
+      <p>商业航天时代正在到来。未来十年，预计将有<strong>数万普通人</strong>体验太空。这可能引发<strong class="highlight">文明级别的价值观转变</strong>——当足够多的人亲眼看到地球的全貌，我们对待彼此、对待这颗星球的方式，将不可逆转地改变。</p>
+    `
+  },
+  {
+    id: 5,
+    title: '无需火箭的旅程',
+    body: `
+      <p>宇航员群体在经历过总观效应后，形成了<strong>惊人的共识</strong>：</p>
+      <span class="quote">地球是悬浮在虚无中的脆弱泡沫。人类所有冲突——国界、信仰、意识形态——在宇宙尺度下失去了一切意义。</span>
+      <p>但关键发现是：<strong class="highlight">你不需要真的去太空</strong>。</p>
+      <p>通过<strong>认知重构</strong>——有意识地采用宇宙视角审视自己的生活——任何人都可以获得部分总观效应的益处：</p>
+      <p>对人际关系的<strong>深层珍视</strong>，不再将相遇视为理所当然。</p>
+      <p>对生态保护的<strong>紧迫感</strong>，理解这颗星球是我们唯一的家园。</p>
+      <p>超越个体局限的<strong>宏观视角</strong>——日常焦虑、得失、执念，在宇宙尺度下找到了恰当的比例。</p>
+      <span class="quote">每一个日常瞬间，都具有全新的价值。因为你看到的，是一颗行星上的一个生命，在宇宙中短暂而珍贵的存在。</span>
+    `
+  }
+];
+
+// ==================== THREE.JS SCENE ====================
+const container = document.getElementById('cosmos');
+const scene = new THREE.Scene();
+
+const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 200);
+camera.position.set(0, 2, 14);
+camera.lookAt(0, 0, 0);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.2;
+container.appendChild(renderer.domElement);
+
+// --- Stars ---
+const starGeo = new THREE.BufferGeometry();
+const starCount = 3000;
+const starVerts = new Float32Array(starCount * 3);
+const starColors = new Float32Array(starCount * 3);
+for (let i = 0; i < starCount; i++) {
+  const r = 50 + Math.random() * 80;
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(2 * Math.random() - 1);
+  starVerts[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+  starVerts[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+  starVerts[i * 3 + 2] = r * Math.cos(phi);
+  const warmth = Math.random();
+  starColors[i * 3] = 0.7 + warmth * 0.3;
+  starColors[i * 3 + 1] = 0.7 + warmth * 0.25;
+  starColors[i * 3 + 2] = 0.8 + warmth * 0.2;
+}
+starGeo.setAttribute('position', new THREE.BufferAttribute(starVerts, 3));
+starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
+const starMat = new THREE.PointsMaterial({ size: 0.08, vertexColors: true, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.8 });
+const stars = new THREE.Points(starGeo, starMat);
+scene.add(stars);
+
+// --- Earth ---
+function createEarthTexture() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1024; canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+
+  // Ocean gradient
+  const oceanGrad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+  oceanGrad.addColorStop(0, '#0a2a5e');
+  oceanGrad.addColorStop(0.3, '#1450a0');
+  oceanGrad.addColorStop(0.5, '#1a6ad8');
+  oceanGrad.addColorStop(0.7, '#1450a0');
+  oceanGrad.addColorStop(1, '#0a2a5e');
+  ctx.fillStyle = oceanGrad;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Cloud swirls
+  ctx.globalAlpha = 0.35;
+  for (let i = 0; i < 300; i++) {
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+    const r = 15 + Math.random() * 60;
+    const cloudGrad = ctx.createRadialGradient(x, y, 0, x, y, r);
+    cloudGrad.addColorStop(0, 'rgba(255,255,255,0.7)');
+    cloudGrad.addColorStop(0.5, 'rgba(255,255,255,0.2)');
+    cloudGrad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = cloudGrad;
+    ctx.beginPath();
+    ctx.ellipse(x, y, r, r * (0.3 + Math.random() * 0.5), Math.random() * Math.PI * 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // Land masses (simplified)
+  ctx.globalAlpha = 0.25;
+  const lands = [
+    [200, 100, 120, 0.6], [300, 120, 90, 0.7], [500, 140, 110, 0.5],
+    [650, 130, 80, 0.6], [750, 180, 100, 0.7], [180, 350, 130, 0.5],
+    [400, 340, 95, 0.6], [550, 360, 105, 0.5], [700, 310, 85, 0.7],
+    [100, 280, 70, 0.5], [850, 250, 90, 0.6]
+  ];
+  ctx.fillStyle = '#2d5a27';
+  lands.forEach(([x, y, size, stretch]) => {
+    ctx.beginPath();
+    ctx.ellipse(x, y, size, size * stretch, Math.random() * Math.PI * 2, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  return new THREE.CanvasTexture(canvas);
+}
+
+const earthGeo = new THREE.SphereGeometry(2.5, 64, 64);
+const earthTex = createEarthTexture();
+const earthMat = new THREE.MeshStandardMaterial({
+  map: earthTex,
+  roughness: 0.6,
+  metalness: 0.05,
+});
+const earth = new THREE.Mesh(earthGeo, earthMat);
+scene.add(earth);
+
+// --- Atmosphere glow ---
+const atmosGeo = new THREE.SphereGeometry(2.65, 64, 64);
+const atmosMat = new THREE.ShaderMaterial({
+  uniforms: {
+    uTime: { value: 0 },
+    uColor: { value: new THREE.Color('#4a9eff') }
+  },
+  vertexShader: `
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    void main() {
+      vNormal = normalize(normalMatrix * normal);
+      vPosition = position;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `,
+  fragmentShader: `
+    varying vec3 vNormal;
+    varying vec3 vPosition;
+    uniform float uTime;
+    uniform vec3 uColor;
+    void main() {
+      vec3 viewDir = normalize(vec3(0.0, 0.0, 1.0));
+      float fresnel = 1.0 - abs(dot(vNormal, viewDir));
+      fresnel = pow(fresnel, 3.5);
+      float alpha = fresnel * 0.35;
+      gl_FragColor = vec4(uColor, alpha);
+    }
+  `,
+  transparent: true,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+});
+const atmosphere = new THREE.Mesh(atmosGeo, atmosMat);
+scene.add(atmosphere);
+
+// --- Outer glow ring ---
+const ringGeo = new THREE.TorusGeometry(2.9, 0.03, 16, 100);
+const ringMat = new THREE.MeshBasicMaterial({ color: 0x4a9eff, transparent: true, opacity: 0.2, blending: THREE.AdditiveBlending, depthWrite: false });
+const ring = new THREE.Mesh(ringGeo, ringMat);
+ring.rotation.x = Math.PI * 0.55;
+scene.add(ring);
+
+// --- Ambient particles near Earth (space dust) ---
+const dustGeo = new THREE.BufferGeometry();
+const dustCount = 600;
+const dustVerts = new Float32Array(dustCount * 3);
+for (let i = 0; i < dustCount; i++) {
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(2 * Math.random() - 1);
+  const r = 2.7 + Math.random() * 4;
+  dustVerts[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+  dustVerts[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+  dustVerts[i * 3 + 2] = r * Math.cos(phi);
+}
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustVerts, 3));
+const dustMat = new THREE.PointsMaterial({ size: 0.03, color: 0x88bbff, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0.4 });
+const dust = new THREE.Points(dustGeo, dustMat);
+scene.add(dust);
+
+// --- Lighting ---
+const sunLight = new THREE.DirectionalLight(0xffffff, 3.5);
+sunLight.position.set(10, 3, 8);
+scene.add(sunLight);
+const fillLight = new THREE.DirectionalLight(0x4466aa, 0.8);
+fillLight.position.set(-5, -2, -3);
+scene.add(fillLight);
+const rimLight = new THREE.DirectionalLight(0x88bbff, 1.5);
+rimLight.position.set(0, -5, 2);
+scene.add(rimLight);
+
+// ==================== STATE ====================
+let currentStage = 0;
+let targetCamZ = 14;
+let targetCamY = 2;
+let targetEarthZ = 0;
+let isTransitioning = false;
+
+// Camera distances per stage
+const stageCamera = [
+  { z: 10, y: 1.5 },   // Stage 1: close to Earth
+  { z: 12, y: 1.8 },   // Stage 2
+  { z: 16, y: 2.2 },   // Stage 3
+  { z: 22, y: 3 },     // Stage 4
+  { z: 32, y: 4 },     // Stage 5: far away, "pale blue dot"
+];
+
+// ==================== BUILD UI ====================
+const centerStage = document.getElementById('centerStage');
+const bottomBar = document.getElementById('bottomBar');
+
+stages.forEach((s, i) => {
+  // Panel
+  const panel = document.createElement('div');
+  panel.className = 'stage-panel';
+  panel.id = 'panel-' + i;
+  panel.innerHTML = `
+    <div class="stage-number">第${s.id}章</div>
+    <div class="stage-title">${s.title}</div>
+    <div class="stage-body">${s.body}</div>
+  `;
+  centerStage.appendChild(panel);
+
+  // Dot
+  const dot = document.createElement('div');
+  dot.className = 'stage-dot';
+  dot.title = s.title;
+  dot.addEventListener('click', () => goToStage(i));
+  bottomBar.appendChild(dot);
+});
+
+const hintEl = document.createElement('span');
+hintEl.className = 'hint-text';
+hintEl.textContent = '← 滚动浏览 →';
+bottomBar.appendChild(hintEl);
+
+const panels = document.querySelectorAll('.stage-panel');
+const dots = document.querySelectorAll('.stage-dot');
+
+function goToStage(idx) {
+  if (isTransitioning || idx === currentStage || idx < 0 || idx >= stages.length) return;
+  isTransitioning = true;
+
+  // Deactivate old
+  panels[currentStage].classList.remove('active');
+  dots[currentStage].classList.remove('active');
+  dots[currentStage].classList.add('visited');
+
+  // Activate new
+  currentStage = idx;
+  panels[currentStage].classList.add('active');
+  dots[currentStage].classList.add('active');
+
+  // Update camera target
+  const target = stageCamera[idx];
+  targetCamZ = target.z;
+  targetCamY = target.y;
+  targetEarthZ = idx * 0.5; // Earth moves away slightly
+
+  setTimeout(() => { isTransitioning = false; }, 900);
+}
+
+// ==================== INTERACTION ====================
+let scrollTimeout;
+
+window.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  if (isTransitioning) return;
+
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(() => {}, 300);
+
+  if (e.deltaY > 0 && currentStage < stages.length - 1) {
+    goToStage(currentStage + 1);
+  } else if (e.deltaY < 0 && currentStage > 0) {
+    goToStage(currentStage - 1);
+  }
+}, { passive: false });
+
+// Touch swipe
+let touchStartY = 0;
+window.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; });
+window.addEventListener('touchend', (e) => {
+  const diff = touchStartY - e.changedTouches[0].clientY;
+  if (Math.abs(diff) > 50) {
+    if (diff > 0 && currentStage < stages.length - 1) goToStage(currentStage + 1);
+    else if (diff < 0 && currentStage > 0) goToStage(currentStage - 1);
+  }
+});
+
+// Keyboard
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+    if (currentStage < stages.length - 1) goToStage(currentStage + 1);
+  } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+    if (currentStage > 0) goToStage(currentStage - 1);
+  }
+});
+
+// ==================== ANIMATION LOOP ====================
+const clock = new THREE.Clock();
+
+function animate() {
+  requestAnimationFrame(animate);
+
+  const dt = Math.min(clock.getDelta(), 0.1);
+  const t = performance.now() * 0.001;
+
+  // Smooth camera
+  camera.position.z += (targetCamZ - camera.position.z) * 0.03;
+  camera.position.y += (targetCamY - camera.position.y) * 0.03;
+
+  // Earth rotation
+  earth.rotation.y += dt * 0.08;
+
+  // Atmosphere pulse
+  atmosphere.rotation.y += dt * 0.03;
+  atmosMat.uniforms.uTime.value = t;
+
+  // Ring pulse
+  ring.rotation.z += dt * 0.04;
+  ring.material.opacity = 0.15 + Math.sin(t * 0.6) * 0.08;
+
+  // Dust orbit
+  dust.rotation.y += dt * 0.05;
+  dust.rotation.x += dt * 0.02;
+
+  // Stars slow rotation
+  stars.rotation.y += dt * 0.01;
+  stars.rotation.x += dt * 0.003;
+
+  // Camera always looks at Earth
+  camera.lookAt(0, 0, 0);
+
+  // Resize handler
+  if (container.clientWidth !== renderer.domElement.clientWidth || container.clientHeight !== renderer.domElement.clientHeight) {
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+  }
+
+  renderer.render(scene, camera);
+}
+
+// ==================== START ====================
+window.beginJourney = function() {
+  document.getElementById('intro').classList.add('hidden');
+  goToStage(0);
+};
+
+// Auto-resize
+window.addEventListener('resize', () => {
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  camera.aspect = container.clientWidth / container.clientHeight;
+  camera.updateProjectionMatrix();
+});
+
+animate();
+</script>
+</body>
+</html>

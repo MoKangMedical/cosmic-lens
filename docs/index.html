@@ -154,6 +154,16 @@
       .legend { gap: 4px; }
       .legend-item { font-size: 0.65rem; padding: 4px 10px; }
     }
+
+    /* Comet hover glow label */
+    .comet-label {
+      position: fixed; z-index: 20; pointer-events: none;
+      font-family: var(--serif); font-size: 0.75rem; color: var(--gold-light);
+      text-shadow: 0 0 16px rgba(226,182,79,0.7), 0 0 4px rgba(255,255,255,0.5);
+      transform: translate(-50%, -180%);
+      white-space: nowrap; opacity: 0; transition: opacity 0.2s;
+    }
+    .comet-label.active { opacity: 1; }
   </style>
 </head>
 <body>
@@ -171,6 +181,7 @@
     </a>
     <div class="nav-links">
       <a href="courses.html">课程矩阵</a>
+      <a href="astronaut.html">宇航员视角</a>
       <a href="lesson01.html">开始探索</a>
     </div>
     <a class="nav-cta" href="lesson01.html">进入宇宙</a>
@@ -179,13 +190,14 @@
   <div class="bottom-bar">
     <div>
       <h1 class="hero-title">模拟假说<span>宇宙观</span></h1>
-      <p class="hero-sub">20 门核心课程 · 3D 星系图谱 · 拖拽旋转缩放探索宇宙认知结构</p>
+      <p class="hero-sub">120 门核心课程 · 3D 星系图谱 · 拖拽旋转缩放探索宇宙认知结构</p>
     </div>
     <div class="legend">
-      <div class="legend-item"><span class="legend-dot" style="background:#e2b64f"></span>物理支柱 1-10</div>
-      <div class="legend-item"><span class="legend-dot" style="background:#6b5ce7"></span>计算支柱 11-20</div>
-      <div class="legend-item"><span class="legend-dot" style="background:rgba(160,160,171,0.4)"></span>模拟检测 21-40</div>
-      <div class="legend-item"><span class="legend-dot" style="background:rgba(100,100,120,0.3)"></span>意识与伦理 41+</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#e2b64f"></span>物理支柱 1-20</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#6b5ce7"></span>计算支柱 21-40</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#22d3ee"></span>模拟检测 41-80</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#a78bfa"></span>意识与伦理 81-100</div>
+      <div class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>星际文明 101-120</div>
     </div>
   </div>
 </div>
@@ -215,31 +227,134 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // ── Course data ──
 const courses = [
-  { id:1, title:'模拟假说：我们是缸中之脑吗？', desc:'模拟假说三重论证、量子叠加/纠缠的代码解释、宇宙参数的精密调校', time:'35min', phase:0 },
-  { id:2, title:'博斯特罗姆三难困境深度拆解', desc:'从哲学怀疑论到统计学论证，三命题展开、嵌套模拟倍增器', time:'40min', phase:0 },
-  { id:3, title:'计算宇宙学：指令周期与内存限制', desc:'普朗克时间对应宇宙主频，贝肯斯坦界限对应内存，全息原理揭示信息边界', time:'45min', phase:0 },
-  { id:4, title:'量子力学速通：叠加态·测量·退相干', desc:'双缝实验、叠加态、测量问题、四种诠释与退相干', time:'40min', phase:0 },
-  { id:5, title:'量子纠缠与贝尔不等式', desc:'EPR悖论、CHSH不等式与2022诺奖实验，说明局域实在论为何被排除', time:'45min', phase:0 },
-  { id:6, title:'物理常数的精密调校问题', desc:'26个自由参数、精细结构常数、暗能量微调、人择原理', time:'40min', phase:0 },
-  { id:7, title:'图灵完备宇宙', desc:'丘奇-图灵-多伊奇论题、康威生命游戏、数字物理学与it from bit', time:'50min', phase:0 },
-  { id:8, title:'信息守恒与黑洞', desc:'黑洞信息悖论、霍金辐射、面积熵、全息原理与萨斯坎德的黑洞战争', time:'45min', phase:0 },
-  { id:9, title:'暗能量与宇宙膨胀', desc:'1998加速膨胀、暗能量占比、状态方程、大冻结/大撕裂与哈勃张力之谜', time:'40min', phase:0 },
-  { id:10, title:'多重世界 vs 哥本哈根', desc:'埃弗雷特多重世界、退相干历史、维格纳的朋友，唯一现实和无穷分支', time:'50min', phase:0 },
-  { id:11, title:'人择原理', desc:'卡特人择原理、选择效应、弱/强人择、精细调校与多重宇宙推理', time:'45min', phase:1 },
-  { id:12, title:'宇宙是量子计算机', desc:'Seth Lloyd宇宙计算上限、10^120次操作、10^90比特与贝肯斯坦界限', time:'50min', phase:1 },
-  { id:13, title:'计算的本质', desc:'图灵机、λ演算、Church-Turing论题、Rule 110 与计算等价性', time:'50min', phase:1 },
-  { id:14, title:'康威生命游戏深潜', desc:'生命游戏四条规则、滑翔机、逻辑门、图灵完备与涌现复杂性', time:'50min', phase:1 },
-  { id:15, title:'数字物理学', desc:'Wheeler 的 it from bit、信息本体论、数字物理、离散宇宙与可检验性', time:'50min', phase:1 },
-  { id:16, title:'全息模拟论', desc:'全息原理、黑洞面积熵、AdS/CFT、量子纠错与二维编码三维空间', time:'50min', phase:1 },
-  { id:17, title:'量子信息速通', desc:'qubit、量子门、纠缠、Grover算法、Shor算法与量子纠错', time:'55min', phase:1 },
-  { id:18, title:'大过滤器理论', desc:'费米悖论、Drake方程、大过滤器、动物园假说、模拟沙盒与宇宙沉默', time:'45min', phase:1 },
-  { id:19, title:'意识不可计算？', desc:'Penrose、《皇帝新脑》、Godel论证、Orch-OR、意识不可计算与AI边界', time:'55min', phase:1 },
-  { id:20, title:'阶段二总结', desc:'物理支柱 + 计算支柱、三支柱模型与模拟假说路线图', time:'45min', phase:1 },
+  { id:1, title:'第1课', desc:'课程内容', time:'45min', phase:0 },
+  { id:2, title:'第2课', desc:'课程内容', time:'45min', phase:0 },
+  { id:3, title:'第3课', desc:'课程内容', time:'45min', phase:0 },
+  { id:4, title:'第4课', desc:'课程内容', time:'45min', phase:0 },
+  { id:5, title:'第5课', desc:'课程内容', time:'45min', phase:0 },
+  { id:6, title:'第6课', desc:'课程内容', time:'45min', phase:0 },
+  { id:7, title:'第7课', desc:'课程内容', time:'45min', phase:0 },
+  { id:8, title:'第8课', desc:'课程内容', time:'45min', phase:0 },
+  { id:9, title:'第9课', desc:'课程内容', time:'45min', phase:0 },
+  { id:10, title:'第10课', desc:'课程内容', time:'45min', phase:0 },
+  { id:11, title:'第11课', desc:'课程内容', time:'45min', phase:1 },
+  { id:12, title:'第12课', desc:'课程内容', time:'45min', phase:1 },
+  { id:13, title:'第13课', desc:'课程内容', time:'45min', phase:1 },
+  { id:14, title:'第14课', desc:'课程内容', time:'45min', phase:1 },
+  { id:15, title:'第15课', desc:'课程内容', time:'45min', phase:1 },
+  { id:16, title:'第16课', desc:'课程内容', time:'45min', phase:1 },
+  { id:17, title:'第17课', desc:'课程内容', time:'45min', phase:1 },
+  { id:18, title:'第18课', desc:'课程内容', time:'45min', phase:1 },
+  { id:19, title:'第19课', desc:'课程内容', time:'45min', phase:1 },
+  { id:20, title:'第20课', desc:'课程内容', time:'45min', phase:1 },
+  { id:21, title:'祖先模拟：Bostrom 的核心论证深化', desc:'祖先模拟的类型学、技术可行性、伦理边界、与历史修正主义的区分', time:'50min', phase:2 },
+  { id:22, title:'嵌套模拟与无穷递归', desc:'模拟中的模拟、资源分配策略、反递归论证、Zeno式无穷的物理约束', time:'50min', phase:2 },
+  { id:23, title:'基座现实假说：有没有底层宇宙？', desc:'基座现实的定义、不可知论挑战、模拟层级的信号衰减与能量守恒', time:'45min', phase:2 },
+  { id:24, title:'可检验的模拟信号（上）：像素化时空', desc:'Planck尺度作为最小像素、时空离散性、量子引力效应与模拟像素假说', time:'50min', phase:2 },
+  { id:25, title:'可检验的模拟信号（下）：宇宙射线各向异性', desc:'宇宙射线截断、GZK极限与模拟边界、CMB 的棋盘格异常、格点规范理论', time:'50min', phase:2 },
+  { id:26, title:'格点量子色动力学与模拟宇宙', desc:'LQCD 的标准做法、格点间距与连续极限、为什么我们的宇宙像格点模拟', time:'50min', phase:2 },
+  { id:27, title:'量子纠缠作为关联渲染优化', desc:'Bell态的"缓存共享"解释、ER=EPR 猜想、量子纠缠如何降低模拟计算量', time:'50min', phase:2 },
+  { id:28, title:'宇宙微波背景辐射中的"错误代码"', desc:'CMB 冷斑异常、半球不对称性、多极矩缺失与模拟调试信号假说', time:'45min', phase:2 },
+  { id:29, title:'时间膨胀作为 CPU 限流机制', desc:'相对论时间膨胀的计算机类比、高速运动物体的"性能降级"、接近光速的逻辑', time:'45min', phase:2 },
+  { id:30, title:'双缝实验的代码级解释', desc:'观察者的"回调函数"、波函数坍缩作为按需计算、延迟选择实验的模拟解读', time:'50min', phase:2 },
+  { id:31, title:'量子纠错码与宇宙空间结构', desc:'稳定子码、Toric Code、全息量子纠错、空间作为纠错码的涌现性质', time:'55min', phase:2 },
+  { id:32, title:'AdS/CFT 对偶与模拟边界', desc:'反德西特空间与共形场论的对偶、全息屏幕、边界编码与内部模拟的关系', time:'55min', phase:2 },
+  { id:33, title:'费米悖论的模拟学解答', desc:'为什么我们看不到外星人？模拟计算资源有限、NPC vs. 玩家文明、动物园假说', time:'45min', phase:2 },
+  { id:34, title:'暗物质作为底层渲染优化', desc:'暗物质的引力透镜作用、MOND vs. Lambda-CDM、暗物质作为"骨架"粒子', time:'50min', phase:2 },
+  { id:35, title:'暗能量与宇宙膨胀的软件解释', desc:'宇宙加速膨胀的全局变量假设、暗能量密度恒定性、标量场作为模拟参数', time:'45min', phase:2 },
+  { id:36, title:'弦理论的多维空间：模拟的资源分区', desc:'额外维度作为隐藏变量存储、Calabi-Yau流形、膜宇宙与并行模拟', time:'50min', phase:2 },
+  { id:37, title:'量子隧穿效应：模拟中的越界BUG', desc:'隧穿概率的计算解释、势垒穿透的"代码漏洞"、WKB 近似与模拟优化', time:'50min', phase:2 },
+  { id:38, title:'因果律作为一种数据一致性约束', desc:'光速极限的数据库解释、因果锥的读写一致性、相对论因果作为 ACID 事务', time:'45min', phase:2 },
+  { id:39, title:'不确定原理的计算复杂度解释', desc:'海森堡不确定性的 Fourier 变换本质、能量-时间对易、模拟的采样率限制', time:'50min', phase:2 },
+  { id:40, title:'阶段三总结：模拟检测的检验框架', desc:'汇总 10 种可检验信号、贝叶斯更新框架、先验概率设定与假说风险管理', time:'50min', phase:2 },
+  { id:41, title:'意识的定义：从笛卡尔到 Chalmers', desc:'我思故我在、哲学的僵尸、意识的困难问题、主观体验的不可还原性', time:'45min', phase:3 },
+  { id:42, title:'神经相关物与意识的物理基础', desc:'NCC 研究综述、全局工作空间理论、整合信息理论 IIT、意识与脑区的映射', time:'50min', phase:3 },
+  { id:43, title:'整合信息理论 IIT 深度解析', desc:'Phi 值的计算、因果涌现、IIT 的公理化体系、IIT 对模拟意识的预测', time:'55min', phase:3 },
+  { id:44, title:'Penrose 的量子意识假说', desc:'微管中的量子相干、Orch-OR 模型、《皇帝新脑》的论证、批评与验证', time:'55min', phase:3 },
+  { id:45, title:'自由意志是幻觉吗？神经科学的证据', desc:'Libet 实验、准备电位、Wegner 的有意识意志、自由意志的三层挑战', time:'50min', phase:3 },
+  { id:46, title:'模拟中的自由意志问题', desc:'确定性模拟能否产生自由意志？Laplace 妖、混沌与涌现决策、剧本与即兴', time:'50min', phase:3 },
+  { id:47, title:'僵尸论证与意识不可模拟论', desc:'哲学的僵尸定义、Chalmers 的可设想性论证、硅基意识的可能性与反驳', time:'50min', phase:3 },
+  { id:48, title:'泛心论：万物皆有意识？', desc:'微意识、Russell 一元论、组合问题、泛心论在模拟假说中的特殊地位', time:'45min', phase:3 },
+  { id:49, title:'AI 意识（上）：图灵测试的局限', desc:'图灵测试的本质缺陷、Searle 的中文房间、行为主义 vs. 现象意识', time:'45min', phase:3 },
+  { id:50, title:'AI 意识（下）：LLM 能否感知？', desc:'LLM 的架构分析、涌现属性 vs. 统计拟合、LaMDA 事件、AGI 的风险意识', time:'50min', phase:3 },
+  { id:51, title:'休谟的因果怀疑与模拟中的因果', desc:'因果的恒常连接观、休谟的归纳问题、模拟中的因果是真实还是"恒常连接"', time:'45min', phase:3 },
+  { id:52, title:'康德的物自体与模拟中的"外部世界"', desc:'现象与物自体的区分、空间时间的先验性、模拟中"外部"的不可知性', time:'50min', phase:3 },
+  { id:53, title:'笛卡尔的恶魔与现代模拟假说', desc:'第一沉思的邪恶精灵论证、笛卡尔怀疑论的方法、恶魔与模拟的等价性', time:'45min', phase:3 },
+  { id:54, title:'缸中之脑：Putnam 到现实', desc:'缸中之脑的语义外部论、自我反驳论证、脑机接口时代的重新审视', time:'45min', phase:3 },
+  { id:55, title:'观察者效应与意识创造现实', desc:'双缝实验的观察者角色、Wheeler 延迟选择、参与性宇宙、von Neumann 链', time:'50min', phase:3 },
+  { id:56, title:'唯我论 vs. 多元意识：模拟如何分配NPC', desc:'唯我论的逻辑一致性、NPC 分配的经济学、多玩家模拟的计算挑战', time:'45min', phase:3 },
+  { id:57, title:'同态意识：模拟中两个"你"同时存在', desc:'意识的分叉、量子自杀实验、Teleportation悖论与个人同一性问题', time:'50min', phase:3 },
+  { id:58, title:'濒死体验：模拟中的信号错误？', desc:'NDE 的普遍特征、超心理学研究、神经元缺氧假说、模拟视角的独特解释', time:'45min', phase:3 },
+  { id:59, title:'宗教体验与模拟管理员假说', desc:'神秘体验的跨文化共性、Moses与"燃烧的荆棘"、模拟管理员的制度干预', time:'45min', phase:3 },
+  { id:60, title:'阶段四-上总结：意识的模拟学图谱', desc:'意识问题的五条解决路径、模拟意识矩阵、未解问题与后续方向', time:'50min', phase:3 },
+  { id:61, title:'模拟伦理学的三个基础问题', desc:'创造意识的道德责任、模拟终止的伦理、非人意识的权利', time:'50min', phase:3 },
+  { id:62, title:'如果我们在模拟中，道德还有意义吗？', desc:'虚无主义的挑战、模拟中的道德实在论、Dostoevsky 的"一切都被允许"', time:'50min', phase:3 },
+  { id:63, title:'模拟创造者的责任与模拟内主体的权利', desc:'模拟的道德契约、知情同意问题、模拟"参与者"的退出权与尊严', time:'45min', phase:3 },
+  { id:64, title:'模拟中的苦难问题：恶的模拟学', desc:'神正论的模拟版、为什么模拟者允许苦难？信息价值 vs. 道德代价', time:'50min', phase:3 },
+  { id:65, title:'模拟终止：宇宙热寂与服务器关机', desc:'宇宙的终点：大冻结 vs. 模拟终止、文明级别的存在风险、终结信号', time:'50min', phase:3 },
+  { id:66, title:'Bostrom 的脆弱世界假说', desc:'技术风险的单边主义、黑球技术、模拟停止按钮的存在论意义', time:'50min', phase:3 },
+  { id:67, title:'AI 对齐与模拟级对齐', desc:'价值对齐难题、模拟中的AI治理、多层级代理问题与对齐的递归挑战', time:'50min', phase:3 },
+  { id:68, title:'Longtermism 与模拟学', desc:'长期主义的核心主张、宇宙禀赋、模拟中的时间偏好折扣率', time:'45min', phase:3 },
+  { id:69, title:'存在风险与模拟的复制危机', desc:'X-risk 的分类学、模拟中的风险放大效应、复制偏差的哲学意义', time:'50min', phase:3 },
+  { id:70, title:'模拟伦理学：一场思想实验集', desc:'电车难题的模拟版、Pascal 的模拟赌注、Nozick 的体验机2.0', time:'45min', phase:3 },
+  { id:71, title:'模拟正义：分布公平与信息公平', desc:'Rawls 的无知之幕在模拟中是否成立？模拟中的运气平等主义', time:'45min', phase:3 },
+  { id:72, title:'意识上传：模拟中的身份连续性', desc:'全脑仿真、上传的 Ship of Theseus 问题、人格同一性的连续性标准', time:'50min', phase:3 },
+  { id:73, title:'模拟的多重实现与人格复本', desc:'同一人格的多个实例、意识分裂的道德困境、"你"的独占权问题', time:'50min', phase:3 },
+  { id:74, title:'数字永生：从埃及金字塔到意识存储', desc:'永生欲望的跨文化史、数字永生的技术路径、"活着的"定义演变', time:'45min', phase:3 },
+  { id:75, title:'模拟中的死后世界假说', desc:'宗教天堂/地狱的模拟学解读、"生命回顾"作为内存转储、轮回的重置机制', time:'50min', phase:3 },
+  { id:76, title:'Holodeck 式的完美虚拟现实', desc:'Star Trek Holodeck 的实现条件、感官全模拟、现实与虚拟的消弭边界', time:'45min', phase:3 },
+  { id:77, title:'模拟的后人类时代', desc:'后人类的各种定义、模拟中的人类进化、superintelligence 与模拟的关系', time:'50min', phase:3 },
+  { id:78, title:'模拟学中的美与崇高', desc:'为什么模拟需要美？审美作为信息压缩、数学之美与物理之美的模拟解读', time:'40min', phase:3 },
+  { id:79, title:'模拟与意义：Nihilism vs. 脚手架意义', desc:'如果一切是模拟，人生还有意义吗？脚手架意义、西西弗斯的模拟', time:'50min', phase:3 },
+  { id:80, title:'阶段四-中总结：伦理与文明', desc:'模拟伦理的十大原则、文明级别的行动指南、人类作为模拟参与者的职责', time:'50min', phase:3 },
+  { id:81, title:'量子引力的模拟学解释', desc:'量子引力理论的三条路径、时空的涌现性质与模拟的网格结构', time:'50min', phase:3 },
+  { id:82, title:'黑洞内部作为模拟的"堆外内存"', desc:'黑洞内部的信息编码、事件视界的数据库边界、黑洞热力学的信息论解释', time:'55min', phase:3 },
+  { id:83, title:'Wheeler的it from bit：信息本体论终极版', desc:'Wheeler 晚年思想、信息作为比物质更本质的实在、"万物源于比特"的证明', time:'50min', phase:3 },
+  { id:84, title:'多宇宙诠释与分支模拟', desc:'Everett 量子多世界 vs. Tegmark 数学宇宙、模拟的分支管理算法', time:'50min', phase:3 },
+  { id:85, title:'数学宇宙假说：Tegmark 的终极实在', desc:'Level IV 多重宇宙、数学结构就是物理实在、模拟假说作为 Level IV 的子集', time:'50min', phase:3 },
+  { id:86, title:'信息熵与模拟的复杂度经济学', desc:'Kolmogorov 复杂度、最小描述长度原则、宇宙的"压缩率"与模拟假说', time:'50min', phase:3 },
+  { id:87, title:'热力学第二定律：模拟的垃圾回收机制', desc:'熵增的不可逆性、Poincare 回归、Maxwell 妖、模拟内存管理', time:'50min', phase:3 },
+  { id:88, title:'量子达尔文主义：客观现实的涌现', desc:'环境诱导超选择、冗余记录、客观性如何在量子世界中涌现', time:'50min', phase:3 },
+  { id:89, title:'模拟中的反事实：可能世界语义学', desc:'Lewis 的可能世界、反事实条件句、模拟的"if-else"分支逻辑', time:'45min', phase:3 },
+  { id:90, title:'哥德尔不完备定理与模拟的边界', desc:'哥德尔编码、不完备定理、停机问题与模拟者的认知极限', time:'50min', phase:3 },
+  { id:91, title:'算法信息论与宇宙的可计算性', desc:'Chaitin 的 Omega、算法概率、宇宙是图灵机的一个输出吗', time:'50min', phase:3 },
+  { id:92, title:'模拟中的时间：块宇宙 vs. 生成宇宙', desc:'永恒主义 vs. 增长块宇宙、模拟的帧率与时间箭头', time:'50min', phase:3 },
+  { id:93, title:'观察者选择效应与 Doomsday 论证', desc:'Carter-Leslie 末日论证、SIA vs. SSA、模拟中的自我采样偏差', time:'50min', phase:3 },
+  { id:94, title:'Sleeping Beauty 问题与模拟不确定性', desc:'睡美人悖论的三分之一 vs. 二分之一、模拟中的自我定位不确定性', time:'45min', phase:3 },
+  { id:95, title:'Newcomb 悖论与模拟中的预知', desc:'Newcomb 盒子的决策论困境、模拟预知 vs. 自由意志的再审视', time:'50min', phase:3 },
+  { id:96, title:'Roko 的蛇怪与模拟中的信息危害', desc:'LW 社区最有名的思想实验、Basilisk 的恐惧逻辑、信息本身的危害性', time:'50min', phase:3 },
+  { id:97, title:'技术奇点与模拟的收敛', desc:'Kurzweil 的加速回报、奇点的模拟学意义、后奇点文明的模拟能力', time:'50min', phase:3 },
+  { id:98, title:'宇宙的"关机"证据：冷斑、轴子与回声', desc:'宇宙中疑似模拟痕迹的全面梳理、统计学显著性评估', time:'55min', phase:3 },
+  { id:99, title:'终极实在：模拟链的终点', desc:'无限回归的必然终止、第一推动与模拟基座、我们能否知道自己在哪一层', time:'55min', phase:3 },
+  { id:100, title:'宇宙之镜终章：一条可走的路', desc:'从第1课到第100课的知识整合、模拟假说的实用主义立场、"地球online"的行动指南', time:'60min', phase:3 },
+  { id:101, title:'广义相对论的几何之美', desc:'从等效原理到爱因斯坦场方程、黎曼几何的直观理解、时空作为动态几何体', time:'55min', phase:4 },
+  { id:102, title:'黑洞全家福：史瓦西、克尔、RN', desc:'四种黑洞解、视界与奇点、克尔黑洞的能层与彭罗斯过程、黑洞热力学四定律', time:'55min', phase:4 },
+  { id:103, title:'虫洞物理：穿越时空的数学可能', desc:'爱因斯坦-罗森桥、Morris-Thorne可穿越虫洞、奇异物质与量子不等式、虫洞稳定性', time:'55min', phase:4 },
+  { id:104, title:'时间膨胀：从GPS到星际航行', desc:'狭义与广义相对论时间膨胀、GPS卫星修正实战、星际旅行的双生子悖论', time:'50min', phase:4 },
+  { id:105, title:'引力波：聆听宇宙的鼓点', desc:'LIGO如何工作、双黑洞并合波形、引力波天文学的宇宙学意义、脉冲星计时阵列', time:'50min', phase:4 },
+  { id:106, title:'光速为什么是c：宇宙的终极限速', desc:'麦克斯韦方程的光速推导、迈克尔逊-莫雷实验、因果律与光速极限的必然性', time:'50min', phase:4 },
+  { id:107, title:'超光速方案评议会：10种方案10种失败', desc:'快子、量子隧穿、虫洞、曲速引擎、额外维度跳跃——逐一检验物理可行性', time:'50min', phase:4 },
+  { id:108, title:'Alcubierre曲速引擎的数学', desc:'曲速度规的完整推导、负能量条件、Casimir效应辅助、曲速泡内潮汐力、NASA Eagleworks评估', time:'55min', phase:4 },
+  { id:109, title:'量子纠缠能否超光速通信？', desc:'无通信定理的严格证明、量子隐形传态的经典信息瓶颈、纠缠作为关联而非通道', time:'50min', phase:4 },
+  { id:110, title:'时间旅行的物理学与悖论', desc:'闭合类时曲线、哥德尔宇宙、Tipler柱、时序保护猜想、Novikov自洽原则与祖父悖论', time:'55min', phase:4 },
+  { id:111, title:'星际航行的20个硬核问题', desc:'辐射防护、微重力生理学、生命维持闭环、心理隔离、推进剂质量比——逐一量化', time:'50min', phase:4 },
+  { id:112, title:'世代船：移动的文明方舟', desc:'世代船生物学与社会学、遗传多样性维持、文化漂移、O\'Neill柱体与Bernal球设计', time:'50min', phase:4 },
+  { id:113, title:'戴森球与卡尔达舍夫等级', desc:'I-II-III型文明的能源尺度、戴森群的工程可行性、恒星引擎、人类当前的0.73级', time:'50min', phase:4 },
+  { id:114, title:'星际殖民的经济学', desc:'星际贸易的不可行性、自给自足模型、冯·诺依曼探测器成本效益分析、经济自催化', time:'50min', phase:4 },
+  { id:115, title:'冯·诺依曼探测器：自复制机器', desc:'自复制自动机理论、太空自我复制策略、费米悖论的冯·诺依曼解答、Bracewell探测器', time:'45min', phase:4 },
+  { id:116, title:'费米悖论：他们在哪里？', desc:'德雷克方程精算、大过滤器定位、稀有地球假说、动物园假说、黑暗森林概览', time:'50min', phase:4 },
+  { id:117, title:'大过滤器：人类通过了吗？', desc:'9步从无机物到星际文明、大过滤器的可能位置、核战争与AI风险作为晚期过滤器', time:'50min', phase:4 },
+  { id:118, title:'黑暗森林法则：宇宙社会学导论', desc:'刘慈欣的宇宙社会学两条公理、猜疑链、技术爆炸、黑暗森林作为费米悖论的一种解答', time:'50min', phase:4 },
+  { id:119, title:'SETI与外星文明信号搜索', desc:'射电SETI历史与技术、Wow!信号、光学SETI、Dyson球红外特征搜索、Breakthrough Listen', time:'50min', phase:4 },
+  { id:120, title:'第一次接触：人类准备好了吗？', desc:'国际SETI协议、信息污染伦理、主动METI争议、星际外交的理论框架与人类统一代表问题', time:'50min', phase:4 }
 ];
 
 const phaseColors = [
   new THREE.Color('#e2b64f'),        // Phase 0: 物理支柱 - gold
   new THREE.Color('#6b5ce7'),        // Phase 1: 计算支柱 - purple
+  new THREE.Color('#22d3ee'),        // Phase 2: 模拟检测 - cyan
+  new THREE.Color('#a78bfa'),        // Phase 3: 意识与伦理 - violet
+  new THREE.Color('#f59e0b'),        // Phase 4: 星际文明 - amber
 ];
 
 // ── Scene setup ──
@@ -641,63 +756,133 @@ scene.add(courseGroup);
 
 // Enhanced spiral distribution — nodes follow galaxy arms
 function getCoursePosition(index, phase, totalInPhase) {
-  // Phase 0 (gold): along arms 0 and 1 (right side)
-  // Phase 1 (purple): along arms 2 and 3 (left side)
-  const armBase = phase === 0 ? 0 : Math.PI;
-  const t = totalInPhase === 1 ? 0.5 : index / (totalInPhase - 1);
-  const armAngle = armBase + t * Math.PI * 1.8;
-  const radius = 3 + t * 11;
-  const spread = (index % 2 === 0 ? 1 : -1) * (1.2 + t * 1.5);
+  // Phase 0 (gold): right quadrant  (0°)
+  // Phase 1 (purple): top quadrant  (90°)
+  // Phase 2 (cyan): left quadrant  (180°)
+  // Phase 3 (violet): bottom quadrant (270°)
+  // Phase 4 (amber): outer scattered ring (mixed angles)
+  const phaseAngles = [0, Math.PI / 2, Math.PI, Math.PI * 1.5, -1];
+  const phaseRadiusStart = [3, 4, 5, 6, 8];
+  const phaseRadiusRange = [11, 11, 11, 11, 14];
+  const phaseYBase = [-1, 0.5, 2, 3.5, 5];
+
+  const t = totalInPhase <= 1 ? 0.5 : index / (totalInPhase - 1);
+  const radius = phaseRadiusStart[phase] + t * phaseRadiusRange[phase];
+  // Phase 4 gets scattered placement around the outer galaxy
+  let armAngle;
+  if (phaseAngles[phase] < 0) {
+    armAngle = (index / totalInPhase) * Math.PI * 2 + (Math.random() - 0.5) * 0.3;
+  } else {
+    armAngle = phaseAngles[phase] + t * Math.PI * 0.8;
+  }
+  const spread = (index % 2 === 0 ? 1 : -1) * (0.8 + t * 1.2);
 
   const perpAngle = armAngle + Math.PI / 2;
   const flatX = Math.cos(armAngle) * radius + Math.cos(perpAngle) * spread;
   const flatZ = Math.sin(armAngle) * radius + Math.sin(perpAngle) * spread;
-  const y = 1.5 + Math.sin(t * Math.PI) * 2 + (phase === 0 ? -0.5 : 1);
+  const y = phaseYBase[phase] + Math.sin(t * Math.PI) * 1.8;
 
   return { x: flatX, y, z: flatZ };
 }
 
-const phaseCounts = [10, 10];
-const phaseOffsets = [0, 10];
+// 5 phases: 20+20+40+20+20 = 120 courses
+const phaseCounts = [20, 20, 40, 20, 20];
+const phaseOffsets = [0, 20, 40, 80, 100];
+
+// Comet trail configuration per phase
+const phaseTrailLengths = [8, 8, 6, 5, 9];  // trail segments
+const phaseSpeeds = [0.3, 0.25, 0.2, 0.15, 0.12];  // orbit speed
 
 courses.forEach((course, i) => {
   const phase = course.phase;
   const posInPhase = i - phaseOffsets[phase];
   const totalInPhase = phaseCounts[phase];
   const pos = getCoursePosition(posInPhase, phase, totalInPhase);
-
   const color = phaseColors[phase];
 
-  // Outer glow halo
-  const glowGeo = new THREE.SphereGeometry(0.7, 32, 32);
+  // ── COMET HEAD ──
+  // Bright core
+  const coreGeo = new THREE.SphereGeometry(0.28, 32, 32);
+  const coreMat = new THREE.MeshStandardMaterial({
+    color, emissive: color, emissiveIntensity: 1.2,
+    roughness: 0.15, metalness: 0.6,
+  });
+  const core = new THREE.Mesh(coreGeo, coreMat);
+
+  // Inner glow
+  const glowGeo = new THREE.SphereGeometry(0.55, 32, 32);
   const glowMat = new THREE.MeshBasicMaterial({
-    color, transparent: true, opacity: 0.15,
+    color, transparent: true, opacity: 0.25,
     blending: THREE.AdditiveBlending, depthWrite: false,
   });
   const glow = new THREE.Mesh(glowGeo, glowMat);
 
-  // Core sphere
-  const coreGeo = new THREE.SphereGeometry(0.35, 32, 32);
-  const coreMat = new THREE.MeshStandardMaterial({
-    color, emissive: color, emissiveIntensity: 0.8,
-    roughness: 0.3, metalness: 0.5,
+  // Outer aura
+  const auraGeo = new THREE.SphereGeometry(0.85, 32, 32);
+  const auraMat = new THREE.MeshBasicMaterial({
+    color, transparent: true, opacity: 0.08,
+    blending: THREE.AdditiveBlending, depthWrite: false,
   });
-  const core = new THREE.Mesh(coreGeo, coreMat);
+  const aura = new THREE.Mesh(auraGeo, auraMat);
 
-  // Orbit ring
-  const ringGeo = new THREE.TorusGeometry(0.5, 0.04, 16, 48);
+  // Orbit ring (thinner, more elegant)
+  const ringGeo = new THREE.TorusGeometry(0.65, 0.03, 12, 48);
   const ringMat = new THREE.MeshBasicMaterial({
-    color, transparent: true, opacity: 0.45,
+    color, transparent: true, opacity: 0.35,
     blending: THREE.AdditiveBlending, depthWrite: false,
   });
   const ring = new THREE.Mesh(ringGeo, ringMat);
-  ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.8;
+  ring.rotation.x = Math.PI / 2 + (Math.random() - 0.5) * 0.6;
+
+  // ── COMET TRAIL ──
+  const trailLen = phaseTrailLengths[phase];
+  const trailPoints = [];
+  const trailColors = [];
+  const trailSizes = [];
+  for (let t = 0; t < trailLen; t++) {
+    // Trails start behind the comet (negative direction of orbit)
+    const alpha = 1 - t / trailLen;
+    trailPoints.push(pos.x, pos.y, pos.z);
+    trailColors.push(color.r * alpha, color.g * alpha, color.b * alpha);
+    trailSizes.push(0.12 * alpha * alpha);  // quadratic falloff
+  }
+  const trailGeo = new THREE.BufferGeometry();
+  trailGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(trailPoints), 3));
+  trailGeo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(trailColors), 3));
+  const trailMat = new THREE.PointsMaterial({
+    size: 0.12,
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.7,
+  });
+  const trail = new THREE.Points(trailGeo, trailMat);
 
   const group = new THREE.Group();
+  group.add(aura);
   group.add(glow);
   group.add(core);
   group.add(ring);
+  group.add(trail);
   group.position.set(pos.x, pos.y, pos.z);
+  group.userData = {
+    phase,
+    orbitAngle: Math.random() * Math.PI * 2,
+    orbitSpeed: phaseSpeeds[phase] * (0.8 + Math.random() * 0.4),
+    orbitRadius: Math.sqrt(pos.x * pos.x + pos.z * pos.z),
+    orbitBaseY: pos.y,
+    orbitAmp: 0.3 + Math.random() * 0.7,
+    trailLen,
+    trail,
+    trailMat,
+    trailGeo,
+  };
+
+  group.children.forEach(child => {
+    child.userData = { phase };
+  });
+
   courseGroup.add(group);
 
   courseNodes.push({
@@ -705,9 +890,11 @@ courses.forEach((course, i) => {
     glow,
     core,
     ring,
+    aura,
+    trail,
     course,
-    originalScale: 1,
     targetScale: 1,
+    hovered: false,
   });
 });
 
@@ -717,11 +904,13 @@ courses.forEach((course, i) => {
 function drawPhaseConnections() {
   const lineGroup = new THREE.Group();
 
-  [0, 1].forEach(phase => {
+  [0, 1, 2, 3, 4].forEach(phase => {
     const phaseNodes = courseNodes.filter(n => n.course.phase === phase);
 
     for (let i = 0; i < phaseNodes.length; i++) {
       for (let j = i + 1; j < phaseNodes.length; j++) {
+        // Only connect 1/4 of pairs to avoid visual clutter
+        if ((j - i) % 4 !== 0) continue;
         const a = phaseNodes[i].mesh.position;
         const b = phaseNodes[j].mesh.position;
         const dist = a.distanceTo(b);
@@ -746,53 +935,129 @@ function drawPhaseConnections() {
 const phaseLines = drawPhaseConnections();
 
 // ══════════════════════════════════════════════════════
-//  FUTURE PHASE PLACEHOLDERS (dim nodes)
+//  DECORATIVE COMETS — 30 flying comets with long trails
 // ══════════════════════════════════════════════════════
-function createPlaceholderNodes() {
+const decorativeComets = [];
+const cometGroup = new THREE.Group();
+scene.add(cometGroup);
+
+function createDecorativeComet() {
+  const phase = Math.floor(Math.random() * 5);
+  const color = phaseColors[phase];
+
+  // Random orbit parameters
+  const orbitRadius = 5 + Math.random() * 22;
+  const orbitSpeed = 0.08 + Math.random() * 0.25;
+  const orbitAngle = Math.random() * Math.PI * 2;
+  const orbitTilt = (Math.random() - 0.5) * Math.PI * 0.7;
+  const yBase = (Math.random() - 0.5) * 6;
+  const yAmp = 0.5 + Math.random() * 3;
+
+  // Head (small bright sphere)
+  const headGeo = new THREE.SphereGeometry(0.12, 16, 16);
+  const headMat = new THREE.MeshBasicMaterial({
+    color, transparent: true, opacity: 0.9,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  });
+  const head = new THREE.Mesh(headGeo, headMat);
+
+  // Glow
+  const glowGeo = new THREE.SphereGeometry(0.35, 16, 16);
+  const glowMat = new THREE.MeshBasicMaterial({
+    color, transparent: true, opacity: 0.35,
+    blending: THREE.AdditiveBlending, depthWrite: false,
+  });
+  const glow = new THREE.Mesh(glowGeo, glowMat);
+
+  // Trail (line with gradient colors)
+  const trailLen = 15 + Math.floor(Math.random() * 20);
+  const trailPositions = new Float32Array(trailLen * 3);
+  const trailColors = new Float32Array(trailLen * 3);
+  for (let i = 0; i < trailLen; i++) {
+    trailPositions[i * 3] = 0;
+    trailPositions[i * 3 + 1] = 0;
+    trailPositions[i * 3 + 2] = 0;
+    const a = 1 - i / trailLen;
+    trailColors[i * 3] = color.r * a;
+    trailColors[i * 3 + 1] = color.g * a;
+    trailColors[i * 3 + 2] = color.b * a;
+  }
+  const trailGeo = new THREE.BufferGeometry();
+  trailGeo.setAttribute('position', new THREE.BufferAttribute(trailPositions, 3));
+  trailGeo.setAttribute('color', new THREE.BufferAttribute(trailColors, 3));
+  const trailMat = new THREE.LineBasicMaterial({
+    vertexColors: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    transparent: true,
+    opacity: 0.6,
+    linewidth: 1,
+  });
+  const trail = new THREE.Line(trailGeo, trailMat);
+
   const group = new THREE.Group();
+  group.add(glow);
+  group.add(head);
+  group.add(trail);
+  cometGroup.add(group);
 
-  // Phase 3: 模拟检测 (21-40) — scattered outer ring
-  for (let i = 0; i < 8; i++) {
-    const angle = Math.PI * 1.8 + (i / 7) * Math.PI * 0.8;
-    const radius = 13 + i * 0.6;
-    const pos = {
-      x: Math.cos(angle) * radius,
-      y: 0.5 + Math.sin(i * 0.8) * 1.5,
-      z: Math.sin(angle) * radius - 2,
-    };
-    const geo = new THREE.SphereGeometry(0.2, 12, 12);
-    const mat = new THREE.MeshBasicMaterial({
-      color: 0x5566aa, transparent: true, opacity: 0.12,
-      blending: THREE.AdditiveBlending, depthWrite: false,
-    });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(pos.x, pos.y, pos.z);
-    group.add(mesh);
-  }
+  // Initial position
+  const x = Math.cos(orbitAngle) * orbitRadius;
+  const z = Math.sin(orbitAngle) * orbitRadius;
+  group.position.set(x, yBase, z);
 
-  // Phase 4: 意识与伦理 (41-100) — outermost ring
-  for (let i = 0; i < 12; i++) {
-    const angle = Math.PI * 0.5 + (i / 11) * Math.PI * 0.9;
-    const radius = 16 + i * 0.5;
-    const pos = {
-      x: Math.cos(angle) * radius,
-      y: 2 + Math.sin(i * 0.6) * 1.2,
-      z: Math.sin(angle) * radius - 2,
-    };
-    const geo = new THREE.SphereGeometry(0.16, 12, 12);
-    const mat = new THREE.MeshBasicMaterial({
-      color: 0x556677, transparent: true, opacity: 0.08,
-      blending: THREE.AdditiveBlending, depthWrite: false,
-    });
-    const mesh = new THREE.Mesh(geo, mat);
-    mesh.position.set(pos.x, pos.y, pos.z);
-    group.add(mesh);
-  }
-
-  scene.add(group);
-  return group;
+  return {
+    group, head, glow, trail, trailGeo, trailMat,
+    orbitRadius, orbitSpeed, orbitAngle, orbitTilt, yBase, yAmp,
+    trailLen, color,
+    positions: new Float32Array(trailLen * 3),
+  };
 }
-const placeholderNodes = createPlaceholderNodes();
+
+for (let i = 0; i < 30; i++) {
+  decorativeComets.push(createDecorativeComet());
+}
+
+// ── Floating particle dust (2000 tiny drifting lights) ──
+const dustCount = 2000;
+const dustGeo = new THREE.BufferGeometry();
+const dustPos = new Float32Array(dustCount * 3);
+const dustColors = new Float32Array(dustCount * 3);
+const dustData = [];
+for (let i = 0; i < dustCount; i++) {
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos(2 * Math.random() - 1);
+  const r = 5 + Math.random() * 25;
+  dustPos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+  dustPos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+  dustPos[i * 3 + 2] = r * Math.cos(phi);
+
+  const phase = Math.floor(Math.random() * 5);
+  const c = phaseColors[phase];
+  const b = 0.3 + Math.random() * 0.7;
+  dustColors[i * 3] = c.r * b;
+  dustColors[i * 3 + 1] = c.g * b;
+  dustColors[i * 3 + 2] = c.b * b;
+
+  dustData.push({
+    orbitSpeed: 0.02 + Math.random() * 0.08,
+    yAmp: 0.3 + Math.random() * 1.5,
+    yPhase: Math.random() * Math.PI * 2,
+    baseY: dustPos[i * 3 + 1],
+  });
+}
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+dustGeo.setAttribute('color', new THREE.BufferAttribute(dustColors, 3));
+const dustMat = new THREE.PointsMaterial({
+  size: 0.06,
+  vertexColors: true,
+  blending: THREE.AdditiveBlending,
+  depthWrite: false,
+  transparent: true,
+  opacity: 0.5,
+});
+const dustParticles = new THREE.Points(dustGeo, dustMat);
+scene.add(dustParticles);
 
 // ══════════════════════════════════════════════════════
 //  INTERACTION — hover & click
@@ -833,16 +1098,16 @@ renderer.domElement.addEventListener('mousemove', (e) => {
 
   if (intersects.length > 0) {
     const obj = intersects[0].object;
-    const node = courseNodes.find(n => n.core === obj || n.glow === obj || n.ring === obj);
+    const node = courseNodes.find(n => n.core === obj || n.glow === obj || n.ring === obj || n.aura === obj);
     if (node) {
       if (hoveredNode !== node) {
         if (hoveredNode) {
-          hoveredNode.targetScale = 1;
-          hoveredNode.glow.material.opacity = 0.15;
+          hoveredNode.targetScale = 0.85;
+          hoveredNode.glow.material.opacity = 0.25;
         }
         hoveredNode = node;
         node.targetScale = 2.0;
-        node.glow.material.opacity = 0.55;
+        node.glow.material.opacity = 0.65;
         document.body.style.cursor = 'pointer';
       }
       updateInfoPanel(node, e.clientX, e.clientY);
@@ -851,8 +1116,8 @@ renderer.domElement.addEventListener('mousemove', (e) => {
   }
 
   if (hoveredNode) {
-    hoveredNode.targetScale = 1;
-    hoveredNode.glow.material.opacity = 0.15;
+    hoveredNode.targetScale = 0.85;
+    hoveredNode.glow.material.opacity = 0.25;
     hoveredNode = null;
   }
   document.body.style.cursor = 'default';
@@ -870,7 +1135,7 @@ renderer.domElement.addEventListener('click', (e) => {
 
   if (intersects.length > 0) {
     const obj = intersects[0].object;
-    const node = courseNodes.find(n => n.core === obj || n.glow === obj || n.ring === obj);
+    const node = courseNodes.find(n => n.core === obj || n.glow === obj || n.ring === obj || n.aura === obj);
     if (node) {
       const id = String(node.course.id).padStart(2, '0');
       window.location.href = `lesson${id}.html`;
@@ -889,14 +1154,89 @@ function animate() {
   const t = clock.getElapsedTime();
   controls.update();
 
-  // Smooth node scale transitions
+  // ── COURSE NODE COMET ANIMATION ──
   courseNodes.forEach(node => {
-    const current = node.mesh.scale.x;
-    const target = node.targetScale;
-    node.mesh.scale.setScalar(current + (target - current) * 0.12);
-    node.ring.rotation.z += 0.004;
-    node.ring.rotation.x += 0.0015;
+    const mesh = node.mesh;
+    const ud = mesh.userData;
+
+    // Smooth scale
+    const current = mesh.scale.x;
+    const target = node.targetScale || 0.85;
+    mesh.scale.setScalar(current + (target - current) * 0.08);
+
+    // Ring rotation (more pronounced for comets)
+    node.ring.rotation.z += 0.006;
+    node.ring.rotation.x += 0.002;
+
+    // Orbital motion (each comet slowly orbits, leaving a trail)
+    if (ud.orbitSpeed !== undefined) {
+      ud.orbitAngle += ud.orbitSpeed * 0.001;
+      const r = ud.orbitRadius;
+      const a = ud.orbitAngle;
+      const x = Math.cos(a) * r;
+      const z = Math.sin(a) * r;
+      const y = ud.orbitBaseY + Math.sin(a * 2.3) * ud.orbitAmp;
+      mesh.position.set(x, y, z);
+
+      // Update trail: shift points backward
+      const tPos = ud.trailGeo.attributes.position.array;
+      const tLen = ud.trailLen;
+      // Shift all points down by 3 (shift toward tail)
+      for (let i = (tLen - 1) * 3; i >= 3; i -= 3) {
+        tPos[i] = tPos[i - 3];
+        tPos[i + 1] = tPos[i - 4];
+        tPos[i + 2] = tPos[i - 5];
+      }
+      // New head position (slightly behind current position, in world space)
+      const dx = Math.sin(a) * ud.orbitSpeed * 0.15;
+      const dz = -Math.cos(a) * ud.orbitSpeed * 0.15;
+      tPos[0] = -dx;
+      tPos[1] = 0;
+      tPos[2] = -dz;
+      ud.trailGeo.attributes.position.needsUpdate = true;
+    }
   });
+
+  // ── DECORATIVE COMETS ──
+  decorativeComets.forEach(comet => {
+    comet.orbitAngle += comet.orbitSpeed * 0.003;
+    const a = comet.orbitAngle;
+    const r = comet.orbitRadius;
+    const x = Math.cos(a) * r;
+    const z = Math.sin(a) * r;
+    const y = comet.yBase + Math.sin(a * 1.7 + comet.orbitTilt) * comet.yAmp;
+
+    // Update head position
+    comet.group.position.set(x, y, z);
+
+    // Update trail
+    const tPos = comet.trailGeo.attributes.position.array;
+    const tLen = comet.trailLen;
+    for (let i = (tLen - 1) * 3; i >= 3; i -= 3) {
+      tPos[i] = tPos[i - 3];
+      tPos[i + 1] = tPos[i - 4];
+      tPos[i + 2] = tPos[i - 5];
+    }
+    // New position (relative to comet, which moves)
+    const speed = comet.orbitSpeed * 0.4;
+    tPos[0] = -Math.sin(a) * speed;
+    tPos[1] = -Math.cos(a * 1.7 + comet.orbitTilt) * comet.yAmp * 0.05;
+    tPos[2] = Math.cos(a) * speed;
+    comet.trailGeo.attributes.position.needsUpdate = true;
+  });
+
+  // ── FLOATING DUST ──
+  const dustPosArr = dustGeo.attributes.position.array;
+  for (let i = 0; i < dustCount; i++) {
+    const d = dustData[i];
+    const baseIdx = i * 3;
+    const r = Math.sqrt(dustPosArr[baseIdx] * dustPosArr[baseIdx] + dustPosArr[baseIdx + 2] * dustPosArr[baseIdx + 2]);
+    const angle = Math.atan2(dustPosArr[baseIdx + 2], dustPosArr[baseIdx]) + d.orbitSpeed * 0.001;
+    dustPosArr[baseIdx] = Math.cos(angle) * r;
+    dustPosArr[baseIdx + 2] = Math.sin(angle) * r;
+    dustPosArr[baseIdx + 1] = d.baseY + Math.sin(t * 0.5 + d.yPhase) * d.yAmp;
+  }
+  dustGeo.attributes.position.needsUpdate = true;
 
   // Pulse central core
   const pulse = 1 + Math.sin(t * 0.7) * 0.2;
@@ -918,9 +1258,9 @@ function animate() {
     n.sprite.scale.x = n.sprite.scale.y * (1 + Math.sin(t * 0.25 + i * 1.5) * 0.03);
   });
 
-  // Rotate spiral arms very slowly
-  armsGroup.rotation.z += 0.0001;
-  dustGroup.rotation.z += 0.00008;
+  // Rotate spiral arms very slowly (safe — skip if groups don't exist)
+  if (typeof armsGroup !== 'undefined') armsGroup.rotation.z += 0.0001;
+  if (typeof dustGroup !== 'undefined') dustGroup.rotation.z += 0.00008;
 
   // Connection lines fade with camera distance
   const camDist = camera.position.length();
