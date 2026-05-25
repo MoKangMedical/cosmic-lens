@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>反思日记 — 宇航员视角</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #020408;
+  --gold: #e2b64f;
+  --gold-light: #f0d478;
+  --gold-dark: #b8922e;
+  --text: #f5f5f7;
+  --text2: #a0a0ab;
+  --text3: #6a6a78;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', 'Noto Serif SC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* ── 导航栏 ── */
+nav.global-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid rgba(226,182,79,0.15);
+  position: sticky;
+  top: 0;
+  background: rgba(2,4,8,0.92);
+  backdrop-filter: blur(12px);
+  z-index: 100;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+nav.global-nav a {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  transition: color 0.2s;
+  white-space: nowrap;
+}
+nav.global-nav a:hover { color: var(--gold-light); }
+nav.global-nav a.active { color: var(--gold); font-weight: 500; }
+nav.global-nav .back-link { font-weight: 500; }
+nav.global-nav .nav-links {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--text3);
+}
+nav.global-nav .nav-links span { color: var(--text3); }
+
+/* ── 主容器 ── */
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ── 标题区域 ── */
+.page-header { text-align: center; margin-bottom: 2.5rem; }
+.page-header h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+.page-header .subtitle {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  color: var(--text2);
+  font-family: 'Noto Serif SC', serif;
+}
+
+/* ── 问题卡片 ── */
+.question-card {
+  background: linear-gradient(135deg, rgba(226,182,79,0.06), rgba(240,212,120,0.03));
+  border: 1px solid rgba(226,182,79,0.18);
+  border-radius: 12px;
+  padding: 1.6rem 1.4rem;
+  margin-bottom: 1.8rem;
+  position: relative;
+  transition: border-color 0.3s;
+}
+.question-card:hover { border-color: rgba(226,182,79,0.35); }
+.question-card .card-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  margin-bottom: 0.6rem;
+  font-family: 'Inter', sans-serif;
+}
+.question-card .question-text {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.15rem;
+  color: var(--text);
+  line-height: 1.8;
+  padding-right: 5rem;
+}
+.question-card .refresh-btn {
+  position: absolute;
+  top: 1.6rem;
+  right: 1.4rem;
+  background: none;
+  border: 1px solid rgba(226,182,79,0.3);
+  color: var(--gold);
+  font-size: 0.78rem;
+  font-family: 'Inter', sans-serif;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.question-card .refresh-btn:hover {
+  background: rgba(226,182,79,0.1);
+  border-color: var(--gold);
+  color: var(--gold-light);
+}
+
+/* ── 写作区域 ── */
+.writing-area { margin-bottom: 0.8rem; }
+.writing-area textarea {
+  width: 100%;
+  min-height: 180px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(160,160,171,0.25);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  padding: 1rem 1.2rem;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+.writing-area textarea::placeholder { color: var(--text3); }
+.writing-area textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(226,182,79,0.12);
+}
+
+/* ── 按钮行 ── */
+.btn-row { display: flex; gap: 0.8rem; margin-bottom: 2.2rem; }
+.btn {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+.btn-primary {
+  background: var(--gold);
+  color: #1a1a1a;
+}
+.btn-primary:hover { background: var(--gold-light); }
+.btn-secondary {
+  background: transparent;
+  color: var(--text2);
+  border: 1px solid rgba(160,160,171,0.3);
+}
+.btn-secondary:hover {
+  color: var(--text);
+  border-color: var(--text3);
+}
+.btn-danger {
+  background: transparent;
+  color: #c97a7a;
+  border: 1px solid rgba(201,122,122,0.3);
+  font-size: 0.75rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+}
+.btn-danger:hover { background: rgba(201,122,122,0.08); border-color: rgba(201,122,122,0.5); }
+
+/* ── 历史记录 ── */
+.history-section h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.25rem;
+  color: var(--text);
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(226,182,79,0.12);
+}
+.history-empty {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  color: var(--text3);
+  font-size: 0.9rem;
+  border: 1px dashed rgba(160,160,171,0.15);
+  border-radius: 10px;
+}
+.history-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(160,160,171,0.08);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+.history-item:hover { border-color: rgba(226,182,79,0.2); }
+.history-item .entry-info { min-width: 0; flex: 1; }
+.history-item .entry-date {
+  font-size: 0.78rem;
+  color: var(--text3);
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 0.25rem;
+}
+.history-item .entry-preview {
+  font-size: 0.88rem;
+  color: var(--text2);
+  font-family: 'Noto Serif SC', serif;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.history-item .entry-actions { flex-shrink: 0; }
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--gold);
+  color: #1a1a1a;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  z-index: 999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.toast.show { opacity: 1; }
+
+@media (max-width: 600px) {
+  nav.global-nav { padding: 0.8rem 1rem; }
+  nav.global-nav .nav-links { font-size: 0.72rem; gap: 0.2rem; }
+  main { padding: 1.5rem 1rem 3rem; }
+  .page-header h1 { font-size: 1.5rem; }
+  .question-card { padding: 1.2rem 1rem; }
+  .question-card .question-text { font-size: 1rem; padding-right: 4rem; }
+  .question-card .refresh-btn { top: 1.2rem; right: 1rem; font-size: 0.72rem; padding: 0.25rem 0.6rem; }
+  .history-item { flex-direction: column; gap: 0.5rem; }
+  .history-item .entry-actions { align-self: flex-end; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ 全局导航 ═══════════════ -->
+<nav class="global-nav">
+  <a href="astronaut.html" class="back-link">← 返回宇航员视角</a>
+  <div class="nav-links">
+    <a href="astronaut-stories.html">故事馆</a> <span>|</span>
+    <a href="astronaut-philosophy.html">沉思录</a> <span>|</span>
+    <a href="astronaut-journal.html" class="active">反思日记</a> <span>|</span>
+    <a href="astronaut-gallery.html">画廊</a> <span>|</span>
+    <a href="astronaut-timeline.html">时空轴</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ 主内容 ═══════════════ -->
+<main>
+  <div class="page-header">
+    <h1>反思日记</h1>
+    <p class="subtitle">从宇航员的视角，重新审视你的人生</p>
+  </div>
+
+  <!-- 问题卡片 -->
+  <div class="question-card" id="questionCard">
+    <div class="card-label">今日反思引导</div>
+    <div class="question-text" id="questionText"></div>
+    <button class="refresh-btn" id="refreshBtn" title="换一个问题">换一个问题</button>
+  </div>
+
+  <!-- 写作区域 -->
+  <div class="writing-area">
+    <textarea id="journalTextarea" placeholder="在此书写你的反思..."></textarea>
+  </div>
+
+  <!-- 操作按钮 -->
+  <div class="btn-row">
+    <button class="btn btn-primary" id="saveBtn">保存反思</button>
+    <button class="btn btn-secondary" id="clearBtn">清空</button>
+  </div>
+
+  <!-- 历史记录 -->
+  <div class="history-section">
+    <h2>我的反思记录</h2>
+    <div id="historyContainer"></div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  const STORAGE_KEY = 'astronaut_journal';
+  const MAX_ENTRIES = 50;
+
+  const questions = [
+    '如果你此刻从太空中回望地球，你现在最在意的事情还重要吗？',
+    '想象你是国际空间站上的宇航员，看着地球缓缓转动。你看到了什么？',
+    '假如你知道人类文明只是宇宙138亿年历史中的一个瞬间，你会如何度过今天？',
+    '当你看过地球的全貌，「成功」和「失败」的定义会改变吗？',
+    '如果从太空看，人与人之间的冲突有什么意义？',
+    '你生命中真正重要的三件事是什么？从宇宙的视角看，它们还重要吗？',
+    '大气层只有100公里厚。这让你对环保和生态有什么新的感受？',
+    '从阿波罗宇航员的角度：当你用拇指就能遮住整个地球，你的焦虑有多大？',
+    '卡尔·萨根说：我们是星尘。这个事实会改变你对自己的看法吗？',
+    '如果你只有一次从太空看地球的机会，你会记住什么？',
+    '没有什么问题是永恒的——但有些瞬间是。你生命中最珍贵的瞬间是什么？',
+    '如果地球是宇宙中唯一的生命摇篮，你作为生命的一员，有什么责任？',
+    '从宇宙视角看，「原谅」和「放下」是不是更容易了？为什么？',
+    '想象50亿年后太阳膨胀吞噬地球。你此刻的烦恼在那时还有意义吗？',
+    '宇航员返回地球后最想做的事往往是拥抱家人。你最想拥抱谁？',
+    '从太空中看，国界线消失了。这对你理解「人类」意味着什么？',
+    '宇宙中有一千亿个星系，每个星系有一千亿颗恒星。你还觉得自己孤独吗？',
+    '如果人类注定要离开地球，你希望我们带走什么样的文明记忆？'
+  ];
+
+  var usedQuestionIndex = -1;
+
+  function pickRandomQuestion() {
+    if (questions.length === 1) return questions[0];
+    var idx;
+    do { idx = Math.floor(Math.random() * questions.length); }
+    while (idx === usedQuestionIndex && questions.length > 1);
+    usedQuestionIndex = idx;
+    return questions[idx];
+  }
+
+  function shuffleQuestion() {
+    var el = document.getElementById('questionText');
+    if (el) el.textContent = pickRandomQuestion();
+  }
+
+  function loadEntries() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) { return []; }
+  }
+
+  function saveEntries(entries) {
+    if (entries.length > MAX_ENTRIES) {
+      entries = entries.slice(0, MAX_ENTRIES);
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+  }
+
+  function formatDate(dateStr) {
+    var d = new Date(dateStr + 'T00:00:00');
+    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
+  }
+
+  function todayStr() {
+    var d = new Date();
+    var m = d.getMonth() + 1;
+    var day = d.getDate();
+    return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day);
+  }
+
+  function truncate(text, maxLen) {
+    if (text.length <= maxLen) return text;
+    return text.slice(0, maxLen) + '...';
+  }
+
+  function renderHistory() {
+    var container = document.getElementById('historyContainer');
+    var entries = loadEntries();
+    if (!entries.length) {
+      container.innerHTML = '<div class="history-empty">🌍 还没有反思记录，开始你的第一次宇宙视角反思吧</div>';
+      return;
+    }
+    var html = '<div class="history-list">';
+    for (var i = 0; i < entries.length; i++) {
+      html += '<div class="history-item">'
+        + '<div class="entry-info">'
+        + '<div class="entry-date">' + formatDate(entries[i].date) + '</div>'
+        + '<div class="entry-preview">' + truncate(entries[i].content, 80) + '</div>'
+        + '</div>'
+        + '<div class="entry-actions"><button class="btn btn-danger" data-idx="' + i + '">删除</button></div>'
+        + '</div>';
+    }
+    html += '</div>';
+    container.innerHTML = html;
+
+    var delBtns = container.querySelectorAll('.btn-danger');
+    for (var j = 0; j < delBtns.length; j++) {
+      delBtns[j].addEventListener('click', function () {
+        var idx = parseInt(this.getAttribute('data-idx'), 10);
+        var entries = loadEntries();
+        entries.splice(idx, 1);
+        saveEntries(entries);
+        renderHistory();
+        showToast('已删除');
+      });
+    }
+  }
+
+  function showToast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._timeout);
+    el._timeout = setTimeout(function () { el.classList.remove('show'); }, 1800);
+  }
+
+  function saveJournal() {
+    var textarea = document.getElementById('journalTextarea');
+    var content = textarea.value.trim();
+    if (!content) { showToast('请输入内容后再保存'); return; }
+    var entries = loadEntries();
+    entries.unshift({ date: todayStr(), content: content });
+    saveEntries(entries);
+    textarea.value = '';
+    renderHistory();
+    showToast('反思已保存 ✨');
+  }
+
+  function clearTextarea() {
+    var textarea = document.getElementById('journalTextarea');
+    if (!textarea.value.trim()) return;
+    textarea.value = '';
+    showToast('已清空');
+  }
+
+  document.getElementById('refreshBtn').addEventListener('click', shuffleQuestion);
+  document.getElementById('saveBtn').addEventListener('click', saveJournal);
+  document.getElementById('clearBtn').addEventListener('click', clearTextarea);
+
+  // 初始随机问题
+  shuffleQuestion();
+  renderHistory();
+})();
+</script>
+</body>
+</html>

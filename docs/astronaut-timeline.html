@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>时空之轴 — 人类太空探索历史</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #020408;
+  --gold: #e2b64f;
+  --gold-light: #f0d478;
+  --gold-dark: #b8922e;
+  --text: #f5f5f7;
+  --text2: #a0a0ab;
+  --text3: #6a6a78;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Serif SC', sans-serif;
+  line-height: 1.7;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* 全局导航 */
+.global-nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(2,4,8,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226,182,79,0.15);
+  padding: 14px 40px; display: flex; justify-content: space-between;
+  align-items: center; font-size: 14px;
+}
+.global-nav .nav-left a {
+  color: var(--text2); text-decoration: none;
+  transition: color 0.3s; font-family: 'Noto Serif SC', serif;
+}
+.global-nav .nav-left a:hover { color: var(--gold); }
+.global-nav .nav-right { display: flex; gap: 18px; flex-wrap: wrap; }
+.global-nav .nav-right a {
+  color: var(--text2); text-decoration: none;
+  transition: color 0.3s; font-size: 13px;
+}
+.global-nav .nav-right a:hover,
+.global-nav .nav-right a.active { color: var(--gold); }
+.global-nav .nav-right a.active { font-weight: 600; }
+
+/* 主内容 */
+.main-content { padding-top: 100px; }
+
+/* 标题区 */
+.hero {
+  text-align: center; padding: 60px 20px 40px;
+  position: relative;
+}
+.hero h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  color: var(--gold); font-weight: 700;
+  letter-spacing: 0.08em; margin-bottom: 12px;
+}
+.hero .subtitle {
+  font-size: 1.1rem; color: var(--text2);
+  font-family: 'Noto Serif SC', serif; font-weight: 300;
+  letter-spacing: 0.06em;
+}
+.hero::after {
+  content: ''; display: block;
+  width: 60px; height: 2px; background: var(--gold-dark);
+  margin: 24px auto 0; opacity: 0.5;
+}
+
+/* 时间线容器 */
+.timeline {
+  position: relative; max-width: 860px; margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+
+/* 中间竖线 */
+.timeline::before {
+  content: ''; position: absolute;
+  left: 180px; top: 0; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom,
+    transparent 0%, var(--gold-dark) 8%, var(--gold) 20%,
+    var(--gold) 80%, var(--gold-dark) 92%, transparent 100%);
+}
+
+/* 时间线节点 */
+.tl-node {
+  position: relative; display: flex; align-items: flex-start;
+  margin-bottom: 48px; opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.tl-node.visible { opacity: 1; transform: translateY(0); }
+
+/* 圆点 */
+.tl-node::before {
+  content: ''; position: absolute;
+  left: 180px; top: 8px;
+  width: 14px; height: 14px; margin-left: -6px;
+  background: var(--bg); border: 2px solid var(--gold);
+  border-radius: 50%; z-index: 2;
+  transition: background 0.4s, box-shadow 0.4s;
+}
+.tl-node:hover::before {
+  background: var(--gold);
+  box-shadow: 0 0 18px var(--gold), 0 0 36px rgba(226,182,79,0.35);
+}
+
+/* 年份 */
+.tl-year {
+  width: 160px; text-align: right; padding-right: 40px;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--gold); letter-spacing: 0.04em;
+  padding-top: 2px;
+}
+
+/* 卡片 */
+.tl-card {
+  flex: 1; min-width: 0;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(226,182,79,0.12);
+  border-radius: 10px;
+  padding: 20px 24px;
+  transition: border-color 0.4s, box-shadow 0.4s, background 0.4s;
+}
+.tl-card:hover {
+  border-color: var(--gold);
+  box-shadow: 0 0 24px rgba(226,182,79,0.15), 0 0 48px rgba(226,182,79,0.05);
+  background: rgba(255,255,255,0.04);
+}
+.tl-card .event-name {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.15rem; font-weight: 600;
+  color: var(--text); margin-bottom: 8px;
+}
+.tl-card .event-desc {
+  font-size: 0.92rem; color: var(--text2);
+  line-height: 1.75; margin-bottom: 12px;
+}
+.tl-card .philosophy {
+  display: inline-block;
+  font-size: 0.78rem; color: var(--gold-dark);
+  border: 1px solid rgba(226,182,79,0.2);
+  border-radius: 20px; padding: 4px 14px;
+  font-family: 'Noto Serif SC', serif;
+  letter-spacing: 0.03em;
+}
+
+/* 页脚 */
+.footer {
+  text-align: center; padding: 40px 20px 60px;
+  color: var(--text3); font-size: 0.82rem;
+  font-family: 'Noto Serif SC', serif;
+}
+
+/* 响应式 */
+@media (max-width: 680px) {
+  .global-nav {
+    padding: 12px 16px; flex-direction: column; gap: 8px;
+  }
+  .global-nav .nav-right { justify-content: center; gap: 10px; }
+  .timeline::before { left: 60px; }
+  .tl-node { flex-direction: column; padding-left: 80px; }
+  .tl-node::before { left: 60px; }
+  .tl-year {
+    width: auto; text-align: left; padding-right: 0;
+    padding-left: 0; margin-bottom: 6px; position: relative;
+    left: -80px; font-size: 1.25rem;
+  }
+  .tl-card { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<!-- 全局导航 -->
+<nav class="global-nav">
+  <div class="nav-left">
+    <a href="astronaut.html">← 返回宇航员视角</a>
+  </div>
+  <div class="nav-right">
+    <a href="astronaut-stories.html">故事馆</a>
+    <a href="astronaut-philosophy.html">沉思录</a>
+    <a href="astronaut-journal.html">反思日记</a>
+    <a href="astronaut-gallery.html">画廊</a>
+    <a href="astronaut-timeline.html" class="active">时空轴</a>
+  </div>
+</nav>
+
+<div class="main-content">
+
+  <!-- 标题 -->
+  <section class="hero">
+    <h1>时空之轴</h1>
+    <p class="subtitle">人类走向太空的每一步</p>
+  </section>
+
+  <!-- 时间线 -->
+  <div class="timeline">
+
+    <!-- 1. 1957 — 斯普特尼克1号 -->
+    <div class="tl-node">
+      <div class="tl-year">1957</div>
+      <div class="tl-card">
+        <div class="event-name">斯普特尼克1号</div>
+        <div class="event-desc">开启太空时代。"一声蜂鸣改变了人类对自身的全部认知——我们不再被囚禁在这颗星球上。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 2. 1957 — 莱卡进入太空 -->
+    <div class="tl-node">
+      <div class="tl-year">1957</div>
+      <div class="tl-card">
+        <div class="event-name">莱卡进入太空</div>
+        <div class="event-desc">第一个进入轨道的生命。"第一个太空牺牲者提醒我们：探索的边界在哪里？生命的代价由谁来承担？"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 3. 1961 — 加加林首飞 -->
+    <div class="tl-node">
+      <div class="tl-year">1961</div>
+      <div class="tl-card">
+        <div class="event-name">加加林首飞</div>
+        <div class="event-desc">第一个进入太空的人类。"当第一个人看到地球的全貌，人类集体意识发生了不可逆转的扩张。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 4. 1965 — 列昂诺夫首次太空行走 -->
+    <div class="tl-node">
+      <div class="tl-year">1965</div>
+      <div class="tl-card">
+        <div class="event-name">列昂诺夫首次太空行走</div>
+        <div class="event-desc">"第一次，一个人漂浮在太空舱外，与宇宙之间只有一层宇航服的厚度。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 5. 1966 — 第一张太空自拍 -->
+    <div class="tl-node">
+      <div class="tl-year">1966</div>
+      <div class="tl-card">
+        <div class="event-name">第一张太空自拍</div>
+        <div class="event-desc">双子星10号迈克尔·柯林斯。"自我与宇宙的第一次视觉对话。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 6. 1968 — 地出照片 -->
+    <div class="tl-node">
+      <div class="tl-year">1968</div>
+      <div class="tl-card">
+        <div class="event-name">地出照片</div>
+        <div class="event-desc">阿波罗8号从月球轨道拍摄。"史上最有影响力的环境照片，环保运动由此点燃。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 7. 1969 — 阿波罗11号登月 -->
+    <div class="tl-node">
+      <div class="tl-year">1969</div>
+      <div class="tl-card">
+        <div class="event-name">阿波罗11号登月</div>
+        <div class="event-desc">首次踏上另一个天体。"一个人一小步，人类一大步——但更大的一步是回望地球时发生的内心转变。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 8. 1972 — 蓝色弹珠 -->
+    <div class="tl-node">
+      <div class="tl-year">1972</div>
+      <div class="tl-card">
+        <div class="event-name">蓝色弹珠</div>
+        <div class="event-desc">阿波罗17号。"人类历史上传播最广的照片。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 9. 1984 — 无系留太空行走 -->
+    <div class="tl-node">
+      <div class="tl-year">1984</div>
+      <div class="tl-card">
+        <div class="event-name">无系留太空行走</div>
+        <div class="event-desc">布鲁斯·麦坎德利斯解开安全绳。"一个人没有任何连接——这幅画面成为关于人类存在意义最直接的视觉追问。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 10. 1986 — 挑战者号失事 -->
+    <div class="tl-node">
+      <div class="tl-year">1986</div>
+      <div class="tl-card">
+        <div class="event-name">挑战者号失事</div>
+        <div class="event-desc">7名宇航员遇难。"进步不是没有代价的。每一次失败都让我们更清楚地看到自己——脆弱、无畏、永不停歇。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 11. 1987 — 总观效应被定义 -->
+    <div class="tl-node">
+      <div class="tl-year">1987</div>
+      <div class="tl-card">
+        <div class="event-name">总观效应被定义</div>
+        <div class="event-desc">弗兰克·怀特命名Overview Effect。"终于，宇航员们无法言说的体验有了名字。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 12. 1990 — 暗淡蓝点 -->
+    <div class="tl-node">
+      <div class="tl-year">1990</div>
+      <div class="tl-card">
+        <div class="event-name">暗淡蓝点</div>
+        <div class="event-desc">旅行者1号60亿公里外回望。"0.12像素的淡蓝色光点——那就是我们的一切。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 13. 2000 — ISS长期驻留 -->
+    <div class="tl-node">
+      <div class="tl-year">2000</div>
+      <div class="tl-card">
+        <div class="event-name">ISS长期驻留</div>
+        <div class="event-desc">人类开始在太空中持续生活。"从'去太空'到'住在太空'——物种正在扩展栖息地。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 14. 2003 — 神舟五号 -->
+    <div class="tl-node">
+      <div class="tl-year">2003</div>
+      <div class="tl-card">
+        <div class="event-name">神舟五号</div>
+        <div class="event-desc">杨利伟首位中国航天员。"无论来自哪个国家，第一次从太空看地球的反应相同：敬畏、感动、对和平的渴望。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 15. 2012 — 神舟九号 -->
+    <div class="tl-node">
+      <div class="tl-year">2012</div>
+      <div class="tl-card">
+        <div class="event-name">神舟九号</div>
+        <div class="event-desc">刘洋首位中国女航天员。"性别、国籍、文化——在宇宙视角下，界限微不足道。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 16. 2021 — Inspiration4全平民任务 -->
+    <div class="tl-node">
+      <div class="tl-year">2021</div>
+      <div class="tl-card">
+        <div class="event-name">Inspiration4全平民任务</div>
+        <div class="event-desc">总观效应不再是精英宇航员特权。</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 17. 2021 — 90岁飞向太空 -->
+    <div class="tl-node">
+      <div class="tl-year">2021</div>
+      <div class="tl-card">
+        <div class="event-name">90岁飞向太空</div>
+        <div class="event-desc">威廉·夏特纳最年长太空旅行者。"亲眼看到地球的脆弱——这或许是能为后代做的最重要的事。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+    <!-- 18. 2026 — 重返月球在即 -->
+    <div class="tl-node">
+      <div class="tl-year">2026</div>
+      <div class="tl-card">
+        <div class="event-name">重返月球在即</div>
+        <div class="event-desc">Artemis计划。"这一次，带着总观效应的智慧出发——不为征服，为理解。"</div>
+        <span class="philosophy">【哲学意义】</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="footer">
+    <p>我们来自星辰，终将归于星辰</p>
+  </footer>
+
+</div>
+
+<script>
+// Intersection Observer — 滚动渐入动画
+(function() {
+  const nodes = document.querySelectorAll('.tl-node');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+  nodes.forEach(node => observer.observe(node));
+
+  // 初始可见节点立即显示
+  setTimeout(() => {
+    nodes.forEach(node => {
+      const rect = node.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        node.classList.add('visible');
+      }
+    });
+  }, 100);
+})();
+</script>
+
+</body>
+</html>

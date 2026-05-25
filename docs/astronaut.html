@@ -40,18 +40,27 @@
       display: flex; align-items: center; justify-content: space-between;
       gap: 16px; flex-shrink: 0;
     }
-    .back-link {
-      display: inline-flex; align-items: center; gap: 8px;
-      color: var(--text2); text-decoration: none; font-size: 0.85rem;
-      padding: 8px 16px; border-radius: 999px;
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 10px;
+    }
+    .nav-left a {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--text2); text-decoration: none; font-size: 0.8rem;
+      padding: 6px 14px; border-radius: 999px;
       background: rgba(255,255,255,0.04);
       border: 1px solid rgba(255,255,255,0.06);
       transition: all 0.25s;
     }
-    .back-link:hover {
-      color: var(--text); background: rgba(255,255,255,0.1);
-      border-color: rgba(226,182,79,0.25);
+    .nav-left a:hover { color: var(--text); border-color: rgba(226,182,79,0.25); background: rgba(255,255,255,0.08); }
+    .nav-right { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+    .nav-right a {
+      color: var(--text3); text-decoration: none; font-size: 0.72rem;
+      padding: 4px 10px; border-radius: 6px; transition: all 0.2s;
+      white-space: nowrap;
     }
+    .nav-right a:hover { color: var(--gold-light); }
+    .nav-right a.active { color: var(--gold); font-weight: 700; }
     .title-area { text-align: right; }
     .title-area .sub { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.14em; }
     .title-area .main { font-size: 1.02rem; font-family: var(--serif); color: var(--gold); }
@@ -168,6 +177,110 @@
       .top-bar { flex-direction: column; align-items: flex-start; gap: 8px; }
       .title-area { text-align: left; }
     }
+    /* Module portal overlay */
+    .portal-overlay {
+      position: fixed; inset: 0; z-index: 20;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(2,4,8,0.92);
+      backdrop-filter: blur(30px);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+      flex-direction: column; gap: 32px;
+      padding: 40px 24px;
+      overflow-y: auto;
+      opacity: 0; visibility: hidden; pointer-events: none;
+    }
+    .portal-overlay.visible { opacity: 1; visibility: visible; pointer-events: auto; }
+    .portal-header { text-align: center; }
+    .portal-header .p-title {
+      font-family: var(--serif); font-size: 1.8rem; font-weight: 900;
+      color: var(--text); text-shadow: 0 0 80px rgba(226,182,79,0.2);
+    }
+    .portal-header .p-sub {
+      font-size: 0.85rem; color: var(--text2); margin-top: 8px; line-height: 1.6;
+    }
+    .portal-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px; max-width: 860px; width: 100%;
+    }
+    .portal-card {
+      display: block; text-decoration: none;
+      padding: 28px 24px; border-radius: 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .portal-card::before {
+      content: ''; position: absolute; inset: 0;
+      opacity: 0; transition: opacity 0.3s;
+      background: radial-gradient(ellipse at top left, rgba(226,182,79,0.06), transparent 70%);
+    }
+    .portal-card:hover {
+      border-color: rgba(226,182,79,0.3); transform: translateY(-4px);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .portal-card:hover::before { opacity: 1; }
+    .portal-card .p-num {
+      font-size: 0.65rem; color: var(--gold); text-transform: uppercase;
+      letter-spacing: 0.16em; margin-bottom: 8px;
+    }
+    .portal-card .p-name {
+      font-family: var(--serif); font-size: 1.15rem; font-weight: 700;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .portal-card .p-desc {
+      font-size: 0.78rem; color: var(--text3); line-height: 1.55;
+    }
+    .portal-card .p-arrow {
+      display: inline-flex; margin-top: 12px; font-size: 0.8rem;
+      color: var(--gold); opacity: 0; transform: translateX(-8px);
+      transition: all 0.3s;
+    }
+    .portal-card:hover .p-arrow { opacity: 1; transform: translateX(0); }
+    .portal-close {
+      font-size: 0.8rem; color: var(--text3); cursor: pointer;
+      padding: 8px 20px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: transparent; transition: all 0.25s;
+      font-family: var(--sans);
+    }
+    .portal-close:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+    .portal-trigger {
+      display: none; align-items: center; gap: 6px;
+      font-size: 0.78rem; color: var(--gold); cursor: pointer;
+      padding: 6px 14px; border-radius: 999px;
+      border: 1px solid rgba(226,182,79,0.2);
+      background: rgba(226,182,79,0.06);
+      transition: all 0.25s;
+      font-family: var(--sans);
+    }
+    .portal-trigger.visible { display: inline-flex; }
+    .portal-trigger:hover { background: rgba(226,182,79,0.14); transform: scale(1.03); }
+
+    .gateway-section {
+      position: fixed; bottom: 100px; z-index: 15;
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; pointer-events: none;
+      transition: opacity 0.5s 0.3s;
+    }
+    .gateway-section > * { pointer-events: auto; }
+    .gateway-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      min-height: 44px; padding: 0 28px;
+      border-radius: 999px; font-size: 0.88rem; font-weight: 600;
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      color: #111; border: none; cursor: pointer;
+      box-shadow: 0 6px 28px rgba(226,182,79,0.2);
+      transition: transform 0.2s, box-shadow 0.2s;
+      font-family: var(--sans);
+    }
+    .gateway-btn:hover { transform: scale(1.04); box-shadow: 0 10px 36px rgba(226,182,79,0.3); }
+
+    @media (max-width: 640px) {
+      .portal-grid { grid-template-columns: 1fr; }
+      .portal-header .p-title { font-size: 1.4rem; }
+    }
   </style>
 </head>
 <body>
@@ -182,13 +295,64 @@
     <button class="intro-btn" onclick="beginJourney()">开始旅程</button>
   </div>
 
+  <!-- Module portal overlay -->
+  <div class="portal-overlay" id="portal">
+    <div class="portal-header">
+      <div class="p-title">探索宇航员视角</div>
+      <div class="p-sub">旅程不止于此。深入每个维度，重新理解你与这颗星球的关系。</div>
+    </div>
+    <div class="portal-grid">
+      <a href="astronaut-stories.html" class="portal-card">
+        <div class="p-num">Module 01</div>
+        <div class="p-name">宇航员故事馆</div>
+        <div class="p-desc">那些曾回望地球的人，他们的生命如何被永久改变</div>
+        <span class="p-arrow">探索 →</span>
+      </a>
+      <a href="astronaut-philosophy.html" class="portal-card">
+        <div class="p-num">Module 02</div>
+        <div class="p-name">哲学沉思录</div>
+        <div class="p-desc">从宇宙尺度重新审视：生与死、价值与意义</div>
+        <span class="p-arrow">探索 →</span>
+      </a>
+      <a href="astronaut-journal.html" class="portal-card">
+        <div class="p-num">Module 03</div>
+        <div class="p-name">反思日记</div>
+        <div class="p-desc">在总观效应下，书写你自己的存在之问</div>
+        <span class="p-arrow">探索 →</span>
+      </a>
+      <a href="astronaut-gallery.html" class="portal-card">
+        <div class="p-num">Module 04</div>
+        <div class="p-name">视觉画廊</div>
+        <div class="p-desc">从轨道上捕捉的，关于脆弱与壮丽的图像</div>
+        <span class="p-arrow">探索 →</span>
+      </a>
+      <a href="astronaut-timeline.html" class="portal-card">
+        <div class="p-num">Module 05</div>
+        <div class="p-name">时空之轴</div>
+        <div class="p-desc">从莱卡到火星，人类探索宇宙的编年史</div>
+        <span class="p-arrow">探索 →</span>
+      </a>
+    </div>
+    <button class="portal-close" onclick="closePortal()">← 继续旅程</button>
+  </div>
+
   <!-- 3D Canvas -->
   <div id="cosmos"></div>
 
   <!-- Content overlay -->
   <div class="overlay">
     <div class="top-bar">
-      <a href="/cosmic-lens/" class="back-link">← 返回宇宙之镜</a>
+      <div class="nav-left">
+        <a href="/cosmic-lens/">← 宇宙之镜</a>
+      </div>
+      <div class="nav-right">
+        <a href="astronaut.html" class="active">总观</a>
+        <a href="astronaut-stories.html">故事</a>
+        <a href="astronaut-philosophy.html">沉思</a>
+        <a href="astronaut-journal.html">日记</a>
+        <a href="astronaut-gallery.html">画廊</a>
+        <a href="astronaut-timeline.html">时空</a>
+      </div>
       <div class="title-area">
         <div class="sub">Overview Effect</div>
         <div class="main">宇航员视角</div>
@@ -490,6 +654,13 @@ hintEl.className = 'hint-text';
 hintEl.textContent = '← 滚动浏览 →';
 bottomBar.appendChild(hintEl);
 
+// Portal trigger button (appears on last stage)
+const portalTrigger = document.createElement('button');
+portalTrigger.className = 'portal-trigger';
+portalTrigger.textContent = '✦ 探索更多模块';
+portalTrigger.onclick = () => openPortal();
+hintEl.after(portalTrigger);
+
 const panels = document.querySelectorAll('.stage-panel');
 const dots = document.querySelectorAll('.stage-dot');
 
@@ -511,10 +682,23 @@ function goToStage(idx) {
   const target = stageCamera[idx];
   targetCamZ = target.z;
   targetCamY = target.y;
-  targetEarthZ = idx * 0.5; // Earth moves away slightly
+  targetEarthZ = idx * 0.5;
+
+  // Show portal trigger on last stage
+  portalTrigger.classList.toggle('visible', idx === stages.length - 1);
 
   setTimeout(() => { isTransitioning = false; }, 900);
 }
+
+// ==================== PORTAL ====================
+window.openPortal = function() {
+  document.getElementById('portal').classList.add('visible');
+  hintEl.style.display = 'none';
+};
+window.closePortal = function() {
+  document.getElementById('portal').classList.remove('visible');
+  hintEl.style.display = '';
+};
 
 // ==================== INTERACTION ====================
 let scrollTimeout;

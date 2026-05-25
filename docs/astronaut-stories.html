@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>宇航员故事馆</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Serif+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #020408;
+  --gold: #e2b64f;
+  --gold-light: #f0d478;
+  --gold-dark: #b8922e;
+  --text: #f5f5f7;
+  --text2: #a0a0ab;
+  --text3: #6a6a78;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Serif SC', sans-serif;
+  line-height: 1.7;
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* ── Global Nav ── */
+.global-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.global-nav a {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  transition: color 0.25s;
+}
+.global-nav a:hover { color: var(--gold-light); }
+.global-nav a.active { color: var(--gold); font-weight: 500; }
+.nav-left a { color: var(--gold); }
+.nav-right { display: flex; gap: 6px; flex-wrap: wrap; }
+.nav-right span { color: var(--text3); }
+
+/* ── Page Header ── */
+.page-header {
+  text-align: center;
+  padding: 60px 24px 36px;
+}
+.page-header h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 2.6rem;
+  font-weight: 600;
+  color: var(--gold);
+  letter-spacing: 0.04em;
+}
+.page-header .subtitle {
+  margin-top: 10px;
+  color: var(--text2);
+  font-size: 1.05rem;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 300;
+}
+
+/* ── Filter Tabs ── */
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 0 24px 40px;
+}
+.filter-tag {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text2);
+  padding: 8px 20px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.3s;
+}
+.filter-tag:hover {
+  border-color: var(--gold-dark);
+  color: var(--gold-light);
+}
+.filter-tag.active {
+  background: rgba(226,182,79,0.12);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+/* ── Cards Grid ── */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Card ── */
+.card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 28px;
+  cursor: pointer;
+  transition: all 0.35s ease;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  transition: border-color 0.35s, box-shadow 0.35s;
+}
+.card:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(226,182,79,0.2);
+  box-shadow: 0 0 24px rgba(226,182,79,0.2);
+  transform: translateY(-2px);
+}
+.card.hidden { display: none; }
+
+.card-name {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+}
+.card-role {
+  font-size: 0.8rem;
+  color: var(--gold);
+  margin-top: 4px;
+  font-family: 'Inter', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.card-quote {
+  margin-top: 16px;
+  padding-left: 16px;
+  border-left: 2px solid var(--gold-dark);
+  color: var(--text2);
+  font-style: italic;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  font-family: 'Noto Serif SC', serif;
+}
+.card-story {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease, margin-top 0.5s ease, opacity 0.4s;
+  opacity: 0;
+}
+.card-story.expanded {
+  max-height: 500px;
+  margin-top: 18px;
+  opacity: 1;
+}
+.card-story p {
+  color: var(--text2);
+  font-size: 0.9rem;
+  line-height: 1.8;
+  font-family: 'Noto Serif SC', serif;
+  font-weight: 300;
+}
+.card-expand-hint {
+  margin-top: 12px;
+  font-size: 0.78rem;
+  color: var(--text3);
+  font-family: 'Inter', sans-serif;
+  transition: color 0.25s;
+}
+.card:hover .card-expand-hint { color: var(--gold); }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .cards-grid { grid-template-columns: 1fr; }
+  .global-nav { padding: 14px 16px; }
+  .page-header { padding: 40px 16px 24px; }
+  .page-header h1 { font-size: 2rem; }
+  .card { padding: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ Global Navigation ═══════════ -->
+<nav class="global-nav">
+  <span class="nav-left"><a href="astronaut.html">← 返回宇航员视角</a></span>
+  <span class="nav-right">
+    <a href="astronaut-stories.html" class="active">故事馆</a>
+    <span>|</span>
+    <a href="astronaut-philosophy.html">沉思录</a>
+    <span>|</span>
+    <a href="astronaut-journal.html">反思日记</a>
+    <span>|</span>
+    <a href="astronaut-gallery.html">画廊</a>
+    <span>|</span>
+    <a href="astronaut-timeline.html">时空轴</a>
+  </span>
+</nav>
+
+<!-- ═══════════ Page Header ═══════════ -->
+<header class="page-header">
+  <h1>宇航员故事馆</h1>
+  <p class="subtitle">那些从太空回望地球的人</p>
+</header>
+
+<!-- ═══════════ Filter Tabs ═══════════ -->
+<div class="filter-bar" id="filterBar">
+  <button class="filter-tag active" data-cat="all">全部</button>
+  <button class="filter-tag" data-cat="apollo">阿波罗计划</button>
+  <button class="filter-tag" data-cat="iss">国际空间站</button>
+  <button class="filter-tag" data-cat="cnsa">中国航天</button>
+  <button class="filter-tag" data-cat="commercial">商业航天</button>
+</div>
+
+<!-- ═══════════ Cards Grid ═══════════ -->
+<div class="cards-grid" id="cardsGrid">
+
+  <!-- 1. Eugene Cernan -->
+  <article class="card" data-cat="apollo">
+    <h3 class="card-name">尤金·塞尔南</h3>
+    <p class="card-role">阿波罗17号指令长 · 最后一位登上月球的人</p>
+    <blockquote class="card-quote">"从月球上看地球，你会意识到我们所有的政治分歧、所有的战争，都发生在一个微小的蓝色弹珠上。"</blockquote>
+    <div class="card-story"><p>塞尔南在月球表面停留了22小时，当他回望地球时，他伸出手臂用拇指遮住了整个地球——那一刻他意识到人类存在的全部意义与渺小。</p></div>
+    <p class="card-expand-hint">点击展开故事 ▾</p>
+  </article>
+
+  <!-- 2. Carl Sagan -->
+  <article class="card" data-cat="apollo">
+    <h3 class="card-name">卡尔·萨根</h3>
+    <p class="card-role">天文学家 · 旅行者号「暗淡蓝点」倡议者</p>
+    <blockquote class="card-quote">"再看看那个光点吧。你所爱的每一个人，你认识的每一个人，你听说过的每一个人，曾经存在过的每一个人，都在它上面度过了一生。"</blockquote>
+    <div class="card-story"><p>1990年，萨根说服NASA将旅行者1号的相机转向地球，在60亿公里外拍下了「暗淡蓝点」——地球只占0.12像素。这张照片成为总观效应最具象的呈现。</p></div>
+    <p class="card-expand-hint">点击展开故事 ▾</p>
+  </article>
+
+  <!-- 3. Buzz Aldrin -->
+  <article class="card" data-cat="apollo">
+    <h3 class="card-name">巴兹·奥尔德林</h3>
+    <p class="card-role">阿波罗11号登月舱驾驶员 · 第二位踏上月球的人</p>
+    <blockquote class="card-quote">"壮丽的荒凉。"</blockquote>
+    <div class="card-story"><p>登月后，奥尔德林陷入了长期抑郁和酗酒。他将这种痛苦归因于「从月球回来后，地球上的一切都显得不再重要」——这是总观效应的另一面：意义的崩塌。</p></div>
+    <p class="card-expand-hint">点击展开故事 ▾</p>
+  </article>
+
+  <!-- 4. Edgar Mitchell -->
+  <article class="card" data-cat="apollo">
+    <h3 class="card-name">埃德加·米切尔</h3>
+    <p class="card-role">阿波罗14号登月舱驾驶员</p>
+    <blockquote class="card-quote">"你发展出一种瞬间的全球意识，一种以人为导向的感觉，对世界现状的强烈不满，以及为此做点什么的冲动。"</blockquote>
+    <div class="card-story"><p>返回地球后，米切尔创立了意识科学研究所，终身研究宇宙意识与人类心灵的联结。他将太空体验描述为「三摩地」——一种与宇宙融合的超越状态。</p></div>
+    <p class="card-expand-hint">点击展开故事 ▾</p>
+  </article>
+
+  <!-- 5. Samantha Cristoforetti -->
+  <article class="card" data-cat="iss">
+    <h3 class="card-name">萨曼莎·克里斯托福雷蒂</h3>
+    <p class="card-role">ESA宇航员 · 国际空间站长期驻留</p>
+    <blockquote class="card-quote">"在空间站上，你会看到没有国界的地球。你会看到大气层有多薄。你会意识到我们都是同一条脆弱飞船上的人类。"</blockquote>
+    <div class="card-story"><p>她是在太空中驻留最久的欧洲女性宇航员（199天），她的社交媒体照片——从穹顶舱拍摄的地球日落——让数百万人感受到了总观效应的一角。</p></div>
+    <p class="card-expand-hint">点击展开故事 ▾</p>
+  </article>
+
+  <!-- 6. Yang Liwei -->
+  <article class="card" data-cat="cnsa">
+    <h3 class="card-name">杨利伟</h3>
+    <p class="card-role">中国首位进入太空的航天员</p>
+    <blockquote class="card-quote">"从太空中看地球，蓝白相间，非常美丽。那个时候你会感到，人类应该和平共处。"</blockquote>
+    <div class="card-story"><p>2003年神舟五号任务中，杨利伟经历了21小时23分钟的太空飞行。返回后他多次表示，那段经历让他「看待事物的方式发生了永久性的改变」。</p></div>
+    <p class="card-expand-hint">点击展开故事 ▾</p>
+  </article>
+
+  <!-- 7. Liu Yang -->
+  <article class="card" data-cat="cnsa">
+    <h3 class="card-name">刘洋</h3>
+    <p class="card-role">中国首位女航天员</p>
+    <blockquote class="card-quote">"在太空中你不会想国界的问题。你会想，我们只有一个地球。"</blockquote>
+    <div class="card-story"><p>2012年神舟九号任务中，刘洋在太空中度过了13天。她描述说「当你看过地球的全貌后，回到地面会觉得很多事情都不值得计较」。</p></div>
+    <p class="card-expand-hint">点击展开故事 ▾</p>
+  </article>
+
+  <!-- 8. William Shatner -->
+  <article class="card" data-cat="commercial">
+    <h3 class="card-name">威廉·夏特纳</h3>
+    <p class="card-role">星际迷航柯克船长 · Blue Origin NS-18乘客 · 90岁飞入太空</p>
+    <blockquote class="card-quote">"你看到的是死亡。我看到了一个寒冷、黑暗、黑色的虚空。那不是蓝色——它是黑色的。我所期待的与我所见到的截然相反。"</blockquote>
+    <div class="card-story"><p>2021年，90岁的夏特纳完成了10分钟的亚轨道飞行。返回后他痛哭流涕地向贝索斯描述——他期待的壮丽景象变成了对地球脆弱性的巨大恐惧，这种震撼让他数日无法言语。</p></div>
+    <p class="card-expand-hint">点击展开故事 ▾</p>
+  </article>
+
+</div>
+
+<!-- ═══════════ Scripts ═══════════ -->
+<script>
+(function() {
+  // ── Filter ──
+  const filterBar = document.getElementById('filterBar');
+  const cards = document.querySelectorAll('#cardsGrid .card');
+
+  filterBar.addEventListener('click', function(e) {
+    const tag = e.target.closest('.filter-tag');
+    if (!tag) return;
+    filterBar.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+    tag.classList.add('active');
+    const cat = tag.dataset.cat;
+    cards.forEach(card => {
+      if (cat === 'all' || card.dataset.cat === cat) {
+        card.classList.remove('hidden');
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+  });
+
+  // ── Card expand / collapse ──
+  document.getElementById('cardsGrid').addEventListener('click', function(e) {
+    const card = e.target.closest('.card');
+    if (!card) return;
+    const story = card.querySelector('.card-story');
+    const hint = card.querySelector('.card-expand-hint');
+    if (!story || !hint) return;
+    const isExpanded = story.classList.contains('expanded');
+    story.classList.toggle('expanded');
+    hint.textContent = isExpanded ? '点击展开故事 ▾' : '点击收起故事 ▴';
+  });
+})();
+</script>
+
+</body>
+</html>

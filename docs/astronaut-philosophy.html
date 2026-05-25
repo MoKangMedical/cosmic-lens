@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>哲学沉思录 — 宇航员视角</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #020408;
+  --gold: #e2b64f;
+  --gold-light: #f0d478;
+  --gold-dark: #b8922e;
+  --text: #f5f5f7;
+  --text2: #a0a0ab;
+  --text3: #6a6a78;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Inter', 'Noto Serif SC', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Global Nav */
+.global-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.global-nav a {
+  color: var(--text2);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: color 0.25s;
+}
+.global-nav a:hover { color: var(--gold-light); }
+.global-nav .back-link { color: var(--gold); font-size: 0.875rem; font-weight: 600; }
+.global-nav .back-link:hover { color: var(--gold-light); }
+.global-nav .nav-links { display: flex; gap: 20px; flex-wrap: wrap; }
+.global-nav .nav-links a.active { color: var(--gold); font-weight: 700; border-bottom: 2px solid var(--gold); padding-bottom: 2px; }
+
+/* Page Header */
+.page-header {
+  text-align: center;
+  padding: 64px 24px 40px;
+}
+.page-header h1 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--gold-light);
+  letter-spacing: 0.04em;
+  margin-bottom: 12px;
+}
+.page-header .subtitle {
+  font-size: 1.1rem;
+  color: var(--text3);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+}
+
+/* Main Layout */
+.main-layout {
+  display: flex;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 80px;
+  gap: 48px;
+}
+
+/* Left Tabs */
+.tabs-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 140px;
+  flex-shrink: 0;
+  padding-top: 8px;
+}
+.tab-btn {
+  font-family: 'Noto Serif SC', serif;
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 0.95rem;
+  font-weight: 400;
+  padding: 12px 18px;
+  text-align: left;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all 0.3s ease;
+  letter-spacing: 0.03em;
+  border-radius: 0 4px 4px 0;
+}
+.tab-btn:hover { color: var(--text2); background: rgba(255,255,255,0.03); }
+.tab-btn.active {
+  color: var(--gold);
+  font-weight: 700;
+  border-left-color: var(--gold);
+  background: rgba(226,182,79,0.06);
+}
+
+/* Right Content */
+.content-area {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  min-height: 420px;
+}
+.content-panel {
+  display: none;
+  animation: fadeSlideIn 0.45s ease;
+}
+.content-panel.active { display: block; }
+.content-panel h2 {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--gold-light);
+  margin-bottom: 20px;
+  letter-spacing: 0.04em;
+}
+.content-panel p {
+  color: var(--text2);
+  font-size: 0.95rem;
+  line-height: 1.85;
+  margin-bottom: 16px;
+}
+.content-panel blockquote {
+  border-left: 3px solid var(--gold);
+  margin: 24px 0;
+  padding: 14px 20px;
+  font-style: italic;
+  color: var(--gold-light);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  background: rgba(226,182,79,0.04);
+  border-radius: 0 6px 6px 0;
+}
+.content-panel blockquote .attribution {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: var(--text3);
+  font-style: normal;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .global-nav { padding: 14px 16px; }
+  .global-nav .nav-links { gap: 12px; }
+  .page-header { padding: 40px 16px 24px; }
+  .main-layout { flex-direction: column; padding: 0 16px 60px; gap: 28px; }
+  .tabs-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    border-left: none;
+    border-bottom: 3px solid transparent;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    border-radius: 4px 4px 0 0;
+  }
+  .tab-btn.active {
+    border-left-color: transparent;
+    border-bottom-color: var(--gold);
+  }
+  .content-panel h2 { font-size: 1.4rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="global-nav">
+  <a href="astronaut.html" class="back-link">← 返回宇航员视角</a>
+  <div class="nav-links">
+    <a href="astronaut-stories.html">故事馆</a>
+    <a href="astronaut-philosophy.html" class="active">沉思录</a>
+    <a href="astronaut-journal.html">反思日记</a>
+    <a href="astronaut-gallery.html">画廊</a>
+    <a href="astronaut-timeline.html">时空轴</a>
+  </div>
+</nav>
+
+<header class="page-header">
+  <h1>哲学沉思录</h1>
+  <p class="subtitle">当视角改变，一切都改变了</p>
+</header>
+
+<div class="main-layout">
+  <div class="tabs-panel" id="tabsPanel">
+    <button class="tab-btn active" data-id="0">生死观</button>
+    <button class="tab-btn" data-id="1">价值观</button>
+    <button class="tab-btn" data-id="2">文明观</button>
+    <button class="tab-btn" data-id="3">自然观</button>
+    <button class="tab-btn" data-id="4">自我观</button>
+  </div>
+
+  <div class="content-area" id="contentArea">
+    <!-- 0: 生死观 -->
+    <div class="content-panel active" data-id="0">
+      <h2>生死观</h2>
+      <p>在太空中，宇航员们最强烈的感受之一就是生命的珍贵性。当你看到地球大气层的厚度——从空间站看出去，它就像苹果皮一样薄——你会意识到生命存在于一个何等脆弱的环境之中。</p>
+      <p>从太空看地球，那些纠缠我们的死亡焦虑突然变得清晰：死亡并非对立于生命，而是生命得以轮回的机制。星尘化作生命，生命复归星尘——在这个意义上，我们从未真正死去，我们只是在宇宙的物质循环中变换形态。</p>
+      <blockquote>
+        地球上的每一个生命都是宇宙花了138亿年才创造出来的杰作。
+        <span class="attribution">—— 卡尔·萨根</span>
+      </blockquote>
+      <blockquote>
+        你不是进入宇宙，你是宇宙的一部分。
+        <span class="attribution">—— 埃德加·米切尔</span>
+      </blockquote>
+    </div>
+
+    <!-- 1: 价值观 -->
+    <div class="content-panel" data-id="1">
+      <h2>价值观</h2>
+      <p>从400公里的轨道高度往下看，你看不到国界线。你看不到华尔街与贫民窟的区别。你看不到任何宗教的教堂尖顶从太空中被辨认出来。那些曾被认为理所当然的「价值」——货币、地位、头衔、声望——在宇宙的沉默中失去了所有重量。</p>
+      <p>宇航员们返回地球后最常见的反应不是「我想赚更多钱」，而是「我想多陪陪家人」。这是一种本能的价值观重排：当参照系从人类社会切换到宇宙尺度，什么才是真正重要的变得一目了然。</p>
+      <blockquote>
+        不是因为宗教教义或道德说教，而是因为亲眼所见。
+        <span class="attribution">—— 多位宇航员返回后的共同心声</span>
+      </blockquote>
+    </div>
+
+    <!-- 2: 文明观 -->
+    <div class="content-panel" data-id="2">
+      <h2>文明观</h2>
+      <p>「总观效应」最核心的洞见或许是：人类文明的命运是不可分割的。没有「中国」的大气层，没有「美国」的臭氧层。气候变化、小行星撞击、太阳风暴——这些威胁不承认任何国界。</p>
+      <p>这种视角转变有着深远的政治含义：如果我们真的从太空看自己，战争将失去全部正当性，资源争夺将变得荒谬可笑。保护这颗星球的不是导弹防御系统，而是彼此之间的理解。</p>
+      <blockquote>
+        在空间站上，你会本能地用「我们」而不是「他们」来思考。
+        <span class="attribution">—— 萨曼莎·克里斯托福雷蒂</span>
+      </blockquote>
+    </div>
+
+    <!-- 3: 自然观 -->
+    <div class="content-panel" data-id="3">
+      <h2>自然观</h2>
+      <p>宇航员们反复提到的一个意象是大气层的薄度。从太空中看，大气层就像一层淡淡的蓝色光晕，厚度不超过100公里——如果地球是一颗篮球，大气层比一层油漆还薄。在这个薄薄的壳层中，包含了所有我们呼吸的空气、所有的天气现象、所有的生命活动。</p>
+      <p>这种直观的脆弱性感受比任何环保数据都更有说服力。如果每个决策者都能从太空看一次地球，环境保护将不再是「议题」而是本能。</p>
+      <blockquote>
+        你会想伸手去保护它，因为它看起来那么脆弱。
+        <span class="attribution">—— 拉斯蒂·施韦卡特，阿波罗9号宇航员</span>
+      </blockquote>
+    </div>
+
+    <!-- 4: 自我观 -->
+    <div class="content-panel" data-id="4">
+      <h2>自我观</h2>
+      <p>也许总观效应最深层的改变是对「自我」的重新理解。在地球上，我们习惯将自我定义为这具身体、这段记忆、这个社会身份。但在太空中，许多宇航员报告了一种「自我边界消融」的体验——他们不再感觉自己是一个孤立的个体，而是与宇宙融为一体的存在。</p>
+      <p>神经科学研究发现，这种体验与大脑默认模式网络（负责维持自我边界感）的暂时失活有关。这种超越并非需要火箭才能体验——冥想、自然沉浸、艺术创作都可能触发类似的状态。</p>
+      <blockquote>
+        当我看着地球，我不再是「我」，而是宇宙在通过这双眼睛注视着自己。
+        <span class="attribution">—— 一位宇航员</span>
+      </blockquote>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const tabs = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.content-panel');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const id = tab.dataset.id;
+      tabs.forEach(t => t.classList.remove('active'));
+      panels.forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      const target = document.querySelector(`.content-panel[data-id="${id}"]`);
+      if (target) {
+        target.classList.add('active');
+        target.style.animation = 'none';
+        target.offsetHeight;
+        target.style.animation = 'fadeSlideIn 0.45s ease';
+      }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
