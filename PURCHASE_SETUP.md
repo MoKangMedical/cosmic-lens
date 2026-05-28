@@ -32,7 +32,7 @@ python3 scripts/create_stripe_payment_links.py
 python3 scripts/audit_product_readiness.py --strict-payments
 ```
 
-脚本会读取当前配置里的价格、币种和成功跳转地址，只把 Stripe 返回的公开 `https://buy.stripe.com/...` 链接写入前端配置，不会写入或打印 Stripe Secret Key。
+脚本会读取当前配置里的价格、币种和成功跳转地址，只把 Stripe 返回的公开 `https://buy.stripe.com/...` 链接写入前端配置，不会写入或打印 Stripe Secret Key。每个链接的成功跳转地址会自动追加 `plan=personal`、`plan=supporter` 或 `plan=institution`，方便 `purchase-success.html` 展示对应方案。
 
 脚本调用的是 Stripe 官方 Payment Links API：
 <https://docs.stripe.com/api/payment-link/create>
@@ -56,8 +56,10 @@ python3 scripts/create_stripe_payment_links.py --plan personal
    - 支持者版：`CNY 199`
    - 机构授权：`CNY 999`
 2. 为每个价格创建 Payment Link。
-3. 将成功跳转地址设置为：
-   - `https://mokangmedical.github.io/cosmic-lens/purchase-success.html`
+3. 将成功跳转地址设置为对应方案：
+   - 个人永久版：`https://mokangmedical.github.io/cosmic-lens/purchase-success.html?plan=personal`
+   - 支持者版：`https://mokangmedical.github.io/cosmic-lens/purchase-success.html?plan=supporter`
+   - 机构授权：`https://mokangmedical.github.io/cosmic-lens/purchase-success.html?plan=institution`
 4. 打开 `docs/js/purchase-config.js`，把每个方案的 `paymentLink` 填成对应的公开购买链接。
 5. 或者用脚本安全写入链接：
 

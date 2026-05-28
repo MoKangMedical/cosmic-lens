@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
 from configure_purchase_links import replace_plan_link, replace_support_email, valid_public_url
@@ -179,6 +179,13 @@ def stripe_post(endpoint: str, secret_key: str, fields: dict[str, str], idempote
         raise RuntimeError(f"Stripe API request failed: {error.reason}") from error
 
 
+def success_url_for_plan(success_url: str, plan_id: str) -> str:
+    parsed = urlparse(success_url)
+    query = dict(parse_qsl(parsed.query, keep_blank_values=True))
+    query["plan"] = plan_id
+    return urlunparse(parsed._replace(query=urlencode(query)))
+
+
 def payment_link_fields(plan: Plan, config: PurchaseConfig, success_url: str) -> dict[str, str]:
     amount = amount_for_stripe(plan.price, config.currency)
     product_name = f"宇宙之镜 · {plan.name}"
@@ -248,7 +255,8 @@ def main() -> int:
                 skipped.append(plan.id)
                 continue
 
-            fields = payment_link_fields(plan, config, success_url)
+            plan_success_url = success_url_for_plan(success_url, plan.id)
+            fields = payment_link_fields(plan, config, plan_success_url)
             if args.dry_run:
                 print(f"[dry-run] {plan.id} {plan.name}: {config.currency.upper()} {plan.price:g}")
                 print(json.dumps(fields, ensure_ascii=False, indent=2))
@@ -258,7 +266,7 @@ def main() -> int:
                 "/payment_links",
                 secret_key,
                 fields,
-                idempotency_key_for(plan, config, success_url),
+                idempotency_key_for(plan, config, plan_success_url),
             )
             public_url = response.get("url", "")
             if not valid_public_url(public_url):

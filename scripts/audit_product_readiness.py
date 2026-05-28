@@ -129,6 +129,21 @@ def audit(strict_payments: bool) -> tuple[list[Finding], dict[str, int | str]]:
     if index_primary_links != len(index_required_links):
         add(findings, "FAIL", f"Expected homepage links for courses, astronaut, purchase, and lesson01; found {index_primary_links}/{len(index_required_links)}")
 
+    success_html = read(DOCS / "purchase-success.html") if (DOCS / "purchase-success.html").exists() else ""
+    success_required_links = [
+        "/cosmic-lens/courses.html",
+        "/cosmic-lens/lesson01.html",
+        "/cosmic-lens/astronaut.html",
+        "/cosmic-lens/purchase.html",
+    ]
+    success_delivery_links = sum(1 for url in success_required_links if url in success_html)
+    metrics["success_delivery_links"] = success_delivery_links
+    metrics["success_loads_purchase_config"] = int("/cosmic-lens/js/purchase-config.js" in success_html)
+    if success_delivery_links != len(success_required_links):
+        add(findings, "FAIL", f"Expected success page delivery links for courses, lesson01, astronaut, and purchase; found {success_delivery_links}/{len(success_required_links)}")
+    if "/cosmic-lens/js/purchase-config.js" not in success_html:
+        add(findings, "FAIL", "purchase-success.html must load purchase-config.js for plan and support metadata")
+
     astronaut_pages = [
         DOCS / "astronaut.html",
         DOCS / "astronaut-stories.html",
