@@ -116,6 +116,18 @@ def audit(strict_payments: bool) -> tuple[list[Finding], dict[str, int | str]]:
     if "/cosmic-lens/docs/" in courses_html:
         add(findings, "FAIL", "courses.html contains /cosmic-lens/docs/ paths")
 
+    index_html = read(DOCS / "index.html") if (DOCS / "index.html").exists() else ""
+    index_required_links = [
+        "/cosmic-lens/courses.html",
+        "/cosmic-lens/astronaut.html",
+        "/cosmic-lens/purchase.html",
+        "/cosmic-lens/lesson01.html",
+    ]
+    index_primary_links = sum(1 for url in index_required_links if url in index_html)
+    metrics["index_primary_links"] = index_primary_links
+    if index_primary_links != len(index_required_links):
+        add(findings, "FAIL", f"Expected homepage links for courses, astronaut, purchase, and lesson01; found {index_primary_links}/{len(index_required_links)}")
+
     astronaut_pages = [
         DOCS / "astronaut.html",
         DOCS / "astronaut-stories.html",
