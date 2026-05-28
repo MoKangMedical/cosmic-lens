@@ -39,10 +39,17 @@ def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def exists_ref(url: str) -> bool:
+def exists_ref(url: str, base_path: Path) -> bool:
+    parsed = urlparse(url)
+    if (
+        not url
+        or url.startswith("#")
+        or parsed.scheme in {"http", "https", "mailto", "tel", "data", "javascript"}
+    ):
+        return True
     target = url.split("#", 1)[0].split("?", 1)[0]
     if not target.startswith("/cosmic-lens/"):
-        return True
+        return (base_path.parent / target).resolve().exists()
     if target.rstrip("/") == "/cosmic-lens":
         return (DOCS / "index.html").exists()
     return (DOCS / target.removeprefix("/cosmic-lens/")).exists()
@@ -79,7 +86,14 @@ def audit(strict_payments: bool) -> tuple[list[Finding], dict[str, int | str]]:
         DOCS / "purchase.html",
         DOCS / "purchase-success.html",
         DOCS / "js" / "purchase-config.js",
+        DOCS / "js" / "starfield-bg.js",
         DOCS / "assets" / "purchase-cosmos.jpg",
+        DOCS / "astronaut.html",
+        DOCS / "astronaut-stories.html",
+        DOCS / "astronaut-philosophy.html",
+        DOCS / "astronaut-journal.html",
+        DOCS / "astronaut-gallery.html",
+        DOCS / "astronaut-timeline.html",
     ]
     for path in required_files:
         if not path.exists():
@@ -101,6 +115,22 @@ def audit(strict_payments: bool) -> tuple[list[Finding], dict[str, int | str]]:
         add(findings, "FAIL", f"Expected 120 unique lesson links in courses.html, found {len(lesson_links)}")
     if "/cosmic-lens/docs/" in courses_html:
         add(findings, "FAIL", "courses.html contains /cosmic-lens/docs/ paths")
+
+    astronaut_pages = [
+        DOCS / "astronaut.html",
+        DOCS / "astronaut-stories.html",
+        DOCS / "astronaut-philosophy.html",
+        DOCS / "astronaut-journal.html",
+        DOCS / "astronaut-gallery.html",
+        DOCS / "astronaut-timeline.html",
+    ]
+    astronaut_purchase_links = 0
+    for page in astronaut_pages:
+        if page.exists() and "/cosmic-lens/purchase.html" in read(page):
+            astronaut_purchase_links += 1
+    metrics["astronaut_purchase_links"] = astronaut_purchase_links
+    if astronaut_purchase_links != len(astronaut_pages):
+        add(findings, "FAIL", f"Expected purchase links on {len(astronaut_pages)} astronaut pages, found {astronaut_purchase_links}")
 
     purchase_links_in_lessons = 0
     audio_tags = 0
@@ -139,7 +169,7 @@ def audit(strict_payments: bool) -> tuple[list[Finding], dict[str, int | str]]:
         parser = RefParser()
         parser.feed(read(path))
         for _tag, _key, url in parser.refs:
-            if not exists_ref(url):
+            if not exists_ref(url, path):
                 missing_refs.append(f"{path.name} -> {url}")
     metrics["missing_local_refs"] = len(missing_refs)
     if missing_refs:

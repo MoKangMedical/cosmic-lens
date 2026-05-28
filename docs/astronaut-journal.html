@@ -16,12 +16,14 @@
   --text: #f5f5f7;
   --text2: #a0a0ab;
   --text3: #6a6a78;
+  --serif: 'Noto Serif SC', serif;
+  --sans: 'Inter', -apple-system, sans-serif;
 }
 
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
-  font-family: 'Inter', 'Noto Serif SC', sans-serif;
+  font-family: var(--sans);
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
@@ -47,13 +49,13 @@ nav.global-nav a {
   color: var(--text2);
   text-decoration: none;
   font-size: 0.875rem;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sans);
   transition: color 0.2s;
   white-space: nowrap;
 }
 nav.global-nav a:hover { color: var(--gold-light); }
 nav.global-nav a.active { color: var(--gold); font-weight: 500; }
-nav.global-nav .back-link { font-weight: 500; }
+nav.global-nav .back-link { font-weight: 500; color: var(--gold); }
 nav.global-nav .nav-links {
   display: flex;
   gap: 0.35rem;
@@ -73,17 +75,18 @@ main {
 /* ── 标题区域 ── */
 .page-header { text-align: center; margin-bottom: 2.5rem; }
 .page-header h1 {
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--serif);
   font-size: 2rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--gold);
   letter-spacing: 0.04em;
+  text-shadow: 0 0 60px rgba(226,182,79,0.15);
 }
 .page-header .subtitle {
   margin-top: 0.6rem;
   font-size: 0.95rem;
   color: var(--text2);
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--serif);
 }
 
 /* ── 问题卡片 ── */
@@ -103,10 +106,10 @@ main {
   letter-spacing: 0.1em;
   color: var(--text3);
   margin-bottom: 0.6rem;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sans);
 }
 .question-card .question-text {
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--serif);
   font-size: 1.15rem;
   color: var(--text);
   line-height: 1.8;
@@ -120,7 +123,7 @@ main {
   border: 1px solid rgba(226,182,79,0.3);
   color: var(--gold);
   font-size: 0.78rem;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sans);
   padding: 0.35rem 0.8rem;
   border-radius: 6px;
   cursor: pointer;
@@ -141,7 +144,7 @@ main {
   border: 1px solid rgba(160,160,171,0.25);
   border-radius: 10px;
   color: var(--text);
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--serif);
   font-size: 0.95rem;
   line-height: 1.8;
   padding: 1rem 1.2rem;
@@ -155,10 +158,21 @@ main {
   box-shadow: 0 0 0 3px rgba(226,182,79,0.12);
 }
 
+/* ── 字符计数 ── */
+.char-count {
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--text3);
+  font-family: var(--sans);
+  margin-top: 0.35rem;
+  padding-right: 0.3rem;
+}
+.char-count.near-limit { color: #c97a7a; }
+
 /* ── 按钮行 ── */
 .btn-row { display: flex; gap: 0.8rem; margin-bottom: 2.2rem; }
 .btn {
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sans);
   font-size: 0.85rem;
   font-weight: 500;
   padding: 0.6rem 1.4rem;
@@ -193,7 +207,7 @@ main {
 
 /* ── 历史记录 ── */
 .history-section h2 {
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--serif);
   font-size: 1.25rem;
   color: var(--text);
   margin-bottom: 1.2rem;
@@ -224,13 +238,13 @@ main {
 .history-item .entry-date {
   font-size: 0.78rem;
   color: var(--text3);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sans);
   margin-bottom: 0.25rem;
 }
 .history-item .entry-preview {
   font-size: 0.88rem;
   color: var(--text2);
-  font-family: 'Noto Serif SC', serif;
+  font-family: var(--serif);
   line-height: 1.5;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -247,7 +261,7 @@ main {
   color: #1a1a1a;
   padding: 0.6rem 1.4rem;
   border-radius: 8px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--sans);
   font-size: 0.85rem;
   font-weight: 500;
   z-index: 999;
@@ -274,13 +288,14 @@ main {
 
 <!-- ═══════════════ 全局导航 ═══════════════ -->
 <nav class="global-nav">
-  <a href="astronaut.html" class="back-link">← 返回宇航员视角</a>
+  <a href="astronaut.html" class="back-link">← 返回总观</a>
   <div class="nav-links">
     <a href="astronaut-stories.html">故事馆</a> <span>|</span>
     <a href="astronaut-philosophy.html">沉思录</a> <span>|</span>
     <a href="astronaut-journal.html" class="active">反思日记</a> <span>|</span>
     <a href="astronaut-gallery.html">画廊</a> <span>|</span>
-    <a href="astronaut-timeline.html">时空轴</a>
+    <a href="astronaut-timeline.html">时空轴</a> <span>|</span>
+    <a href="/cosmic-lens/purchase.html">购买课程</a>
   </div>
 </nav>
 
@@ -301,12 +316,14 @@ main {
   <!-- 写作区域 -->
   <div class="writing-area">
     <textarea id="journalTextarea" placeholder="在此书写你的反思..."></textarea>
+    <div class="char-count" id="charCount">0 字</div>
   </div>
 
   <!-- 操作按钮 -->
   <div class="btn-row">
     <button class="btn btn-primary" id="saveBtn">保存反思</button>
     <button class="btn btn-secondary" id="clearBtn">清空</button>
+    <button class="btn btn-secondary" id="exportBtn">导出全部</button>
   </div>
 
   <!-- 历史记录 -->
@@ -320,10 +337,10 @@ main {
 
 <script>
 (function () {
-  const STORAGE_KEY = 'astronaut_journal';
-  const MAX_ENTRIES = 50;
+  var STORAGE_KEY = 'astronaut_journal';
+  var MAX_ENTRIES = 50;
 
-  const questions = [
+  var questions = [
     '如果你此刻从太空中回望地球，你现在最在意的事情还重要吗？',
     '想象你是国际空间站上的宇航员，看着地球缓缓转动。你看到了什么？',
     '假如你知道人类文明只是宇宙138亿年历史中的一个瞬间，你会如何度过今天？',
@@ -332,7 +349,7 @@ main {
     '你生命中真正重要的三件事是什么？从宇宙的视角看，它们还重要吗？',
     '大气层只有100公里厚。这让你对环保和生态有什么新的感受？',
     '从阿波罗宇航员的角度：当你用拇指就能遮住整个地球，你的焦虑有多大？',
-    '卡尔·萨根说：我们是星尘。这个事实会改变你对自己的看法吗？',
+    '卡尔·萨根说：我们都是星尘。这个事实会改变你对自己的看法吗？',
     '如果你只有一次从太空看地球的机会，你会记住什么？',
     '没有什么问题是永恒的——但有些瞬间是。你生命中最珍贵的瞬间是什么？',
     '如果地球是宇宙中唯一的生命摇篮，你作为生命的一员，有什么责任？',
@@ -415,9 +432,9 @@ main {
     for (var j = 0; j < delBtns.length; j++) {
       delBtns[j].addEventListener('click', function () {
         var idx = parseInt(this.getAttribute('data-idx'), 10);
-        var entries = loadEntries();
-        entries.splice(idx, 1);
-        saveEntries(entries);
+        var newEntries = loadEntries();
+        newEntries.splice(idx, 1);
+        saveEntries(newEntries);
         renderHistory();
         showToast('已删除');
       });
@@ -440,6 +457,7 @@ main {
     entries.unshift({ date: todayStr(), content: content });
     saveEntries(entries);
     textarea.value = '';
+    updateCharCount();
     renderHistory();
     showToast('反思已保存 ✨');
   }
@@ -448,12 +466,44 @@ main {
     var textarea = document.getElementById('journalTextarea');
     if (!textarea.value.trim()) return;
     textarea.value = '';
+    updateCharCount();
     showToast('已清空');
+  }
+
+  // ── 字符计数 ──
+  function updateCharCount() {
+    var el = document.getElementById('charCount');
+    var len = document.getElementById('journalTextarea').value.length;
+    el.textContent = len + ' 字';
+    el.classList.toggle('near-limit', len > 1800);
+  }
+
+  // ── 导出 ──
+  function exportJournal() {
+    var entries = loadEntries();
+    if (!entries.length) { showToast('没有可导出的记录'); return; }
+    var text = '🌍 宇航员视角 · 反思日记\n';
+    text += '══════════════════════\n\n';
+    for (var i = 0; i < entries.length; i++) {
+      text += '📅 ' + formatDate(entries[i].date) + '\n';
+      text += '──────────────────\n';
+      text += entries[i].content + '\n\n';
+    }
+    var blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'astronaut-journal-' + todayStr() + '.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('导出成功');
   }
 
   document.getElementById('refreshBtn').addEventListener('click', shuffleQuestion);
   document.getElementById('saveBtn').addEventListener('click', saveJournal);
   document.getElementById('clearBtn').addEventListener('click', clearTextarea);
+  document.getElementById('exportBtn').addEventListener('click', exportJournal);
+  document.getElementById('journalTextarea').addEventListener('input', updateCharCount);
 
   // 初始随机问题
   shuffleQuestion();

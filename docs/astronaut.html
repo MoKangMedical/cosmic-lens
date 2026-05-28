@@ -38,11 +38,7 @@
     /* Top bar */
     .top-bar {
       display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; flex-shrink: 0;
-    }
-    .top-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 10px;
+      flex-wrap: wrap; gap: 10px; flex-shrink: 0;
     }
     .nav-left a {
       display: inline-flex; align-items: center; gap: 6px;
@@ -119,6 +115,21 @@
     .bottom-bar {
       display: flex; align-items: center; justify-content: center;
       gap: 8px; flex-shrink: 0; padding-top: 16px;
+      flex-direction: column;
+    }
+    .dots-row { display: flex; align-items: center; gap: 8px; }
+    .progress-track {
+      width: 180px; height: 2px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px; margin-top: 12px;
+      position: relative; overflow: hidden;
+    }
+    .progress-fill {
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      border-radius: 2px;
+      transition: width 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      width: 0%;
     }
     .stage-dot {
       width: 10px; height: 10px; border-radius: 50%;
@@ -352,6 +363,7 @@
         <a href="astronaut-journal.html">日记</a>
         <a href="astronaut-gallery.html">画廊</a>
         <a href="astronaut-timeline.html">时空</a>
+        <a href="/cosmic-lens/purchase.html">购买课程</a>
       </div>
       <div class="title-area">
         <div class="sub">Overview Effect</div>
@@ -364,7 +376,10 @@
     </div>
 
     <div class="bottom-bar" id="bottomBar">
-      <!-- Dots filled by JS -->
+      <div class="dots-row" id="dotsRow"></div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
     </div>
   </div>
 
@@ -442,6 +457,108 @@ const stages = [
 
 // ==================== THREE.JS SCENE ====================
 const container = document.getElementById('cosmos');
+
+function hasWebGLSupport() {
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext('webgl', { failIfMajorPerformanceCaveat: true }) ||
+        canvas.getContext('experimental-webgl', { failIfMajorPerformanceCaveat: true }))
+    );
+  } catch {
+    return false;
+  }
+}
+
+function startCanvasFallback() {
+  const fallbackCanvas = document.createElement('canvas');
+  const ctx = fallbackCanvas.getContext('2d');
+  if (!ctx) return;
+
+  fallbackCanvas.setAttribute('aria-hidden', 'true');
+  fallbackCanvas.style.width = '100%';
+  fallbackCanvas.style.height = '100%';
+  container.appendChild(fallbackCanvas);
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const fallbackStars = Array.from({ length: 220 }, () => ({
+    x: Math.random(),
+    y: Math.random(),
+    r: Math.random() * 1.4 + 0.25,
+    a: Math.random() * 0.55 + 0.2,
+    v: Math.random() * 0.18 + 0.04
+  }));
+
+  function resizeFallback() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    fallbackCanvas.width = Math.max(1, Math.floor(container.clientWidth * dpr));
+    fallbackCanvas.height = Math.max(1, Math.floor(container.clientHeight * dpr));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function drawFallback(time = 0) {
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    ctx.clearRect(0, 0, width, height);
+
+    const bg = ctx.createRadialGradient(width * 0.56, height * 0.48, 0, width * 0.56, height * 0.48, Math.max(width, height) * 0.74);
+    bg.addColorStop(0, 'rgba(26, 58, 110, 0.48)');
+    bg.addColorStop(0.38, 'rgba(2, 4, 8, 0.82)');
+    bg.addColorStop(1, '#020408');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    fallbackStars.forEach((star) => {
+      const twinkle = reduceMotion ? 1 : 0.7 + Math.sin(time * 0.001 * star.v + star.x * 12) * 0.3;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(245, 245, 247, ${star.a * twinkle})`;
+      ctx.arc(star.x * width, star.y * height, star.r, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    const earthX = width * 0.84;
+    const earthY = height * 0.62;
+    const earthR = Math.min(width, height) * 0.13;
+    const glow = ctx.createRadialGradient(earthX, earthY, earthR * 0.2, earthX, earthY, earthR * 2.2);
+    glow.addColorStop(0, 'rgba(74, 158, 255, 0.42)');
+    glow.addColorStop(0.32, 'rgba(74, 158, 255, 0.12)');
+    glow.addColorStop(1, 'rgba(74, 158, 255, 0)');
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(earthX, earthY, earthR * 2.2, 0, Math.PI * 2);
+    ctx.fill();
+
+    const earth = ctx.createRadialGradient(earthX - earthR * 0.35, earthY - earthR * 0.32, earthR * 0.1, earthX, earthY, earthR);
+    earth.addColorStop(0, '#f5f5f7');
+    earth.addColorStop(0.14, '#4a9eff');
+    earth.addColorStop(0.58, '#1450a0');
+    earth.addColorStop(1, '#06152f');
+    ctx.fillStyle = earth;
+    ctx.beginPath();
+    ctx.arc(earthX, earthY, earthR, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = 'rgba(240, 212, 120, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.ellipse(earthX, earthY, earthR * 1.32, earthR * 0.28, -0.48, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+
+    if (!reduceMotion) requestAnimationFrame(drawFallback);
+  }
+
+  resizeFallback();
+  drawFallback();
+  window.addEventListener('resize', resizeFallback);
+}
+
+let webgl = null;
+
+if (hasWebGLSupport()) {
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(55, container.clientWidth / container.clientHeight, 0.1, 200);
@@ -609,8 +726,11 @@ const rimLight = new THREE.DirectionalLight(0x88bbff, 1.5);
 rimLight.position.set(0, -5, 2);
 scene.add(rimLight);
 
+webgl = { scene, camera, renderer, stars, earth, atmosphere, atmosMat, ring, dust };
+}
+
 // ==================== STATE ====================
-let currentStage = 0;
+let currentStage = -1;
 let targetCamZ = 14;
 let targetCamY = 2;
 let targetEarthZ = 0;
@@ -628,6 +748,8 @@ const stageCamera = [
 // ==================== BUILD UI ====================
 const centerStage = document.getElementById('centerStage');
 const bottomBar = document.getElementById('bottomBar');
+const dotsRow = document.getElementById('dotsRow');
+const progressFill = document.getElementById('progressFill');
 
 stages.forEach((s, i) => {
   // Panel
@@ -646,7 +768,7 @@ stages.forEach((s, i) => {
   dot.className = 'stage-dot';
   dot.title = s.title;
   dot.addEventListener('click', () => goToStage(i));
-  bottomBar.appendChild(dot);
+  dotsRow.appendChild(dot);
 });
 
 const hintEl = document.createElement('span');
@@ -669,14 +791,19 @@ function goToStage(idx) {
   isTransitioning = true;
 
   // Deactivate old
-  panels[currentStage].classList.remove('active');
-  dots[currentStage].classList.remove('active');
-  dots[currentStage].classList.add('visited');
+  if (currentStage >= 0) {
+    panels[currentStage].classList.remove('active');
+    dots[currentStage].classList.remove('active');
+    dots[currentStage].classList.add('visited');
+  }
 
   // Activate new
   currentStage = idx;
   panels[currentStage].classList.add('active');
   dots[currentStage].classList.add('active');
+
+  // Progress bar
+  progressFill.style.width = ((idx + 1) / stages.length * 100) + '%';
 
   // Update camera target
   const target = stageCamera[idx];
@@ -738,48 +865,60 @@ window.addEventListener('keydown', (e) => {
 });
 
 // ==================== ANIMATION LOOP ====================
-const clock = new THREE.Clock();
+if (webgl) {
+  const clock = new THREE.Clock();
 
-function animate() {
-  requestAnimationFrame(animate);
+  function animate() {
+    requestAnimationFrame(animate);
 
-  const dt = Math.min(clock.getDelta(), 0.1);
-  const t = performance.now() * 0.001;
+    const dt = Math.min(clock.getDelta(), 0.1);
+    const t = performance.now() * 0.001;
 
-  // Smooth camera
-  camera.position.z += (targetCamZ - camera.position.z) * 0.03;
-  camera.position.y += (targetCamY - camera.position.y) * 0.03;
+    // Smooth camera
+    webgl.camera.position.z += (targetCamZ - webgl.camera.position.z) * 0.03;
+    webgl.camera.position.y += (targetCamY - webgl.camera.position.y) * 0.03;
 
-  // Earth rotation
-  earth.rotation.y += dt * 0.08;
+    // Earth rotation
+    webgl.earth.rotation.y += dt * 0.08;
 
-  // Atmosphere pulse
-  atmosphere.rotation.y += dt * 0.03;
-  atmosMat.uniforms.uTime.value = t;
+    // Atmosphere pulse
+    webgl.atmosphere.rotation.y += dt * 0.03;
+    webgl.atmosMat.uniforms.uTime.value = t;
 
-  // Ring pulse
-  ring.rotation.z += dt * 0.04;
-  ring.material.opacity = 0.15 + Math.sin(t * 0.6) * 0.08;
+    // Ring pulse
+    webgl.ring.rotation.z += dt * 0.04;
+    webgl.ring.material.opacity = 0.15 + Math.sin(t * 0.6) * 0.08;
 
-  // Dust orbit
-  dust.rotation.y += dt * 0.05;
-  dust.rotation.x += dt * 0.02;
+    // Dust orbit
+    webgl.dust.rotation.y += dt * 0.05;
+    webgl.dust.rotation.x += dt * 0.02;
 
-  // Stars slow rotation
-  stars.rotation.y += dt * 0.01;
-  stars.rotation.x += dt * 0.003;
+    // Stars slow rotation
+    webgl.stars.rotation.y += dt * 0.01;
+    webgl.stars.rotation.x += dt * 0.003;
 
-  // Camera always looks at Earth
-  camera.lookAt(0, 0, 0);
+    // Camera always looks at Earth
+    webgl.camera.lookAt(0, 0, 0);
 
-  // Resize handler
-  if (container.clientWidth !== renderer.domElement.clientWidth || container.clientHeight !== renderer.domElement.clientHeight) {
-    renderer.setSize(container.clientWidth, container.clientHeight);
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
+    // Resize handler
+    if (container.clientWidth !== webgl.renderer.domElement.clientWidth || container.clientHeight !== webgl.renderer.domElement.clientHeight) {
+      webgl.renderer.setSize(container.clientWidth, container.clientHeight);
+      webgl.camera.aspect = container.clientWidth / container.clientHeight;
+      webgl.camera.updateProjectionMatrix();
+    }
+
+    webgl.renderer.render(webgl.scene, webgl.camera);
   }
 
-  renderer.render(scene, camera);
+  window.addEventListener('resize', () => {
+    webgl.renderer.setSize(container.clientWidth, container.clientHeight);
+    webgl.camera.aspect = container.clientWidth / container.clientHeight;
+    webgl.camera.updateProjectionMatrix();
+  });
+
+  animate();
+} else {
+  startCanvasFallback();
 }
 
 // ==================== START ====================
@@ -787,15 +926,6 @@ window.beginJourney = function() {
   document.getElementById('intro').classList.add('hidden');
   goToStage(0);
 };
-
-// Auto-resize
-window.addEventListener('resize', () => {
-  renderer.setSize(container.clientWidth, container.clientHeight);
-  camera.aspect = container.clientWidth / container.clientHeight;
-  camera.updateProjectionMatrix();
-});
-
-animate();
 </script>
 </body>
 </html>
