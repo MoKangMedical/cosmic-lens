@@ -82,7 +82,7 @@ a{color:inherit}.page{position:relative;z-index:1;min-height:100vh}.container{ma
         </div>
         <aside class="launch-panel" aria-label="购买上线状态">
           <h2>购买链路状态</h2>
-          <p>静态站只承载公开收款链接，不存储支付密钥。配置 3 个公开链接后，购买按钮会自动变为真实跳转。</p>
+          <p>静态站只承载公开收款链接，不存储支付密钥。运行本仓库 Stripe 建链脚本创建 3 个公开链接后，购买按钮会自动变为真实跳转。</p>
           <div class="launch-grid">
             <div class="launch-row"><span>课程正文</span><strong>120/120</strong></div>
             <div class="launch-row"><span>核心音频</span><strong>20/120</strong></div>
@@ -124,11 +124,9 @@ a{color:inherit}.page{position:relative;z-index:1;min-height:100vh}.container{ma
       </div>
       <article class="setup-card">
         <h3>配置命令</h3>
-        <p>创建 Stripe Payment Links 或其他公开收款链接后，用下面的命令写入配置，再运行严格审计。</p>
-        <code id="setupCommand">python3 scripts/configure_purchase_links.py \
-  --personal "https://buy.stripe.com/个人永久版链接" \
-  --supporter "https://buy.stripe.com/支持者版链接" \
-  --institution "https://buy.stripe.com/机构授权链接"
+        <p>在本地终端设置 Stripe Secret Key 后，脚本会为 3 个方案创建 Payment Links，并只把公开购买 URL 写入前端配置。</p>
+        <code id="setupCommand">export STRIPE_SECRET_KEY="sk_live_..."
+python3 scripts/create_stripe_payment_links.py
 
 python3 scripts/audit_product_readiness.py --strict-payments</code>
       </article>
@@ -141,7 +139,7 @@ python3 scripts/audit_product_readiness.py --strict-payments</code>
       </div>
       <div class="faq-grid">
         <details open><summary>购买后如何访问课程？</summary><p>支付成功后可以直接进入课程体系。当前静态站是公开访问形态；如后续接入会员系统，可在成功页或邮件中发放访问说明。</p></details>
-        <details><summary>为什么推荐 Stripe Payment Links？</summary><p>它适合静态站和简单产品，不需要把支付密钥放在前端，也不需要自行处理银行卡数据。</p></details>
+        <details><summary>为什么推荐 Stripe Payment Links？</summary><p>它适合静态站和简单产品。本仓库脚本在本地调用 Stripe API 创建公开链接，不会把支付密钥写进前端，也不需要自行处理银行卡数据。</p></details>
         <details><summary>现在有多少音频？</summary><p>当前仓库内已上线 20 节核心课程音频，规格为 24000Hz、单声道、48kbps，并已做响度统一。后续音频会继续补齐。</p></details>
         <details><summary>机构授权能否多人使用？</summary><p>机构授权面向小团队、学校或学习小组，默认最多 10 人内部学习使用。更大规模可以另行配置机构方案。</p></details>
       </div>
@@ -154,7 +152,7 @@ python3 scripts/audit_product_readiness.py --strict-payments</code>
     <h2 id="setupTitle">支付链接待配置</h2>
     <p id="setupCopy"></p>
     <code id="setupSnippet"></code>
-    <p>在 Stripe Dashboard 创建 Payment Link 后，把对应 URL 填入 <strong>docs/js/purchase-config.js</strong> 的 <strong>paymentLink</strong> 字段，再提交并部署即可启用真实购买。</p>
+    <p>推荐运行 <strong>scripts/create_stripe_payment_links.py</strong> 自动创建并写回公开链接；如果你已经在 Stripe Dashboard 手动创建，也可以继续把对应 URL 填入 <strong>docs/js/purchase-config.js</strong> 的 <strong>paymentLink</strong> 字段。</p>
     <div class="modal-actions">
       <a class="primary" href="/cosmic-lens/courses.html">先查看课程</a>
       <button type="button" id="copySetup">复制配置片段</button>
@@ -221,7 +219,7 @@ function renderPlans() {
 }
 
 function openSetup(plan) {
-  activeSnippet = `python3 scripts/configure_purchase_links.py --${plan.id} "https://buy.stripe.com/你的_${plan.id}_payment_link"\npython3 scripts/audit_product_readiness.py --strict-payments`;
+  activeSnippet = `export STRIPE_SECRET_KEY="sk_live_..."\npython3 scripts/create_stripe_payment_links.py --plan ${plan.id}\npython3 scripts/audit_product_readiness.py --strict-payments`;
   setupCopy.textContent = `${plan.name}（${formatPrice(plan.price)}）尚未配置真实收款链接。`;
   setupSnippet.textContent = activeSnippet;
   modal.classList.add('active');

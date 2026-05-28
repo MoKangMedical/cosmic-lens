@@ -88,6 +88,7 @@ def audit(strict_payments: bool) -> tuple[list[Finding], dict[str, int | str]]:
         DOCS / "js" / "purchase-config.js",
         DOCS / "js" / "starfield-bg.js",
         DOCS / "assets" / "purchase-cosmos.jpg",
+        ROOT / "scripts" / "create_stripe_payment_links.py",
         DOCS / "astronaut.html",
         DOCS / "astronaut-stories.html",
         DOCS / "astronaut-philosophy.html",
@@ -198,7 +199,7 @@ def audit(strict_payments: bool) -> tuple[list[Finding], dict[str, int | str]]:
         metrics["configured_payment_links"] = configured
         if configured != 3:
             level = "FAIL" if strict_payments else "WARN"
-            add(findings, level, f"Configured payment links: {configured}/3. Run scripts/configure_purchase_links.py after creating public Payment Links.")
+            add(findings, level, f"Configured payment links: {configured}/3. Run scripts/create_stripe_payment_links.py or scripts/configure_purchase_links.py after creating public Payment Links.")
         for plan_id, value in payment_links.items():
             if value and not is_public_url(value):
                 add(findings, "FAIL", f"Invalid paymentLink for {plan_id}: {value}")
