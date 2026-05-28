@@ -20,12 +20,41 @@
 3. 将成功跳转地址设置为：
    - `https://mokangmedical.github.io/cosmic-lens/purchase-success.html`
 4. 打开 `docs/js/purchase-config.js`，把每个方案的 `paymentLink` 填成对应的公开购买链接。
-5. 提交并推送：
+5. 或者用脚本安全写入链接：
 
 ```bash
-git add docs/purchase.html docs/purchase-success.html docs/js/purchase-config.js docs/assets/purchase-cosmos.jpg docs/index.html docs/courses.html docs/lesson*.html PURCHASE_SETUP.md
-git commit -m "feat: add purchase flow"
+python3 scripts/configure_purchase_links.py \
+  --personal "https://buy.stripe.com/个人永久版链接" \
+  --supporter "https://buy.stripe.com/支持者版链接" \
+  --institution "https://buy.stripe.com/机构授权链接"
+```
+
+6. 发布前运行产品审计：
+
+```bash
+python3 scripts/audit_product_readiness.py --strict-payments
+```
+
+7. 提交并推送：
+
+```bash
+git add docs/js/purchase-config.js
+git commit -m "chore: configure purchase links"
 git push origin main
+```
+
+## 审计命令
+
+结构审计允许付款链接为空，但会给出警告：
+
+```bash
+python3 scripts/audit_product_readiness.py
+```
+
+真正上线收款前必须使用严格模式，确保 3 个购买方案都已经配置公开收款链接：
+
+```bash
+python3 scripts/audit_product_readiness.py --strict-payments
 ```
 
 ## 安全边界
