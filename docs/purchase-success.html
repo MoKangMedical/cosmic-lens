@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>购买成功 - 宇宙之镜 · Cosmic Lens</title>
+<meta name="description" content="宇宙之镜课程购买成功页。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<style>
+:root{--bg:#09090b;--panel:rgba(18,18,24,.9);--border:rgba(226,182,79,.22);--text:#fafafa;--text2:#a1a1aa;--gold:#e2b64f;--gold2:#f5d98a;--cyan:#22d3ee}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;display:grid;place-items:center;padding:28px;background:radial-gradient(circle at 72% 20%,rgba(34,211,238,.14),transparent 32%),radial-gradient(circle at 22% 18%,rgba(226,182,79,.13),transparent 32%),var(--bg);color:var(--text);font-family:Inter,-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC",sans-serif;line-height:1.7}
+.panel{width:min(760px,100%);border:1px solid var(--border);border-radius:28px;background:linear-gradient(180deg,rgba(28,28,33,.94),rgba(10,10,13,.9));box-shadow:0 28px 90px rgba(0,0,0,.42);padding:42px;text-align:center}
+.mark{width:74px;height:74px;margin:0 auto 22px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;font-size:2rem;font-weight:900;box-shadow:0 0 48px rgba(226,182,79,.28)}
+h1{font-size:clamp(2rem,6vw,3.4rem);line-height:1.08;margin-bottom:14px;letter-spacing:0}
+p{color:var(--text2);max-width:590px;margin:0 auto 12px}
+.actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
+a{min-height:44px;display:inline-flex;align-items:center;justify-content:center;border-radius:999px;padding:0 18px;text-decoration:none;font-weight:800}
+.primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111}
+.secondary{border:1px solid rgba(255,255,255,.12);color:var(--text);background:rgba(255,255,255,.05)}
+.note{margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.08);font-size:.88rem;color:var(--text2)}
+@media(max-width:600px){.panel{padding:30px 20px;border-radius:22px}.actions a{width:100%}}
+</style>
+</head>
+<body>
+<main class="panel">
+  <div class="mark">✓</div>
+  <h1>购买成功</h1>
+  <p>感谢加入宇宙之镜 Cosmic Lens Academy。支付完成后，你可以直接进入课程体系开始学习。</p>
+  <p>如果你通过 Stripe Payment Links 配置了自动邮件，请确认邮箱中的订单与访问说明。</p>
+  <div class="actions">
+    <a class="primary" href="/cosmic-lens/courses.html">进入课程体系</a>
+    <a class="secondary" href="/cosmic-lens/">返回首页</a>
+  </div>
+  <div class="note">订单编号和开通方式以后端支付平台记录为准。本页面不处理银行卡信息，也不保存支付凭据。</div>
+</main>
+</body>
+</html>

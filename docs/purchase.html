@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>购买课程 - 宇宙之镜 · Cosmic Lens Academy</title>
+<meta name="description" content="购买宇宙之镜课程，获得 120 门模拟假说与宇宙观课程的永久访问权益。">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔭</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Serif+SC:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#09090b;--panel:rgba(18,18,24,.84);--panel2:rgba(26,26,32,.92);
+  --border:rgba(63,63,70,.74);--border-gold:rgba(226,182,79,.32);
+  --text:#fafafa;--text2:#d4d4d8;--text3:#a1a1aa;--muted:#71717a;
+  --gold:#e2b64f;--gold2:#f5d98a;--blue:#3b82f6;--cyan:#22d3ee;--green:#22c55e;
+  --radius:22px;--serif:"Noto Serif SC",serif;--sans:Inter,-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC",sans-serif;
+  --shadow:0 26px 90px rgba(0,0,0,.42);--glow:0 0 44px rgba(226,182,79,.16),0 0 86px rgba(34,211,238,.1)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.65;overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    linear-gradient(to bottom,rgba(9,9,11,.36),rgba(9,9,11,.96) 64%,#09090b),
+    radial-gradient(circle at 52% 30%,rgba(0,0,0,.16),rgba(0,0,0,.68) 62%),
+    url("/cosmic-lens/assets/purchase-cosmos.jpg") center top/cover no-repeat;
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.55;
+  background:
+    linear-gradient(rgba(226,182,79,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(59,130,246,.035) 1px,transparent 1px);
+  background-size:72px 72px;
+  mask-image:linear-gradient(to bottom,transparent,#000 10%,#000 72%,transparent);
+}
+a{color:inherit}
+.page{position:relative;z-index:1;min-height:100vh}
+.container{max-width:1180px;margin:0 auto;padding:0 24px}
+.nav{position:sticky;top:16px;z-index:10;margin:16px auto 0;width:min(1180px,calc(100% - 32px));border:1px solid rgba(255,255,255,.1);border-radius:20px;background:rgba(9,9,11,.74);backdrop-filter:blur(22px);box-shadow:0 16px 44px rgba(0,0,0,.25)}
+.nav-inner{height:68px;padding:0 18px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:inline-flex;align-items:center;gap:12px;text-decoration:none;min-width:0}
+.brand-mark{width:40px;height:40px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold),var(--blue));box-shadow:0 0 32px rgba(226,182,79,.32)}
+.brand-copy strong{display:block;font-family:var(--serif);line-height:1.1}
+.brand-copy span{display:block;color:var(--text3);font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;line-height:1.1}
+.nav-links{display:flex;align-items:center;gap:8px;color:var(--text3);font-size:.9rem}
+.nav-links a{padding:8px 12px;border-radius:999px;text-decoration:none}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.nav-cta{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 16px;border-radius:999px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;text-decoration:none;font-weight:900}
+.hero{padding:104px 0 54px;text-align:center}
+.hero h1{max-width:980px;margin:0 auto;font-family:var(--serif);font-size:clamp(3rem,8vw,6.4rem);line-height:1.02;letter-spacing:0;text-shadow:0 0 62px rgba(226,182,79,.22)}
+.hero h1 span{color:var(--gold2)}
+.hero p{max-width:760px;margin:22px auto 0;color:var(--text2);font-size:1.08rem}
+.proof{margin-top:26px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.proof span{display:inline-flex;align-items:center;gap:8px;min-height:34px;padding:0 12px;border:1px solid rgba(226,182,79,.22);border-radius:999px;background:rgba(9,9,11,.5);color:var(--text2);font-size:.86rem}
+.pricing{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:stretch;padding:28px 0 34px}
+.plan{position:relative;display:flex;flex-direction:column;min-height:520px;padding:28px;border:1px solid var(--border);border-radius:var(--radius);background:linear-gradient(180deg,rgba(24,24,30,.86),rgba(9,9,12,.86));box-shadow:0 22px 70px rgba(0,0,0,.34);overflow:hidden}
+.plan::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 12%,rgba(226,182,79,.14),transparent 38%);opacity:.75;pointer-events:none}
+.plan.featured{border-color:var(--border-gold);box-shadow:var(--shadow),var(--glow);transform:translateY(-10px)}
+.ribbon{position:absolute;top:18px;right:-42px;transform:rotate(36deg);width:150px;text-align:center;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;font-weight:900;font-size:.78rem;padding:6px 0}
+.plan-content{position:relative;z-index:1;display:flex;flex-direction:column;height:100%}
+.icon{width:60px;height:60px;border-radius:999px;border:1px solid rgba(226,182,79,.42);display:grid;place-items:center;color:var(--gold2);font-size:1.6rem;margin-bottom:20px;background:rgba(226,182,79,.06)}
+.plan h2{font-family:var(--serif);font-size:1.55rem;letter-spacing:0}
+.subtitle{color:var(--text3);font-size:.92rem;margin-top:4px}
+.price{margin-top:18px;font-size:3.25rem;line-height:1;font-weight:900;color:var(--gold2)}
+.price small{font-size:1.1rem;color:var(--gold);margin-right:4px}
+.benefits{list-style:none;margin:24px 0 26px;display:grid;gap:12px;color:var(--text2);font-size:.94rem}
+.benefits li{display:grid;grid-template-columns:20px minmax(0,1fr);gap:10px}
+.benefits li::before{content:"✓";width:20px;height:20px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(226,182,79,.42);color:var(--gold);font-size:.72rem;margin-top:2px}
+.buy{margin-top:auto;min-height:48px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;font:inherit;font-weight:900;cursor:pointer;box-shadow:0 14px 38px rgba(226,182,79,.18);transition:transform .2s,box-shadow .2s}
+.buy:hover{transform:translateY(-2px);box-shadow:0 18px 46px rgba(226,182,79,.28)}
+.buy.pending{background:rgba(255,255,255,.08);color:var(--text2);border:1px solid rgba(255,255,255,.12);box-shadow:none}
+.security{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;padding:28px 0 72px}
+.security-card{border:1px solid rgba(255,255,255,.1);border-radius:20px;background:rgba(12,12,16,.74);padding:24px;min-height:190px}
+.security-card h3{font-family:var(--serif);font-size:1.16rem;color:var(--gold2);margin-bottom:12px}
+.security-card p,.security-card li{color:var(--text3);font-size:.92rem}
+.security-card ul{list-style:none;display:grid;gap:8px}
+.faq{padding:0 0 72px}
+.faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.faq details{border:1px solid rgba(255,255,255,.1);border-radius:16px;background:rgba(12,12,16,.72);padding:18px 20px}
+.faq summary{cursor:pointer;color:var(--text);font-weight:800}
+.faq p{margin-top:10px;color:var(--text3);font-size:.92rem}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:18px}
+.section-head h2{font-family:var(--serif);font-size:clamp(1.8rem,4vw,3rem);letter-spacing:0}
+.section-head p{max-width:520px;color:var(--text3)}
+.status{display:none;margin:0 auto 24px;max-width:980px;border:1px solid rgba(245,217,138,.28);border-radius:18px;background:rgba(226,182,79,.08);padding:16px 18px;color:var(--text2);text-align:left}
+.status.active{display:block}
+.modal{position:fixed;inset:0;z-index:30;display:none;place-items:center;padding:22px;background:rgba(0,0,0,.68);backdrop-filter:blur(8px)}
+.modal.active{display:grid}
+.modal-card{width:min(620px,100%);border:1px solid var(--border-gold);border-radius:24px;background:linear-gradient(180deg,rgba(28,28,33,.98),rgba(10,10,13,.98));box-shadow:var(--shadow);padding:28px}
+.modal-card h2{font-family:var(--serif);font-size:1.6rem;margin-bottom:10px}
+.modal-card p{color:var(--text3);margin-bottom:12px}
+.modal-card code{display:block;white-space:pre-wrap;border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px;background:rgba(0,0,0,.28);color:var(--gold2);font-size:.84rem;margin:14px 0}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}
+.modal-actions button,.modal-actions a{min-height:42px;border-radius:999px;padding:0 16px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);color:var(--text);font:inherit;font-weight:800;text-decoration:none;cursor:pointer}
+.modal-actions .primary{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#111;border:0}
+.footer{position:relative;z-index:1;border-top:1px solid rgba(255,255,255,.08);padding:34px 24px;color:var(--text3);text-align:center;font-size:.88rem;background:rgba(9,9,11,.7)}
+@media(max-width:940px){.pricing{grid-template-columns:1fr}.plan.featured{transform:none}.security{grid-template-columns:1fr}.faq-grid{grid-template-columns:1fr}}
+@media(max-width:720px){.nav{top:10px;width:calc(100% - 20px);border-radius:16px}.nav-inner{height:auto;min-height:60px;padding:10px 12px}.brand-copy span,.nav-links{display:none}.hero{padding:72px 0 34px}.hero p{font-size:1rem}.pricing{gap:14px}.plan{min-height:0;padding:22px}.ribbon{top:16px;right:16px;width:auto;transform:none;border-radius:999px;padding:4px 10px}.security{padding-bottom:48px}.section-head{display:block}.section-head p{margin-top:8px}}
+</style>
+</head>
+<body>
+<div class="page">
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="/cosmic-lens/" aria-label="返回宇宙之镜首页">
+        <span class="brand-mark">🔭</span>
+        <span class="brand-copy"><strong>宇宙之镜</strong><span>Cosmic Lens Academy</span></span>
+      </a>
+      <div class="nav-links" aria-label="页面导航">
+        <a href="/cosmic-lens/">首页</a>
+        <a href="/cosmic-lens/courses.html">课程体系</a>
+        <a href="#faq">常见问题</a>
+      </div>
+      <a class="nav-cta" href="#pricing">购买课程</a>
+    </div>
+  </nav>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <h1>一次购买，<span>终身探索</span></h1>
+        <p>购买《宇宙之镜》课程权益，获得 120 门模拟假说与宇宙观课程的长期访问；当前已上线 120 门正文课程与首批 20 节 A 级规格音频，后续音频和配套工具持续补齐。</p>
+        <div class="proof" aria-label="产品权益摘要">
+          <span>✓ 120 门系统课程</span>
+          <span>✓ 20 节 A级音频已上线</span>
+          <span>✓ 练习与思维卡片</span>
+          <span>✓ 后续更新免费获得</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="container" id="pricing" aria-label="购买方案">
+      <div class="status" id="paymentStatus"></div>
+      <div class="pricing" id="plans"></div>
+    </section>
+
+    <section class="container security" aria-label="安全与交付">
+      <article class="security-card">
+        <h3>安全支付</h3>
+        <ul>
+          <li>优先使用 Stripe Payment Links 或你配置的公开收款链接。</li>
+          <li>银行卡与钱包信息由支付平台处理，本站不保存支付凭据。</li>
+          <li>静态站不包含任何 Stripe Secret Key 或服务端密钥。</li>
+        </ul>
+      </article>
+      <article class="security-card">
+        <h3>购买后获得什么</h3>
+        <p>进入完整课程体系、3D 星系课程地图、120 门正文课程、首批高质量课程音频，以及后续新增音频、练习卡片和阶段总结更新。</p>
+      </article>
+      <article class="security-card">
+        <h3>适合谁</h3>
+        <p>适合对模拟假说、量子信息、宇宙学、意识哲学、AI 与星际文明有长期兴趣的学习者、教师与知识型社群。</p>
+      </article>
+    </section>
+
+    <section class="container faq" id="faq">
+      <div class="section-head">
+        <h2>常见问题</h2>
+        <p>购买页只承载公开支付入口。开通、发票、社群权益等交付细节可以在支付平台或后续会员系统中继续扩展。</p>
+      </div>
+      <div class="faq-grid">
+        <details open><summary>购买后如何访问课程？</summary><p>支付成功后可以直接进入课程体系。当前静态站是公开访问形态；如后续接入会员系统，可在成功页或邮件中发放访问说明。</p></details>
+        <details><summary>为什么推荐 Stripe Payment Links？</summary><p>它适合静态站和简单产品，不需要把支付密钥放在前端，也不需要自行处理银行卡数据。</p></details>
+        <details><summary>现在有多少音频？</summary><p>当前仓库内已上线 20 节核心课程音频，规格为 24000Hz、单声道、48kbps，并已做响度统一。后续音频会继续补齐。</p></details>
+        <details><summary>机构授权能否多人使用？</summary><p>机构授权面向小团队、学校或学习小组，默认最多 10 人内部学习使用。更大规模可以另行配置机构方案。</p></details>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="setupModal" role="dialog" aria-modal="true" aria-labelledby="setupTitle">
+  <div class="modal-card">
+    <h2 id="setupTitle">支付链接待配置</h2>
+    <p id="setupCopy"></p>
+    <code id="setupSnippet"></code>
+    <p>在 Stripe Dashboard 创建 Payment Link 后，把对应 URL 填入 <strong>docs/js/purchase-config.js</strong> 的 <strong>paymentLink</strong> 字段，再提交并部署即可启用真实购买。</p>
+    <div class="modal-actions">
+      <a class="primary" href="/cosmic-lens/courses.html">先查看课程</a>
+      <button type="button" id="copySetup">复制配置片段</button>
+      <button type="button" id="closeModal">关闭</button>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">🔭 宇宙之镜 · Cosmic Lens Academy · 购买页不处理或存储银行卡信息</footer>
+
+<script src="/cosmic-lens/js/purchase-config.js"></script>
+<script>
+const config = window.COSMIC_LENS_PURCHASE_CONFIG || { plans: {} };
+const plansEl = document.getElementById('plans');
+const statusEl = document.getElementById('paymentStatus');
+const modal = document.getElementById('setupModal');
+const setupCopy = document.getElementById('setupCopy');
+const setupSnippet = document.getElementById('setupSnippet');
+let activeSnippet = '';
+
+function formatPrice(price) {
+  return new Intl.NumberFormat('zh-CN', { style: 'currency', currency: config.currency || 'CNY', maximumFractionDigits: 0 }).format(price);
+}
+
+function isReady(link) {
+  return /^https?:\/\//.test(link || '');
+}
+
+function planIcon(planId) {
+  return planId === 'supporter' ? '★' : planId === 'institution' ? '▦' : '●';
+}
+
+function renderPlans() {
+  const plans = Object.values(config.plans || {});
+  const readyCount = plans.filter((plan) => isReady(plan.paymentLink)).length;
+  if (readyCount < plans.length) {
+    statusEl.classList.add('active');
+    statusEl.innerHTML = `当前有 <strong>${readyCount}/${plans.length}</strong> 个购买方案已配置真实收款链接。未配置的按钮会显示配置提示，不会暴露任何支付密钥。`;
+  }
+  plansEl.innerHTML = plans.map((plan) => `
+    <article class="plan ${plan.featured ? 'featured' : ''}">
+      ${plan.featured ? '<div class="ribbon">推荐</div>' : ''}
+      <div class="plan-content">
+        <div class="icon">${planIcon(plan.id)}</div>
+        <h2>${plan.name}</h2>
+        <div class="subtitle">${plan.subtitle}</div>
+        <div class="price"><small>¥</small>${plan.price}</div>
+        <ul class="benefits">${plan.benefits.map((item) => `<li>${item}</li>`).join('')}</ul>
+        <button class="buy ${isReady(plan.paymentLink) ? '' : 'pending'}" type="button" data-plan="${plan.id}">
+          ${isReady(plan.paymentLink) ? `立即购买 ${formatPrice(plan.price)}` : '配置收款链接后启用'}
+        </button>
+      </div>
+    </article>
+  `).join('');
+}
+
+function openSetup(plan) {
+  activeSnippet = `plans: {\n  ${plan.id}: {\n    ...,\n    paymentLink: \"https://buy.stripe.com/你的_${plan.id}_payment_link\"\n  }\n}`;
+  setupCopy.textContent = `${plan.name}（${formatPrice(plan.price)}）尚未配置真实收款链接。`;
+  setupSnippet.textContent = activeSnippet;
+  modal.classList.add('active');
+}
+
+renderPlans();
+
+plansEl.addEventListener('click', (event) => {
+  const button = event.target.closest('.buy');
+  if (!button) return;
+  const plan = config.plans[button.dataset.plan];
+  if (!plan) return;
+  if (isReady(plan.paymentLink)) {
+    window.location.href = plan.paymentLink;
+    return;
+  }
+  openSetup(plan);
+});
+
+document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('active'));
+modal.addEventListener('click', (event) => {
+  if (event.target === modal) modal.classList.remove('active');
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') modal.classList.remove('active');
+});
+document.getElementById('copySetup').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(activeSnippet);
+    document.getElementById('copySetup').textContent = '已复制';
+  } catch {
+    document.getElementById('copySetup').textContent = '复制失败';
+  }
+});
+</script>
+</body>
+</html>

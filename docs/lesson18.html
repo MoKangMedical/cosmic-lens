@@ -42,8 +42,8 @@ body::before {
     radial-gradient(ellipse 40% 30% at 80% 60%, rgba(59,130,246,0.03) 0%, transparent 60%);
 }
 
-/* Starfield canvas */
-#starfield { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
+/* Starfield 3D background */
+#starfield-bg { position:fixed; top:0; left:0; width:100%; height:100%; z-index:0; pointer-events:none; }
 
 /* Navigation */
 .nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:14px 24px; backdrop-filter:blur(20px); background:rgba(7,7,10,0.82); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
@@ -51,6 +51,7 @@ body::before {
 .nav-back:hover { color:var(--text); }
 .nav-title { font-size:0.92em; font-weight:700; color:var(--gold); font-family:var(--serif); }
 .nav-space { width:60px; }
+.nav-buy { color:#111; background:linear-gradient(135deg,var(--gold),var(--gold-light)); text-decoration:none; font-size:0.82em; font-weight:800; padding:5px 12px; border-radius:999px; box-shadow:0 8px 24px rgba(226,182,79,0.18); }
 
 /* Content */
 .content-wrapper { position:relative; z-index:1; max-width:780px; margin:0 auto; padding:80px 20px 60px; }
@@ -190,7 +191,7 @@ body::before {
 </head>
 <body>
 <canvas id="starfield"></canvas>
-<nav class="nav"><a href="/cosmic-lens/" class="nav-back">← 宇宙之镜</a><span class="nav-title">第18课 · 大过滤器理论</span><div class="nav-space"></div></nav>
+<nav class="nav"><a href="/cosmic-lens/" class="nav-back">← 宇宙之镜</a><span class="nav-title">第18课 · 大过滤器理论</span><a href="/cosmic-lens/purchase.html" class="nav-buy" aria-label="购买课程">购买</a></nav>
 <article class="content-wrapper">
 <h1>🛸 大过滤器理论：费米悖论的模拟假说解</h1>
 <p class="subtitle">从“他们都在哪里”到文明筛选、沉默宇宙、动物园假说和模拟沙盒边界。</p>
@@ -839,6 +840,16 @@ id="练习三模拟沙盒的弱点分析型">练习三：模拟沙盒的弱点�
 </div>
 </article>
 <footer class="footer"><p>🔭 <strong>宇宙之镜 · Cosmic Lens</strong></p></footer>
-<script>const c=document.getElementById('starfield'),x=c.getContext('2d');let s=[],w,h;function r(){w=c.width=innerWidth;h=c.height=document.documentElement.scrollHeight;let a=[],n=Math.floor(w*h/5000);for(let i=0;i<n;i++)a.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+0.3,a:Math.random()*0.6+0.2,t:Math.random()*Math.PI*2});s=a}function d(){x.clearRect(0,0,w,h);s.forEach(e=>{e.t+=0.008;let a=e.a*(0.5+0.5*Math.sin(e.t));x.beginPath();x.arc(e.x,e.y,e.r,0,Math.PI*2);x.fillStyle=`rgba(200,210,255,${a})`;x.fill()});requestAnimationFrame(d)}r();d();addEventListener('resize',r);</script>
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+  }
+}
+</script>
+<script type="module">
+import { initStarfieldBackground } from '/cosmic-lens/js/starfield-bg.js';
+initStarfieldBackground('starfield-bg');
+</script>
 </body>
 </html>
