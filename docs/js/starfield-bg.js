@@ -5,6 +5,89 @@
  */
 import * as THREE from 'three';
 
+function initCanvasStarfield(container) {
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return { stop: () => {} };
+  canvas.style.cssText = 'width:100%;height:100%;display:block;';
+  container.appendChild(canvas);
+
+  let raf = 0;
+  let width = 0;
+  let height = 0;
+  let stars = [];
+
+  function resize() {
+    width = window.innerWidth;
+    height = window.innerHeight;
+    const ratio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(width * ratio);
+    canvas.height = Math.floor(height * ratio);
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    const count = Math.min(260, Math.max(120, Math.floor((width * height) / 6500)));
+    stars = Array.from({ length: count }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: 0.35 + Math.random() * 1.25,
+      speed: 0.04 + Math.random() * 0.18,
+      alpha: 0.28 + Math.random() * 0.58,
+      tint: Math.random(),
+    }));
+  }
+
+  function drawNebula() {
+    const g1 = ctx.createRadialGradient(width * 0.24, height * 0.18, 0, width * 0.24, height * 0.18, width * 0.55);
+    g1.addColorStop(0, 'rgba(226,182,79,0.16)');
+    g1.addColorStop(1, 'rgba(226,182,79,0)');
+    ctx.fillStyle = g1;
+    ctx.fillRect(0, 0, width, height);
+
+    const g2 = ctx.createRadialGradient(width * 0.82, height * 0.28, 0, width * 0.82, height * 0.28, width * 0.5);
+    g2.addColorStop(0, 'rgba(107,92,231,0.18)');
+    g2.addColorStop(1, 'rgba(107,92,231,0)');
+    ctx.fillStyle = g2;
+    ctx.fillRect(0, 0, width, height);
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, width, height);
+    drawNebula();
+    for (const star of stars) {
+      star.y += star.speed;
+      if (star.y > height + 8) {
+        star.y = -8;
+        star.x = Math.random() * width;
+      }
+      const color = star.tint < 0.12 ? '246,211,101' : star.tint < 0.24 ? '124,58,237' : '220,240,255';
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(${color},${star.alpha})`;
+      ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    raf = requestAnimationFrame(animate);
+  }
+
+  resize();
+  animate();
+  window.addEventListener('resize', resize);
+  return {
+    stop: () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', resize);
+      canvas.remove();
+    },
+  };
+}
+
+function canUseWebGL() {
+  try {
+    const canvas = document.createElement('canvas');
+    return !!(canvas.getContext('webgl2') || canvas.getContext('webgl') || canvas.getContext('experimental-webgl'));
+  } catch {
+    return false;
+  }
+}
+
 export function initStarfieldBackground(containerId = 'starfield-bg') {
   let container = document.getElementById(containerId);
   if (!container) {
@@ -14,12 +97,21 @@ export function initStarfieldBackground(containerId = 'starfield-bg') {
     document.body.prepend(container);
   }
 
+  if (!canUseWebGL()) {
+    return initCanvasStarfield(container);
+  }
+
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.3, 200);
   camera.position.set(0, 2, 20);
   camera.lookAt(0, 0, 0);
 
-  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  } catch {
+    return initCanvasStarfield(container);
+  }
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
   renderer.toneMapping = THREE.ACESFilmicToneMapping;

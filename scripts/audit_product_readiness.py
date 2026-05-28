@@ -162,34 +162,55 @@ def audit(strict_payments: bool) -> tuple[list[Finding], dict[str, int | str]]:
 
     purchase_links_in_lessons = 0
     audio_tags = 0
+    audio_srcs: set[str] = set()
     pending_audio = 0
     missing_audio_refs: list[str] = []
     bad_titles: list[str] = []
+    bad_pagination: list[str] = []
     for lesson in lesson_files:
         text = read(lesson)
+        number_match = re.search(r"lesson(\d+)\.html", lesson.name)
+        lesson_number = int(number_match.group(1)) if number_match else 0
         if '/cosmic-lens/purchase.html" class="nav-buy"' in text:
             purchase_links_in_lessons += 1
-        if "audio-pending-text" in text:
+        if 'class="audio-bar audio-pending"' in text:
             pending_audio += 1
         for src in re.findall(r'<audio[^>]+src="([^"]+)"', text):
             audio_tags += 1
+            audio_srcs.add(src)
             local_path = DOCS / src.removeprefix("/cosmic-lens/")
             if not local_path.exists():
                 missing_audio_refs.append(f"{lesson.name} -> {src}")
-        number_match = re.search(r"lesson(\d+)\.html", lesson.name)
         title_match = re.search(r"<title>(.*?)</title>", text, re.DOTALL)
-        if number_match and title_match and int(number_match.group(1)) > 20 and "三大物理Bug" in title_match.group(1):
+        if number_match and title_match and lesson_number > 20 and "三大物理Bug" in title_match.group(1):
             bad_titles.append(lesson.name)
+        if lesson_number:
+            expected_marker = f"第{lesson_number}课 / 120"
+            prev_ok = lesson_number == 1 or f"/cosmic-lens/lesson{lesson_number - 1:02d}.html" in text
+            next_ok = lesson_number == 120 or f"/cosmic-lens/lesson{lesson_number + 1:02d}.html" in text
+            if expected_marker not in text or not prev_ok or not next_ok:
+                bad_pagination.append(lesson.name)
 
     metrics["lesson_purchase_links"] = purchase_links_in_lessons
     metrics["audio_tags"] = audio_tags
+    metrics["audio_files"] = len(list((DOCS / "audio").glob("lesson*.mp3")))
+    metrics["audio_scripts"] = len(list((DOCS / "audio_scripts").glob("lesson*.txt")))
     metrics["pending_audio_pages"] = pending_audio
     if purchase_links_in_lessons != 120:
         add(findings, "FAIL", f"Expected purchase nav on 120 lesson pages, found {purchase_links_in_lessons}")
     if missing_audio_refs:
         add(findings, "FAIL", f"Missing audio files referenced by pages: {missing_audio_refs[:5]}")
+    unreferenced_audio = [
+        path.name
+        for path in sorted((DOCS / "audio").glob("lesson*.mp3"))
+        if f"/cosmic-lens/audio/{path.name}" not in audio_srcs
+    ]
+    if unreferenced_audio:
+        add(findings, "FAIL", f"Audio files not referenced by lesson pages: {unreferenced_audio[:8]}")
     if bad_titles:
         add(findings, "FAIL", f"Generated lesson titles still include lesson 1 suffix: {bad_titles[:5]}")
+    if bad_pagination:
+        add(findings, "FAIL", f"Lesson pagination is incomplete or stale: {bad_pagination[:8]}")
 
     html_files = sorted(DOCS.glob("*.html"))
     missing_refs: list[str] = []

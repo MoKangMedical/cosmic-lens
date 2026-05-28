@@ -15,6 +15,7 @@ import re
 import shutil
 import subprocess
 import sys
+from html.parser import HTMLParser
 from pathlib import Path
 
 
@@ -50,6 +51,74 @@ def course_path(lesson: int) -> Path:
     if not matches:
         raise FileNotFoundError(f"No Markdown course found for lesson {lesson:02d}")
     return matches[0]
+
+
+def lesson_path(lesson: int) -> Path:
+    return ROOT / "docs" / f"lesson{lesson:02d}.html"
+
+
+class LessonHTMLParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.skip_depth = 0
+        self.capture_tag = ""
+        self.current: list[str] = []
+        self.lines: list[str] = []
+        self.title = ""
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag in {"script", "style", "nav", "audio", "canvas"}:
+            self.skip_depth += 1
+            return
+        if self.skip_depth:
+            return
+        if tag in {"h1", "h2", "h3", "p", "li"}:
+            self.capture_tag = tag
+            self.current = []
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in {"script", "style", "nav", "audio", "canvas"} and self.skip_depth:
+            self.skip_depth -= 1
+            return
+        if self.skip_depth or tag != self.capture_tag:
+            return
+        text = re.sub(r"\s+", " ", "".join(self.current)).strip()
+        self.capture_tag = ""
+        self.current = []
+        if len(text) < 2:
+            return
+        if tag == "h1":
+            if not self.title:
+                self.title = text
+            self.lines.append(f"# {text}")
+        elif tag in {"h2", "h3"}:
+            self.lines.append(f"## {text}")
+        else:
+            self.lines.append(text)
+
+    def handle_data(self, data: str) -> None:
+        if self.skip_depth or not self.capture_tag:
+            return
+        self.current.append(data)
+
+
+def lesson_html_source(lesson: int) -> tuple[str, str]:
+    path = lesson_path(lesson)
+    if not path.exists():
+        raise FileNotFoundError(f"No HTML lesson page found for lesson {lesson:02d}")
+    parser = LessonHTMLParser()
+    parser.feed(path.read_text(encoding="utf-8"))
+    title = parser.title or path.stem
+    return "\n".join(parser.lines), title
+
+
+def lesson_source(lesson: int) -> tuple[str, str, str]:
+    try:
+        md_path = course_path(lesson)
+        return md_path.read_text(encoding="utf-8"), md_path.stem, "markdown"
+    except FileNotFoundError:
+        text, title = lesson_html_source(lesson)
+        return text, title, "html"
 
 
 def strip_markdown(text: str) -> str:
@@ -227,6 +296,24 @@ def generate_audio(
     print(ffprobe(out_path))
 
 
+def attach_audio_to_lesson(lesson: int) -> None:
+    path = lesson_path(lesson)
+    if not path.exists():
+        raise FileNotFoundError(f"No HTML lesson page found for lesson {lesson:02d}")
+    text = path.read_text(encoding="utf-8")
+    audio_html = f'<div class="audio-bar"><span>🎧 音频版</span><audio controls src="/cosmic-lens/audio/lesson{lesson:02d}.mp3" preload="none"></audio></div>'
+    if f'/cosmic-lens/audio/lesson{lesson:02d}.mp3' in text:
+        return
+    pending_pattern = re.compile(
+        r'<div class="audio-bar audio-pending">\s*<span>🎧 音频版</span>\s*<div class="audio-pending-text">.*?</div>\s*</div>',
+        re.DOTALL,
+    )
+    updated, count = pending_pattern.subn(audio_html, text, count=1)
+    if count != 1:
+        raise RuntimeError(f"Could not replace pending audio bar in {path.relative_to(ROOT)}")
+    path.write_text(updated, encoding="utf-8")
+
+
 def ensure_tools() -> None:
     missing = [tool for tool in ("edge-tts", "ffmpeg", "ffprobe") if shutil.which(tool) is None]
     if missing:
@@ -242,6 +329,7 @@ def main() -> int:
     parser.add_argument("--bitrate", choices=("48k", "64k"), default=DEFAULT_BITRATE)
     parser.add_argument("--min-chars", type=int, default=MIN_SCRIPT_CHARS)
     parser.add_argument("--scripts-only", action="store_true")
+    parser.add_argument("--no-update-pages", action="store_true", help="Do not replace pending audio bars after audio generation")
     parser.add_argument("--keep-tmp", action="store_true")
     args = parser.parse_args()
 
@@ -249,16 +337,15 @@ def main() -> int:
     SCRIPTS_DIR.mkdir(parents=True, exist_ok=True)
     lessons = parse_lessons(args.lessons)
     for lesson in lessons:
-        md_path = course_path(lesson)
-        markdown = md_path.read_text(encoding="utf-8")
-        script = build_script(lesson, markdown, md_path.stem, args.min_chars)
+        source_text, fallback_title, source_type = lesson_source(lesson)
+        script = build_script(lesson, source_text, fallback_title, args.min_chars)
         script_path = SCRIPTS_DIR / f"lesson{lesson:02d}.txt"
         script_path.write_text(script, encoding="utf-8")
         count = chineseish_len(script)
         if count < args.min_chars:
             raise RuntimeError(f"lesson{lesson:02d} script too short: {count} chars")
         if args.scripts_only:
-            print(f"lesson{lesson:02d}: wrote {script_path} ({count} chars)")
+            print(f"lesson{lesson:02d}: wrote {script_path} ({count} chars, source={source_type})")
             continue
         generate_audio(
             lesson,
@@ -269,6 +356,8 @@ def main() -> int:
             bitrate=args.bitrate,
             keep_tmp=args.keep_tmp,
         )
+        if not args.no_update_pages:
+            attach_audio_to_lesson(lesson)
     return 0
 
 
