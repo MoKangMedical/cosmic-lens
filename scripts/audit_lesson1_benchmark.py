@@ -6,7 +6,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -38,31 +40,62 @@ def text_len(path: Path) -> int:
     return len(re.findall(r"[\u4e00-\u9fffA-Za-z0-9]", text))
 
 
-def ffprobe(path: Path) -> dict[str, object]:
+def afinfo(path: Path) -> dict[str, object]:
+    if shutil.which("afinfo") is None:
+        raise RuntimeError("ffprobe failed and afinfo is unavailable")
     result = subprocess.run(
-        [
-            "ffprobe",
-            "-v",
-            "quiet",
-            "-print_format",
-            "json",
-            "-show_streams",
-            "-show_format",
-            str(path),
-        ],
+        ["afinfo", str(path)],
         check=True,
         text=True,
         capture_output=True,
+        timeout=20,
     )
-    data = json.loads(result.stdout)
-    audio_stream = next(stream for stream in data["streams"] if stream.get("codec_type") == "audio")
+    text = result.stdout
+    duration_match = re.search(r"estimated duration:\s*([0-9.]+)\s*sec", text)
+    data_match = re.search(r"Data format:\s*(\d+)\s+ch,\s*(\d+)\s+Hz,\s*\.([A-Za-z0-9]+)", text)
+    bitrate_match = re.search(r"bit rate:\s*(\d+)\s*bits per second", text)
+    if not (duration_match and data_match and bitrate_match):
+        raise RuntimeError(f"Could not parse afinfo output for {path}")
     return {
-        "duration": float(data["format"]["duration"]),
-        "bit_rate": int(data["format"]["bit_rate"]),
-        "sample_rate": int(audio_stream["sample_rate"]),
-        "channels": int(audio_stream["channels"]),
-        "codec": audio_stream["codec_name"],
+        "duration": float(duration_match.group(1)),
+        "bit_rate": int(bitrate_match.group(1)),
+        "sample_rate": int(data_match.group(2)),
+        "channels": int(data_match.group(1)),
+        "codec": data_match.group(3).lower(),
     }
+
+
+def audio_metrics(path: Path) -> dict[str, object]:
+    if os.environ.get("COSMIC_AUDIO_PROBE") == "afinfo":
+        return afinfo(path)
+    try:
+        result = subprocess.run(
+            [
+                "ffprobe",
+                "-v",
+                "quiet",
+                "-print_format",
+                "json",
+                "-show_streams",
+                "-show_format",
+                str(path),
+            ],
+            check=True,
+            text=True,
+            capture_output=True,
+            timeout=20,
+        )
+        data = json.loads(result.stdout)
+        audio_stream = next(stream for stream in data["streams"] if stream.get("codec_type") == "audio")
+        return {
+            "duration": float(data["format"]["duration"]),
+            "bit_rate": int(data["format"]["bit_rate"]),
+            "sample_rate": int(audio_stream["sample_rate"]),
+            "channels": int(audio_stream["channels"]),
+            "codec": audio_stream["codec_name"],
+        }
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired, json.JSONDecodeError, StopIteration):
+        return afinfo(path)
 
 
 def grade(metrics: dict[str, object], script_chars: int, min_chars: int) -> tuple[str, list[str]]:
@@ -97,7 +130,7 @@ def main() -> int:
         if not audio_path.exists():
             rows.append((lesson, "FAIL", None, script_chars, ["missing_audio"]))
             continue
-        metrics = ffprobe(audio_path)
+        metrics = audio_metrics(audio_path)
         item_grade, issues = grade(metrics, script_chars, args.min_chars)
         rows.append((lesson, item_grade, metrics, script_chars, issues))
 

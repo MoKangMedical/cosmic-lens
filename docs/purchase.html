@@ -68,14 +68,14 @@ a{color:inherit}.page{position:relative;z-index:1;min-height:100vh}.container{ma
         <div>
           <div class="status-chip"><span class="status-dot"></span><span id="heroStatus">Payment Links Pending</span></div>
           <h1>一次购买 <span>终身探索</span></h1>
-          <p>购买《宇宙之镜》课程权益，获得 120 门模拟假说与宇宙观课程的长期访问；当前已上线 120 门正文课程与前 30 节 A 级规格音频，后续音频和配套工具持续补齐。</p>
+          <p>购买《宇宙之镜》课程权益，获得 120 门模拟假说与宇宙观课程的长期访问；当前已上线 120 门正文课程与前 40 节 A 级规格音频，后续音频和配套工具持续补齐。</p>
           <div class="hero-actions">
             <a class="btn purchase" href="#pricing">查看购买方案</a>
             <a class="btn" href="/cosmic-lens/courses.html">先看课程矩阵</a>
           </div>
           <div class="proof" aria-label="产品权益摘要">
             <span>✓ 120 门系统课程</span>
-            <span>✓ 30 节 A级音频已上线</span>
+            <span>✓ 40 节 A级音频已上线</span>
             <span>✓ 练习与思维卡片</span>
             <span>✓ 后续更新免费获得</span>
           </div>
@@ -85,7 +85,7 @@ a{color:inherit}.page{position:relative;z-index:1;min-height:100vh}.container{ma
           <p>静态站只承载公开收款链接，不存储支付密钥。运行本仓库 Stripe 建链脚本创建 3 个公开链接后，购买按钮会自动变为真实跳转。</p>
           <div class="launch-grid">
             <div class="launch-row"><span>课程正文</span><strong>120/120</strong></div>
-            <div class="launch-row"><span>核心音频</span><strong>30/120</strong></div>
+            <div class="launch-row"><span>核心音频</span><strong>40/120</strong></div>
             <div class="launch-row"><span>购买方案</span><strong>3 档</strong></div>
             <div class="launch-row blocker"><span>真实收款链接</span><strong id="linkCount">0/3</strong></div>
           </div>
@@ -109,7 +109,7 @@ a{color:inherit}.page{position:relative;z-index:1;min-height:100vh}.container{ma
       </article>
       <article class="security-card">
         <h3>购买后获得什么</h3>
-        <p>进入完整课程体系、3D 星系课程地图、120 门正文课程、前 30 节高质量课程音频，以及后续新增音频、练习卡片和阶段总结更新。</p>
+        <p>进入完整课程体系、3D 星系课程地图、120 门正文课程、前 40 节高质量课程音频，以及后续新增音频、练习卡片和阶段总结更新。</p>
       </article>
       <article class="security-card">
         <h3>适合谁</h3>
@@ -140,7 +140,7 @@ python3 scripts/audit_product_readiness.py --strict-payments</code>
       <div class="faq-grid">
         <details open><summary>购买后如何访问课程？</summary><p>支付成功后可以直接进入课程体系。当前静态站是公开访问形态；如后续接入会员系统，可在成功页或邮件中发放访问说明。</p></details>
         <details><summary>为什么推荐 Stripe Payment Links？</summary><p>它适合静态站和简单产品。本仓库脚本在本地调用 Stripe API 创建公开链接，不会把支付密钥写进前端，也不需要自行处理银行卡数据。</p></details>
-        <details><summary>现在有多少音频？</summary><p>当前仓库内已上线 30 节核心课程音频，规格为 24000Hz、单声道、48kbps，并已做响度统一。后续音频会继续补齐。</p></details>
+        <details><summary>现在有多少音频？</summary><p>当前仓库内已上线 40 节核心课程音频，规格为 24000Hz、单声道、48kbps，并已做响度统一。后续音频会继续补齐。</p></details>
         <details><summary>机构授权能否多人使用？</summary><p>机构授权面向小团队、学校或学习小组，默认最多 10 人内部学习使用。更大规模可以另行配置机构方案。</p></details>
       </div>
     </section>

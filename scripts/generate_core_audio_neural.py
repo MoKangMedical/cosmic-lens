@@ -11,6 +11,7 @@ Pipeline:
 from __future__ import annotations
 
 import argparse
+import os
 import re
 import shutil
 import subprocess
@@ -28,6 +29,9 @@ DEFAULT_VOICE = "zh-CN-YunyangNeural"
 DEFAULT_RATE = "-8%"
 DEFAULT_PITCH = "-2Hz"
 DEFAULT_BITRATE = "48k"
+DEFAULT_EDGE_TTS_BIN = os.environ.get("COSMIC_EDGE_TTS_BIN", "edge-tts")
+DEFAULT_FFMPEG_BIN = os.environ.get("COSMIC_FFMPEG_BIN", "ffmpeg")
+DEFAULT_FFPROBE_BIN = os.environ.get("COSMIC_FFPROBE_BIN", "ffprobe")
 MIN_SCRIPT_CHARS = 520
 MAX_SCRIPT_CHARS = 900
 
@@ -219,29 +223,68 @@ def build_script(lesson: int, markdown: str, fallback_title: str, min_chars: int
     return script.strip() + "\n"
 
 
-def run(cmd: list[str]) -> None:
-    subprocess.run(cmd, check=True)
+def run(cmd: list[str], *, timeout: int | None = None, attempts: int = 1) -> None:
+    last_error: subprocess.CalledProcessError | subprocess.TimeoutExpired | None = None
+    for attempt in range(1, attempts + 1):
+        try:
+            subprocess.run(cmd, check=True, timeout=timeout)
+            return
+        except subprocess.TimeoutExpired as exc:
+            last_error = exc
+            print(f"Command timed out after {timeout}s, attempt {attempt}/{attempts}: {' '.join(cmd[:2])}", file=sys.stderr)
+        except subprocess.CalledProcessError as exc:
+            last_error = exc
+            print(f"Command failed, attempt {attempt}/{attempts}: {' '.join(cmd[:2])}", file=sys.stderr)
+        if attempt < attempts:
+            continue
+    if last_error:
+        raise last_error
 
 
-def ffprobe(path: Path) -> str:
-    result = subprocess.run(
-        [
-            "ffprobe",
-            "-v",
-            "quiet",
-            "-show_entries",
-            "stream=sample_rate,channels",
-            "-show_entries",
-            "format=duration,bit_rate",
-            "-of",
-            "default=noprint_wrappers=1",
-            str(path),
-        ],
-        check=True,
-        text=True,
-        capture_output=True,
-    )
-    return result.stdout.strip()
+def command_available(command: str) -> bool:
+    path = Path(command)
+    if path.is_absolute() or "/" in command:
+        return path.exists() and os.access(path, os.X_OK)
+    return shutil.which(command) is not None
+
+
+def probe_audio(path: Path, ffprobe_bin: str, timeout: int) -> str:
+    try:
+        result = subprocess.run(
+            [
+                ffprobe_bin,
+                "-v",
+                "quiet",
+                "-show_entries",
+                "stream=sample_rate,channels",
+                "-show_entries",
+                "format=duration,bit_rate",
+                "-of",
+                "default=noprint_wrappers=1",
+                str(path),
+            ],
+            check=True,
+            text=True,
+            capture_output=True,
+            timeout=timeout,
+        )
+        return result.stdout.strip()
+    except (subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        if shutil.which("afinfo") is None:
+            raise
+        result = subprocess.run(
+            ["afinfo", str(path)],
+            check=True,
+            text=True,
+            capture_output=True,
+            timeout=timeout,
+        )
+        lines = [
+            line.strip()
+            for line in result.stdout.splitlines()
+            if any(key in line for key in ("Data format", "estimated duration", "bit rate"))
+        ]
+        return "\n".join(lines)
 
 
 def generate_audio(
@@ -252,6 +295,12 @@ def generate_audio(
     rate: str,
     pitch: str,
     bitrate: str,
+    edge_tts_bin: str,
+    ffmpeg_bin: str,
+    ffprobe_bin: str,
+    probe_timeout: int,
+    tts_timeout: int,
+    tts_attempts: int,
     keep_tmp: bool,
 ) -> None:
     raw_path = Path("/tmp") / f"cosmic_lesson{lesson:02d}_raw.mp3"
@@ -260,7 +309,7 @@ def generate_audio(
 
     run(
         [
-            "edge-tts",
+            edge_tts_bin,
             "--voice",
             voice,
             f"--rate={rate}",
@@ -269,11 +318,13 @@ def generate_audio(
             str(script_path),
             "--write-media",
             str(raw_path),
-        ]
+        ],
+        timeout=tts_timeout,
+        attempts=tts_attempts,
     )
     run(
         [
-            "ffmpeg",
+            ffmpeg_bin,
             "-y",
             "-v",
             "error",
@@ -293,7 +344,7 @@ def generate_audio(
     if not keep_tmp:
         raw_path.unlink(missing_ok=True)
     print(f"lesson{lesson:02d}: {chineseish_len(script_path.read_text(encoding='utf-8'))} chars")
-    print(ffprobe(out_path))
+    print(probe_audio(out_path, ffprobe_bin, probe_timeout))
 
 
 def attach_audio_to_lesson(lesson: int) -> None:
@@ -314,8 +365,8 @@ def attach_audio_to_lesson(lesson: int) -> None:
     path.write_text(updated, encoding="utf-8")
 
 
-def ensure_tools() -> None:
-    missing = [tool for tool in ("edge-tts", "ffmpeg", "ffprobe") if shutil.which(tool) is None]
+def ensure_tools(edge_tts_bin: str, ffmpeg_bin: str) -> None:
+    missing = [tool for tool in (edge_tts_bin, ffmpeg_bin) if not command_available(tool)]
     if missing:
         raise SystemExit(f"Missing required tool(s): {', '.join(missing)}")
 
@@ -324,16 +375,22 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--lessons", default="1-20", help="Lesson list/ranges, e.g. 1-20 or 21,22,25-30")
     parser.add_argument("--voice", default=DEFAULT_VOICE)
+    parser.add_argument("--edge-tts-bin", default=DEFAULT_EDGE_TTS_BIN)
+    parser.add_argument("--ffmpeg-bin", default=DEFAULT_FFMPEG_BIN)
+    parser.add_argument("--ffprobe-bin", default=DEFAULT_FFPROBE_BIN)
     parser.add_argument("--rate", default=DEFAULT_RATE)
     parser.add_argument("--pitch", default=DEFAULT_PITCH)
     parser.add_argument("--bitrate", choices=("48k", "64k"), default=DEFAULT_BITRATE)
     parser.add_argument("--min-chars", type=int, default=MIN_SCRIPT_CHARS)
+    parser.add_argument("--probe-timeout", type=int, default=20)
+    parser.add_argument("--tts-timeout", type=int, default=120, help="Seconds before retrying a stuck edge-tts request")
+    parser.add_argument("--tts-attempts", type=int, default=3, help="edge-tts attempts per lesson")
     parser.add_argument("--scripts-only", action="store_true")
     parser.add_argument("--no-update-pages", action="store_true", help="Do not replace pending audio bars after audio generation")
     parser.add_argument("--keep-tmp", action="store_true")
     args = parser.parse_args()
 
-    ensure_tools()
+    ensure_tools(args.edge_tts_bin, args.ffmpeg_bin)
     SCRIPTS_DIR.mkdir(parents=True, exist_ok=True)
     lessons = parse_lessons(args.lessons)
     for lesson in lessons:
@@ -354,6 +411,12 @@ def main() -> int:
             rate=args.rate,
             pitch=args.pitch,
             bitrate=args.bitrate,
+            edge_tts_bin=args.edge_tts_bin,
+            ffmpeg_bin=args.ffmpeg_bin,
+            ffprobe_bin=args.ffprobe_bin,
+            probe_timeout=args.probe_timeout,
+            tts_timeout=args.tts_timeout,
+            tts_attempts=args.tts_attempts,
             keep_tmp=args.keep_tmp,
         )
         if not args.no_update_pages:

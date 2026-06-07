@@ -12,7 +12,7 @@ window.COSMIC_LENS_PURCHASE_CONFIG = {
       paymentLink: "",
       benefits: [
         "120 门课程目录与正文永久访问",
-        "前 30 节 A 级规格课程音频",
+        "前 40 节 A 级规格课程音频",
         "练习题、思维卡片与阶段路线图",
         "后续课程与音频补齐时免费更新"
       ]
